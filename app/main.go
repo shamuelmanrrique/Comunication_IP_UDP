@@ -4,6 +4,7 @@ import (
 	// 	"time"
 	"fmt"
 	f "practice1/functions"
+	"strconv"
 	"strings"
 )
 
@@ -11,32 +12,29 @@ func main() {
 	var n int = 4
 	var ids []string = f.IdProcess(n, "local")
 
-	// var p string =
-	// primes := [1]string{"2:127.0.0.1:1402"}
-	// var d Data
-	// d.data = primes
-
-	primes := [1]string{"2:127.0.0.1:1402"}
-	// reg := ["2:127.0.0.1:1402"]
-	a := strings.Join(primes[:], " ")
-	d := strings.Split(a, ":")
-	fmt.Println(d[1])
 	for _, v := range ids {
-		var conect f.Data
+		// var connect f.Data
 		elemts := strings.Split(v, ":")
-		conect.Inf = elemts
-		conect.Getdata()
-		// proof(conect)
+		fmt.Println(elemts)
+		n, err := strconv.Atoi(elemts[0])
+		f.Error(err)
+		var connect f.Data = f.Data{
+			Inf:  elemts[0],
+			Id:   elemts[1] + elemts[2],
+			Ip:   elemts[1],
+			Num:  n,
+			Host: elemts[2],
+		}
+		proof(connect)
 	}
-
 	fmt.Println(ids)
 }
 
-func proof(c f.Conection) {
+func proof(c f.Connection) {
+	fmt.Println(c.GetInf())
+	fmt.Println(c.GetNum())
+	fmt.Println(c.GetHost())
 	fmt.Println(c.GetId())
-	// fmt.Println(c.num)
-	// fmt.Println(c.host)
-	// fmt.Println(c.id)
 }
 
 // func main() {
