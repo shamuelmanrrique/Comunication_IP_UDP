@@ -3,29 +3,40 @@ package main
 import (
 	// 	"time"
 	"fmt"
-	"practice1/functions"
+	f "practice1/functions"
+	"strings"
 )
-
-// type Message interface {
-// 	Ip solo usa procedure
-// }
-
-type Message struct {
-	ip, data, vector string
-	// el msm debe ser una variable local
-}
 
 func main() {
 	var n int = 4
-	var m Message
+	var ids []string = f.IdProcess(n, "local")
 
-	m.data = "jh"
-	var ids []string = functions.IdProcess(n, "local")
+	// var p string =
+	// primes := [1]string{"2:127.0.0.1:1402"}
+	// var d Data
+	// d.data = primes
 
-	for i:= 0; i <= n; i++ {
-		
-	} 
+	primes := [1]string{"2:127.0.0.1:1402"}
+	// reg := ["2:127.0.0.1:1402"]
+	a := strings.Join(primes[:], " ")
+	d := strings.Split(a, ":")
+	fmt.Println(d[1])
+	for _, v := range ids {
+		var conect f.Data
+		elemts := strings.Split(v, ":")
+		conect.Inf = elemts
+		conect.Getdata()
+		// proof(conect)
+	}
+
 	fmt.Println(ids)
+}
+
+func proof(c f.Conection) {
+	fmt.Println(c.GetId())
+	// fmt.Println(c.num)
+	// fmt.Println(c.host)
+	// fmt.Println(c.id)
 }
 
 // func main() {

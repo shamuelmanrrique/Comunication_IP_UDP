@@ -6,7 +6,8 @@ import (
 	"net"
 )
 
-func Receive(data interface{}) error {
+// func Receive(data interface{}) error {
+func Receive(data struct{}) error {
 	var connection net.Conn
 	var err error
 	var decoder *gob.Decoder
