@@ -26,8 +26,12 @@ func main() {
 			Host: elemts[2],
 		}
 		proof(connect)
+
+		// Llamamos send
+		go functions.Send("XXX")
 	}
-	fmt.Println(ids)
+	// fmt.Println(ids)
+
 }
 
 func proof(c f.Connection) {
