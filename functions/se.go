@@ -2,30 +2,28 @@ package functions
 
 import (
 	"encoding/gob"
-	"fmt"
 	"net"
 	"time"
+	"fmt"
 )
 
-func Send(connect Connection) error {
+func Se(data int) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
-	message :=4
-	// host := connect.GetHost()
-	// fmt.Println(" address value: %s", address)
-	// fmt.Println(host)
+
 	fmt.Println("Stay in send 1")
-	time.Sleep(2 * time.Second)
-	// connection, err = net.Dial("tcp", host)
+	time.Sleep(2*time.Second)
 	connection, err = net.Dial("tcp", "127.0.0.1:5008")
-	Error(err, "Error iniciando send")
+	if err != nil {
+		panic("Client connection error")
+	}
 
 	encoder = gob.NewEncoder(connection)
-	err = encoder.Encode(message)
+	err = encoder.Encode(data)
 
 	fmt.Println("Estoy en send")
-
+	
 	connection.Close()
 	return err
 

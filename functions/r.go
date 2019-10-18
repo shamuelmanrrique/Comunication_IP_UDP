@@ -6,24 +6,24 @@ import (
 	"net"
 )
 
-func Receive(connect Connection) error {
+func R(conn Connection, msm Message) error {
 	var connection net.Conn
 	var err error
 	var decoder *gob.Decoder
 	var listener net.Listener
-	// port := ":" + connect.GetHost()
 
-	fmt.Println("Stay in receive 1")
-	listener, err = net.Listen("tcp", ":5008")
-	Error(err, "Server listen error")
+	listener, err = net.Listen("tcp", conn.GetPort())
+	if err != nil {
+		panic("Server listen error")
+	}
 	
 	connection, err = listener.Accept()
-	Error(err,"Server accept connection error")
+	if err != nil {
+		panic("Server accept connection error")
+	}
 
 	decoder = gob.NewDecoder(connection)
-	err = decoder.Decode(0)
-	connection.Close()
-	
+	err = decoder.Decode(conn)
 
 	fmt.Println("Estoy en receive")
 	connection.Close()
