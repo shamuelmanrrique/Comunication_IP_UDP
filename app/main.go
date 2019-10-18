@@ -1,74 +1,50 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"net"
-
-	// "fmt"
-	// f "practice1/functions"
-	"golang.org/x/crypto/ssh"
-	// "strconv"
-	// "strings"
-	// "time"
+	f "practice1/functions"
+	"time"
 )
 
-// const (
-// 	n    = 2           //numero de procesos
-// 	ip   = "127.0.0.1" //En este caso se define local
-// 	port = f.GetIp()
-// )
+const (
+	n    = 2           // Determinamos el numero de procesos n
+	ip   = "127.0.0.1" //En este caso se define local
+	port = ":5001"
+)
 
 func main() {
+	// i :=  conn.RemoteAddr().String()
 
-	config := &ssh.ClientConfig{
-		User:            "a802400",
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Auth: []ssh.AuthMethod{
-			ssh.Password("sMDJMA-21"),
-		},
+	i := f.GetIp()
+	// Creo canal para comunicar send and receive con un buffer de tamaño n cantidad de procesos
+	bufferMsm := make(chan f.Message, n)
+
+	// Determinamos el numero de procesos n
+	var ids []string = f.IdProcess(n, "local") // var ids []string = f.IdProcess(n, "remote")
+	fmt.Println(ids[1:])
+	fmt.Println(bufferMsm)
+	fmt.Println(i)
+
+	var connect f.Conn = f.Conn{
+		Id:   ip + port,
+		Ip:   ip,
+		Port: port,
+		Ids:  ids,
 	}
 
-	client, err := ssh.Dial("tcp", net.JoinHostPort("155.210.154.210", "22"), config)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	// Create a session. It is one session per command.
-	session, err := client.NewSession()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	defer session.Close()
-	var b bytes.Buffer  // import "bytes"
-	session.Stdout = &b // get output
-	// you can also pass what gets input to the stdin, allowing you to pipe
-	// content from client to server
-	//      session.Stdin = bytes.NewBufferString("My input")
-
-	// Finally, run the command
-	err = session.Run("bash; go version")
-	fmt.Println(b.String())
-	// return b.String(), err
-
-	// // Determinamos el numero de procesos n
-	// var ids []string = f.IdProcess(n, "local") // var ids []string = f.IdProcess(n, "remote")
-	// fmt.Println(ids)
-
-	// var connect f.Conn = f.Conn{
-	// 	Id:   ip + port,
-	// 	Ip:   ip,
-	// 	Port: port,
-	// 	Ids:  ids,
+	// var msm f.Message = f.Message{
+	// 	To:   connect.GetId(),
+	// 	From: connect.GetEnv(1),
+	// 	Data: "ja wueno",
 	// }
 
-	// fmt.Println(connect)
+	fmt.Println(connect)
 
-	// Necesito escuchar uso r
+	go f.R(connect, bufferMsm)
 
-	//TODO ARRAY de delay
+	go f.S(connect, "Ja wurno mmg ", bufferMsm)
 
+	<-time.After(time.Second * 20)
 	//LLAMO A FUNCION QUE VA A TENER SEND RECEIVE
 
 }

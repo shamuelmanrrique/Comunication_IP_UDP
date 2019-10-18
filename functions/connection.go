@@ -4,30 +4,38 @@ type Connection interface {
 	GetId() string
     GetIp() string
     GetPort() string
+    GetEnv(n int) string
     GetIds() []string
+
 }
 
 type Conn struct {
-    Id, Ip , Port, Host string
+    Id, Ip , Port, Host, Env string
     Ids []string
 }
 
-func (id Conn) GetId() string {
-    return id.Id
-}
-func (ip Conn) GetIp() string {
-    return ip.Ip
+func (c Conn) GetId() string {
+    return c.Id
 }
 
-func (port  Conn) GetPort() string {
-    return port.Port
+func (c Conn) GetIp() string {
+    return c.Ip
 }
 
-func (ids Conn) GetIds() []string {    
-    return ids.Ids
+func (c Conn) GetEnv(n int) string {
+    for i, v := range c.GetIds() {
+        if i == n {
+            return v
+        }
+    }
+    return ""
 }
 
-
-type Message struct{
-    
+func (c  Conn) GetPort() string {
+    return c.Port
 }
+
+func (c Conn) GetIds() []string {    
+    return c.Ids
+}
+

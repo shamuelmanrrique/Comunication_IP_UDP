@@ -5,12 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	// "fmt"
-	// f "practice1/functions"
 	"golang.org/x/crypto/ssh"
-	// "strconv"
-	// "strings"
-	// "time"
 )
 
 // const (

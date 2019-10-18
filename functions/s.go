@@ -7,22 +7,22 @@ import (
 	"fmt"
 )
 
-func S(data interface{}) error {
+func S(conn Connection, msm string, canal chan Message) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
 
-	fmt.Println("Stay in send 1")
+	fmt.Println("------------SEND----------------")
 	time.Sleep(2*time.Second)
-	connection, err = net.Dial("tcp", "127.0.0.1:5008")
-	if err != nil {
-		panic("Client connection error")
-	}
+	fmt.Println(conn.GetId())
+	connection, err = net.Dial("tcp", conn.GetId() )
+	Error(err, "Send connection error")
 
 	encoder = gob.NewEncoder(connection)
-	err = encoder.Encode(data)
-
+	err = encoder.Encode(msm)
+	
 	fmt.Println("Estoy en send")
+	
 	
 	connection.Close()
 	return err
