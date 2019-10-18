@@ -8,7 +8,7 @@ import (
 )
 
 func R( conn Connection, canal chan Message) error {
-	var msm string
+	var msm Message
 	var red net.Conn
 	var err error
 	var decoder *gob.Decoder
@@ -25,10 +25,13 @@ func R( conn Connection, canal chan Message) error {
 	decoder = gob.NewDecoder(red)
 	err = decoder.Decode(&msm)
 
+	if err != nil {
+		panic("lloro"+ err.Error())
+	}
 	fmt.Println("Estoy en receive----")
 	fmt.Println(msm)
-
 	fmt.Println("----------Estoy en receive")
+
 	red.Close()
 	return err
 

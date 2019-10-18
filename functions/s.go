@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func S(conn Connection, msm string, canal chan Message) error {
+func S(conn Connection, msm Msm, canal chan Message) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder

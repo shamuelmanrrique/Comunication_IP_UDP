@@ -32,17 +32,17 @@ func main() {
 		Ids:  ids,
 	}
 
-	// var msm f.Message = f.Message{
-	// 	To:   connect.GetId(),
-	// 	From: connect.GetEnv(1),
-	// 	Data: "ja wueno",
-	// }
+	var msm f.Message = f.Message{
+		To:   connect.GetId(),
+		From: connect.GetEnv(1),
+		Data: "ja wueno",
+	}
 
 	fmt.Println(connect)
 
 	go f.R(connect, bufferMsm)
 
-	go f.S(connect, "Ja wurno mmg ", bufferMsm)
+	go f.S(connect, msm, bufferMsm)
 
 	<-time.After(time.Second * 20)
 	//LLAMO A FUNCION QUE VA A TENER SEND RECEIVE
