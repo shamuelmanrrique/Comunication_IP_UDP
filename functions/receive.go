@@ -1,32 +1,36 @@
 package functions
 
 import (
+	// "time"
 	"encoding/gob"
 	"fmt"
 	"net"
 )
 
-func Receive(connect Connection) error {
-	var connection net.Conn
+func Receive(conn Connection, canal chan Message) error {
+	var msm Message
+	var red net.Conn
 	var err error
 	var decoder *gob.Decoder
 	var listener net.Listener
-	// port := ":" + connect.GetHost()
 
-	fmt.Println("Stay in receive 1")
-	listener, err = net.Listen("tcp", ":5008")
-	Error(err, "Server listen error")
-	
-	connection, err = listener.Accept()
-	Error(err,"Server accept connection error")
+	id := conn.GetId()
 
-	decoder = gob.NewDecoder(connection)
-	err = decoder.Decode(0)
-	connection.Close()
-	
+	fmt.Printf("#------------ RECEIVE %s ----------------# \n", id)
 
-	fmt.Println("Estoy en receive")
-	connection.Close()
+	listener, err = net.Listen("tcp", conn.GetPort())
+	Error(err, "Listen Error")
+
+	red, err = listener.Accept()
+	Error(err, "Server accept red error")
+
+	decoder = gob.NewDecoder(red)
+	err = decoder.Decode(&msm)
+
+	Error(err, "Receive error "+id+" \n")
+	fmt.Println(msm.GetData())
+
+	red.Close()
 	return err
 
 }

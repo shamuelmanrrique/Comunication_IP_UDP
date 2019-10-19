@@ -5,15 +5,16 @@ type Connection interface {
 	GetIp() string
 	GetPort() string
 	GetIds() []string
+	GetKill() string
 	GetEnv(n int) string
 	GetDelays() []int
 	GetDelay(n int) int
 }
 
 type Conn struct {
-	Id, Ip, Port, Host, Env string
-	Ids                     []string
-	Delay                   []int
+	Id, Ip, Port, Host, Env, Kill string
+	Ids                           []string
+	Delay                         []int
 }
 
 func (c Conn) GetId() string {
@@ -48,6 +49,10 @@ func (c Conn) GetPort() string {
 
 func (c Conn) GetIds() []string {
 	return c.Ids
+}
+
+func (c Conn) GetKill() string {
+	return c.Kill
 }
 
 func (c Conn) GetDelays() []int {
