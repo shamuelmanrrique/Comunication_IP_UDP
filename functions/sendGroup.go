@@ -4,7 +4,8 @@ import (
 	"time"
 )
 
-func SendGroup(connect Connection, canal chan Message) {
+func SendGroup(connect Connection, canal chan Message) error {
+	var err error
 	id := connect.GetId()
 
 	for i, v := range connect.GetIds() {
@@ -25,5 +26,6 @@ func SendGroup(connect Connection, canal chan Message) {
 		}
 
 	}
+	return err
 
 }

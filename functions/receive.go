@@ -27,6 +27,10 @@ func Receive(conn Connection, canal chan Message) error {
 	decoder = gob.NewDecoder(red)
 	err = decoder.Decode(&msm)
 
+	// m := "[Receive] => " + connect.GetId() + " He disparado a " + connect.GetKill()
+
+	canal <- msm
+
 	Error(err, "Receive error "+id+" \n")
 	fmt.Println(msm.GetData())
 

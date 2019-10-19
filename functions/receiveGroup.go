@@ -1,30 +1,20 @@
 package functions
 
-import (
-	"encoding/gob"
-	"fmt"
-	"net"
-	"time"
-)
+import "fmt"
 
-func Sendidi(data int) error {
-	var connection net.Conn
+func ReceiveGroup(connect Connection, n int) error {
+
+	bufferMsm := make(chan Message, n)
 	var err error
-	var encoder *gob.Encoder
+	id := connect.GetId()
 
-	fmt.Println("Stay in send 1")
-	time.Sleep(2 * time.Second)
-	connection, err = net.Dial("tcp", "127.0.0.1:5008")
-	if err != nil {
-		panic("Client connection error")
+	for i := range bufferMsm {
+		fmt.Println(id)
+		fmt.Println(i)
+		// Send(connect, bufferMsm)
+
 	}
 
-	encoder = gob.NewEncoder(connection)
-	err = encoder.Encode(data)
-
-	fmt.Println("Estoy en send")
-
-	connection.Close()
 	return err
 
 }

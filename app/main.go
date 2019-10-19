@@ -38,7 +38,11 @@ func main() {
 	}
 
 	go f.SendGroup(connect, bufferMsm)
-	// go f.receiveGroup(connect, bufferMsm)
+	go f.ReceiveGroup(connect, n)
+
+	for i := range bufferMsm {
+		fmt.Println(i)
+	}
 
 	<-time.After(time.Second * 20)
 }
