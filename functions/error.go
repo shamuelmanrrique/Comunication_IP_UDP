@@ -1,14 +1,12 @@
 package functions
 
 import (
-	"fmt"
 	"os"
 )
 
 func Error(err error, message string) {
 	if err != nil {
-		fmt.Println(message)
-		fmt.Println(err)
+		panic(message +" "+ err.Error())
 		os.Exit(1)
 	}
 }
