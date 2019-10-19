@@ -15,7 +15,7 @@ const (
 func main() {
 	fmt.Println("####### MAIN 1 #####################")
 
-	delay := []int{0, 0, 0, 2}
+	delay := []int{3, 2}
 	bufferMsm := make(chan f.Message, n)
 
 	// Determinamos el numero de procesos n
@@ -32,14 +32,15 @@ func main() {
 		Delay: delay,
 	}
 
-	m := "[MSM] => To: " + connect.GetId() + " From: " + connect.GetEnv(1) + " He disparado a " + connect.GetId()
+	// m := "[MSM] => To: " + connect.GetId() + " From: " + connect.GetEnv(1) + " He disparado a " + connect.GetId()
+	m := "[MSM] => " + connect.GetId() + " He disparado a " + connect.GetEnv(1)
 	var msm f.Message = f.Message{
 		To:   connect.GetId(),
 		From: connect.GetEnv(1),
 		Data: m,
 	}
 
-	fmt.Println(connect)
+	// fmt.Println(connect)
 
 	go f.R(connect, bufferMsm)
 

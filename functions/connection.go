@@ -6,7 +6,8 @@ type Connection interface {
 	GetPort() string
 	GetIds() []string
 	GetEnv(n int) string
-	GetDelay() []int
+	GetDelays() []int
+	GetDelay(n int) int
 }
 
 type Conn struct {
@@ -32,6 +33,15 @@ func (c Conn) GetEnv(n int) string {
 	return ""
 }
 
+func (c Conn) GetDelay(n int) int {
+	for i, v := range c.GetDelays() {
+		if i == n {
+			return v
+		}
+	}
+	return 0
+}
+
 func (c Conn) GetPort() string {
 	return c.Port
 }
@@ -40,6 +50,6 @@ func (c Conn) GetIds() []string {
 	return c.Ids
 }
 
-func (c Conn) GetDelay() []int {
+func (c Conn) GetDelays() []int {
 	return c.Delay
 }
