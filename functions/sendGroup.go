@@ -23,6 +23,8 @@ func SendGroup(connect Connection) error {
 	}
 
 	for i, v := range connect.GetIds() {
+		println(v != id)
+		println(i)
 		if v != id {
 			// Aplico delay en el envio
 			msm.Ignor = v

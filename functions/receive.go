@@ -16,7 +16,6 @@ func Receive(connect Connection, canal chan Message) error {
 
 	id := connect.GetId()
 
-	// fmt.Printf("#------------ RECEIVE %s ----------------# \n", connect.GetPort())
 	listener, err = net.Listen("tcp", connect.GetPort())
 	Error(err, "Listen Error")
 
@@ -28,21 +27,17 @@ func Receive(connect Connection, canal chan Message) error {
 		err = decoder.Decode(&msm)
 		Error(err, "Receive error "+id+" \n")
 
-		// fmt.Println(msm.GetFrom() == id)
 		if msm.GetFrom() == id {
-			// fmt.Println("msm.GetFrom()")
 			go SendGroup(connect)
-			// go SendGroup(connect)
 		}
-		// fmt.Println("Envie MSM al canal que recibi")
+
 		canal <- msm
-		fmt.Printf("RECEIVE => To: %s From: %s \n", msm.GetTo(), id)
-		// fmt.Println("Envie MSM al canal que recibi 111111")
+		fmt.Printf("RECEIVE => To: %s From: %s \n", id, msm.GetTo())
 	}
 
 	red.Close() //lo tenia dentro del for
 	listener.Close()
-	// close(canal)
+	close(canal)
 	return err
 
 }

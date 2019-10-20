@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// EStas constantes pasaran como flash en la consola
+// Estas constantes pasaran como flash en la consola
 const (
 	n    = 2           // Determinamos el numero de procesos n
 	ip   = "127.0.0.1" //En este caso se define local
@@ -16,7 +16,7 @@ const (
 )
 
 func main() {
-	fmt.Println("###################### MAIN ###########################")
+	fmt.Printf("###################### MAIN  %s ########################### \n", ip+port)
 
 	delay := []int{5, 8}
 	kill := "127.0.0.1:5002"
