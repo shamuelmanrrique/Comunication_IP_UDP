@@ -16,8 +16,8 @@ const (
 func main() {
 	fmt.Println("###################### MAIN ###########################\n")
 
-	delay := []int{3, 3}
-	kill := "127.0.0.1:5003"
+	delay := []int{5, 5}
+	kill := "127.0.0.1:5002"
 
 	// bufferMsm := make(chan f.Message, n)
 	bufferMsm := make(chan f.Message)
@@ -25,8 +25,6 @@ func main() {
 	// Determinamos el numero de procesos n
 	var ids []string = f.IdProcess(n, "local")
 	// var ids []string = f.IdProcess(n, "remote")
-
-	// fmt.Println(ids[1:])
 
 	var connect f.Conn = f.Conn{
 		Id:    ip + port,
@@ -36,13 +34,13 @@ func main() {
 		Delay: delay,
 		Kill:  kill,
 	}
-
-	go f.SendGroup(connect, bufferMsm)
+	fmt.Println(connect.GetId)
 	go f.ReceiveGroup(connect, n)
+	go f.SendGroup(connect, bufferMsm)
 
-	for i := range bufferMsm {
-		fmt.Println(i)
-	}
+	// for i := range bufferMsm {
+	// 	fmt.Println(i)
+	// }
 
 	<-time.After(time.Second * 20)
 }

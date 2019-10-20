@@ -24,7 +24,3 @@ func IdProcess(n int, mode string) []string  {
 
 	return ids
 }
-
-// ssh a802400@155.210.154.210s
-// pwd : sMDJMA-21
-// escribir > bash

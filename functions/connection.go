@@ -1,18 +1,22 @@
 package functions
 
+import v "practice1/vclock"
+
 type Connection interface {
 	GetId() string
 	GetIp() string
 	GetPort() string
+	GetKill() string //puedo elminar
 	GetIds() []string
-	GetKill() string
-	GetEnv(n int) string
 	GetDelays() []int
 	GetDelay(n int) int
+	GetEnv(n int) string
+	GetVector() v.VClock
 }
 
 type Conn struct {
 	Id, Ip, Port, Host, Env, Kill string
+	Vector                        v.VClock
 	Ids                           []string
 	Delay                         []int
 }
@@ -57,4 +61,8 @@ func (c Conn) GetKill() string {
 
 func (c Conn) GetDelays() []int {
 	return c.Delay
+}
+
+func (c Conn) GetVector() v.VClock {
+	return c.Vector
 }

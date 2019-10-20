@@ -7,7 +7,7 @@ import (
 	"net"
 )
 
-func Receive(conn Connection, canal chan Message) error {
+func Receive(conn Connection, canal chan<- Message) error {
 	var msm Message
 	var red net.Conn
 	var err error
@@ -16,24 +16,26 @@ func Receive(conn Connection, canal chan Message) error {
 
 	id := conn.GetId()
 
-	fmt.Printf("#------------ RECEIVE %s ----------------# \n", id)
-
+	fmt.Printf("#------------ RECEIVE %s ----------------# \n", conn.GetPort())
 	listener, err = net.Listen("tcp", conn.GetPort())
 	Error(err, "Listen Error")
 
-	red, err = listener.Accept()
-	Error(err, "Server accept red error")
+	for i := 0; i < len(conn.GetIds())+1; i++ {
 
-	decoder = gob.NewDecoder(red)
-	err = decoder.Decode(&msm)
+		red, err = listener.Accept()
+		Error(err, "Server accept red error")
 
-	// m := "[Receive] => " + connect.GetId() + " He disparado a " + connect.GetKill()
+		decoder = gob.NewDecoder(red)
+		err = decoder.Decode(&msm)
+		canal <- msm
 
-	canal <- msm
+		Error(err, "Receive error "+id+" \n")
 
-	Error(err, "Receive error "+id+" \n")
-	fmt.Println(msm.GetData())
-
+		// fmt.Println(msm)
+	}
+	close(canal)
+	// m := "[RECEIVE] => " + conn.GetKill() + "me ha disparado " + conn.GetId()
+	// fmt.Println(m)
 	red.Close()
 	return err
 

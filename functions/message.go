@@ -17,11 +17,11 @@ type Message struct {
 }
 
 func (m Message) GetTo() string {
-	return m.From
+	return m.To
 }
 
 func (m Message) GetFrom() string {
-	return m.To
+	return m.From
 }
 
 func (m Message) GetData() string {
