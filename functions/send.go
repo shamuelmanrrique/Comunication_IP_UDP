@@ -7,21 +7,20 @@ import (
 )
 
 func Send(msm Msm) error {
-
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
-	id := msm.GetTo()
+	sendAddress := msm.GetIgnor()
 
-	fmt.Printf("#------------ SEND    %s ----------------# \n", id)
-
-	connection, err = net.Dial("tcp", id)
+	connection, err = net.Dial("tcp", sendAddress)
 	Error(err, "Send connection error \n")
+	defer connection.Close()
 
 	encoder = gob.NewEncoder(connection)
 	err = encoder.Encode(msm)
 
-	connection.Close()
+	fmt.Printf("SEND => To: %s From: %s \n", msm.GetTo(), sendAddress)
+
 	return err
 
 }

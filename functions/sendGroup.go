@@ -1,35 +1,36 @@
 package functions
 
 import (
-	"fmt"
 	"time"
 )
 
 func SendGroup(connect Connection) error {
 	var err error
 	id := connect.GetId()
+
 	// Actualizo reloj
 	vector := connect.GetVector()
 	vector.Tick(id)
-	// fmt.Println(count)
-	// vector = vector.Set(id, count+1)
-	fmt.Println(vector)
+	// fmt.Println(id)
+
+	// Defino msm a enviar
+	m := "[ " + id + " -> SEND] => He disparado a " + connect.GetKill()
+	var msm Message = Message{
+		To:     id,
+		From:   connect.GetKill(), //TODO PROBLEMAS
+		Data:   m,
+		Vector: vector,
+	}
 
 	for i, v := range connect.GetIds() {
 		if v != id {
-
-			m := "[SEND] => " + id + " He disparado a " + connect.GetKill()
-
-			var msm Message = Message{
-				To:     id,
-				From:   connect.GetEnv(i), //TODO PROBLEMAS
-				Data:   m,
-				Vector: vector,
-			}
-
-			delay := time.Duration(connect.GetDelay(i)) * time.Second
-			time.Sleep(delay)
-
+			// Aplico delay en el envio
+			msm.Ignor = v
+			// fmt.Println(msm)
+			delay := time.Duration(connect.GetDelay(i))
+			time.Sleep(delay * time.Millisecond)
+			// fmt.Printf("_____________Estoy SendGroup_______________ %s \n", connect.GetId())
+			// fmt.Println(msm)
 			go Send(msm)
 		}
 
