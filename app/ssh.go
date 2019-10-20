@@ -8,6 +8,10 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// ssh a802400@155.210.154.210s
+// pwd : sMDJMA-21
+// escribir > bash
+
 // const (
 // 	n    = 2           //numero de procesos
 // 	ip   = "127.0.0.1" //En este caso se define local

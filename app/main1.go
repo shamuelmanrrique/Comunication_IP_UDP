@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	f "practice1/functions"
+	v "practice1/vclock"
 	"time"
 )
 
@@ -17,32 +18,29 @@ func main() {
 
 	delay := []int{3, 3}
 	kill := "127.0.0.1:5001"
-
-	// bufferMsm := make(chan f.Message, n)
-	bufferMsm := make(chan f.Message)
-
 	// Determinamos el numero de procesos n
 	var ids []string = f.IdProcess(n, "local")
-	// var ids []string = f.IdProcess(n, "remote")
 
-	// fmt.Println(ids[1:])
+	// Inicializo todos el reloj del proceso
+	var vector = v.New()
+	for _, v := range ids {
+		vector[v] = 0
+	}
 
 	var connect f.Conn = f.Conn{
-		Id:    ip + port,
-		Ip:    ip,
-		Port:  port,
-		Ids:   ids,
-		Delay: delay,
-		Kill:  kill,
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
+		Ids:    ids,
+		Delay:  delay,
+		Kill:   kill,
+		Vector: vector,
 	}
 
 	go f.ReceiveGroup(connect, n)
-	go f.SendGroup(connect, bufferMsm)
+	// time.Sleep(time.Second * 5)
+	// go f.SendGroup(connect)
 
-	for i := range bufferMsm {
-		fmt.Println(i)
-	}
-
-	<-time.After(time.Second * 20)
+	<-time.After(time.Second * 30)
 
 }

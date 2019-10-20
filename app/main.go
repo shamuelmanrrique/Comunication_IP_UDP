@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	// "net"
 	f "practice1/functions"
+	v "practice1/vclock"
 	"time"
 )
 
@@ -14,33 +16,32 @@ const (
 )
 
 func main() {
-	fmt.Println("###################### MAIN ###########################\n")
+	fmt.Println("###################### MAIN ###########################")
 
-	delay := []int{5, 5}
+	delay := []int{5, 8}
 	kill := "127.0.0.1:5002"
-
-	// bufferMsm := make(chan f.Message, n)
-	bufferMsm := make(chan f.Message)
-
-	// Determinamos el numero de procesos n
 	var ids []string = f.IdProcess(n, "local")
-	// var ids []string = f.IdProcess(n, "remote")
+
+	// Inicializo todos el reloj del proceso
+	var vector = v.New()
+	for _, v := range ids {
+		vector[v] = 0
+	}
 
 	var connect f.Conn = f.Conn{
-		Id:    ip + port,
-		Ip:    ip,
-		Port:  port,
-		Ids:   ids,
-		Delay: delay,
-		Kill:  kill,
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
+		Ids:    ids,
+		Delay:  delay,
+		Kill:   kill,
+		Vector: vector,
 	}
-	fmt.Println(connect.GetId)
-	go f.ReceiveGroup(connect, n)
-	go f.SendGroup(connect, bufferMsm)
 
-	// for i := range bufferMsm {
-	// 	fmt.Println(i)
-	// }
+	// Proceso maestro llama el send y receive de una vez
+	go f.ReceiveGroup(connect, n)
+	time.Sleep(time.Second * 2)
+	go f.SendGroup(connect)
 
 	<-time.After(time.Second * 20)
 }
