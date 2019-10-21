@@ -27,6 +27,7 @@ func main() {
 			ssh.Password("sMDJMA-21"),
 		},
 	}
+	// ssh a802400@155.210.154.195
 
 	client, err := ssh.Dial("tcp", net.JoinHostPort("155.210.154.210", "22"), config)
 	if err != nil {

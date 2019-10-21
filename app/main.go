@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
@@ -13,8 +12,9 @@ import (
 )
 
 // Estas constantes pasaran como flash en la consola
-// go run main.go -r "remote" -t "12.3.2.3,3223.323" -d "10s,20s,20s" -n 5 -m true
-// go run main.go -r "local" -t "12.3.2.3,3223.323" -d "10s,20s,20s" -n 5 -m true
+// go run main.go -r "local" -t "127.0.1.1:5002" -d "10s" -n 3 -m=true -p=":5001"
+// go run main.go -r "local" -t "127.0.1.1:5001" -d "30s" -n 3 -p=":5003"
+// go run main.go -r "local" -t "127.0.1.1:5003" -d "20s" -n 3 -p=":5002"
 
 var flags f.Coordinates
 
@@ -38,7 +38,6 @@ func main() {
 	var ip string = f.IpAddress()
 	var port string = flags.GetPort()
 	n := flags.GetProcess()
-
 	f.DistMsm(ip + port)
 
 	var ids []string = f.IdProcess(n, flags.GetRun())
@@ -50,16 +49,16 @@ func main() {
 	}
 
 	var connect f.Conn = f.Conn{
-		Id:   ip + port,
-		Ip:   ip,
-		Port: port,
-		Ids:  ids,
-		// Delay:  flags.TimeDelay,
-		// Kill:   flags.Target,
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
+		Ids:    ids,
+		Delay:  flags.GetTimeDelay(),
+		Kill:   flags.GetTarget(),
 		Vector: vector,
 	}
 
-	fmt.Println(connect)
+	// fmt.Println(ids)
 	// Proceso maestro llama el send y receive de una vez
 
 	go f.ReceiveGroup(connect, n)
