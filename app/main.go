@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"time"
 
 	// "net"
 
@@ -27,11 +29,19 @@ func init() {
 
 func main() {
 	flag.Parse()
+	var val bool = len(flags.TimeDelay) != len(flags.Target)
+	if val {
+		panic("El tamaño del arreglo Targets debe ser igual al de Delay")
+		os.Exit(1)
+	}
+
 	var ip string = f.IpAddress()
-	var port string = flags.Port
+	var port string = flags.GetPort()
+	n := flags.GetProcess()
+
 	f.DistMsm(ip + port)
 
-	var ids []string = f.IdProcess(flags.Process, flags.Run)
+	var ids []string = f.IdProcess(n, flags.GetRun())
 
 	// Inicializo todos el reloj del proceso
 	var vector = v.New()
@@ -51,8 +61,12 @@ func main() {
 
 	fmt.Println(connect)
 	// Proceso maestro llama el send y receive de una vez
-	// go f.ReceiveGroup(connect, flags.Process)
-	// // time.Sleep(time.Second * 2)
-	// go f.SendGroup(connect)
-	//<-time.After(time.Second * 20)
+
+	go f.ReceiveGroup(connect, n)
+	time.Sleep(time.Second * 2)
+	if flags.Master {
+		go f.SendGroup(connect)
+	}
+
+	<-time.After(time.Second * 20)
 }

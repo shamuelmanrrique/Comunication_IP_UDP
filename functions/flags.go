@@ -11,6 +11,15 @@ type Delays []time.Duration
 
 type Targets []string
 
+type CoordinatesInt interface {
+	GetProcess()
+	GetMaster()
+	GetTimeDelay()
+	GetTarget()
+	GetRun()
+	GetPort()
+}
+
 type Coordinates struct {
 	Process   int
 	Master    bool
@@ -50,4 +59,23 @@ func (i *Targets) Set(value string) error {
 		*i = append(*i, dt)
 	}
 	return nil
+}
+
+func (c Coordinates) GetProcess() int {
+	return c.Process
+}
+func (c Coordinates) GetMaster() bool {
+	return c.Master
+}
+func (c Coordinates) GetTimeDelay() Delays {
+	return c.TimeDelay
+}
+func (c Coordinates) GetTarget() []string {
+	return c.Target
+}
+func (c Coordinates) GetRun() string {
+	return c.Run
+}
+func (c Coordinates) GetPort() string {
+	return c.Port
 }

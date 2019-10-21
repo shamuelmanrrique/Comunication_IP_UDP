@@ -13,7 +13,7 @@ type Connection interface {
 	GetDelays() []int
 	GetDelay(n int) int
 	GetEnv(n int) string
-	GetValues(ip string) (string, string)
+	// GetValues(ip string) (string, string)
 	GetVector() v.VClock
 }
 
