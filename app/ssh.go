@@ -47,7 +47,7 @@ func main() {
 	//      session.Stdin = bytes.NewBufferString("My input")
 
 	// Finally, run the command
-	err = session.Run("bash; go version")
+	err = session.Run("bash; ls")
 	fmt.Println(b.String())
 	// return b.String(), err
 

@@ -3,51 +3,46 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 
 	// "net"
 
 	f "practice1/functions"
 	v "practice1/vclock"
-	"time"
 )
 
 // Estas constantes pasaran como flash en la consola
-const (
-	n    = 2           // Determinamos el numero de procesos n
-	ip   = "127.0.0.1" //En este caso se define local
-	port = ":5001"
+// go run main.go -r "remote" -t "12.3.2.3,3223.323" -d "10s,20s,20s" -n 5 -m true
+// go run main.go -r "local" -t "12.3.2.3,3223.323" -d "10s,20s,20s" -n 5 -m true
+
+const ( //En este caso se define local
+	port = ":1400"
 )
 
-// var DelaysFlag Delays
+var flags f.Coordinates
 
-// func init() {
-// 	// Tie the command-line flag to the DelaysFlag variable and
-// 	// set a usage message.
-// 	flag.Var(&DelaysFlag, "deltaT", "comma-separated list of Delayss to use between events")
-// }
+func init() {
+	flag.IntVar(&flags.Process, "n", 4, "pppo")
+	flag.StringVar(&flags.Run, "r", "local", "pppo")
+	flag.BoolVar(&flags.Master, "m", false, "pppo")
+	flag.Var(&flags.TimeDelay, "d", "Lista de flags separados por coma")
+	flag.Var(&flags.Target, "t", "listas de ip objectivos")
+}
+
 func main() {
-	var DelaysFlag f.Delays
-	flag.Var(&DelaysFlag, "deltaT", "comma-separated list of Delayss to use between events")
-
-	// var intervalFlag interval
-	//Estoy coloacando cuatro procesos por defoult
-	// var process = flag.Int("process", 4, "numero de procesos que quieres crear")
-
-	// t := make([]time.Duration, process)
-
-	// var intervalFlag interval
-	// p := flag.Var(&intervalFlag, "p", "comma-separated list of intervals to use between events")
+	var ip string = f.IpAddress()
+	var err error
+	netInterfaceAddresses, err := net.InterfaceAddrs()
+	f.Error(err, "MAIN ERROR")
 	flag.Parse()
 
-	//var delay = flag.Duration("delay",, "arreglo de retardos")
-	//var procesos = flag.Int("procesos", 4, "numero de procesos que quieres crear")
-	fmt.Println(DelaysFlag[1:])
-	// fmt.Println("count value ", *process)
-	fmt.Printf("###################### MAIN  %s ########################### \n", ip+port)
-	d := []int{5, 8}
-	kill := "127.0.0.1:5																																																																																	002"
-	var ids []string = f.IdProcess(n, "local")
+	fmt.Println(flags)
+	fmt.Println(netInterfaceAddresses)
 
+	fmt.Printf("###################### MAIN  %s ########################### \n", ip)
+	var ids []string = f.IdProcess(flags.Process, flags.Run)
+
+	fmt.Println(ids)
 	// Inicializo todos el reloj del proceso
 	var vector = v.New()
 	for _, v := range ids {
@@ -59,15 +54,14 @@ func main() {
 		Ip:     ip,
 		Port:   port,
 		Ids:    ids,
-		Delay:  d,
-		Kill:   kill,
+		Delay:  flags.TimeDelay,
+		Kill:   flags.Target,
 		Vector: vector,
 	}
 
 	// Proceso maestro llama el send y receive de una vez
-	//go f.ReceiveGroup(connect, n)
-	time.Sleep(time.Second * 2)
-	go f.SendGroup(connect)
-
+	// go f.ReceiveGroup(connect, n)
+	// time.Sleep(time.Second * 2)
+	// go f.SendGroup(connect)
 	//<-time.After(time.Second * 20)
 }

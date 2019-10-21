@@ -23,7 +23,7 @@ func ReceiveGroup(connect Connection, n int) error {
 		//TODO  -> Organizar elementos que me llegaron
 		vector.Merge(msm.GetVector())
 
-		// Guardo el msm en un array de msm 
+		// Guardo el msm en un array de msm
 		arrayMsms = append(arrayMsms, msm)
 
 		// Ordeno el arreglo de msm
