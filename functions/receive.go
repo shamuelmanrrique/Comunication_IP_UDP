@@ -27,9 +27,9 @@ func Receive(connect Connection, canal chan Message) error {
 		err = decoder.Decode(&msm)
 		Error(err, "Receive error "+id+" \n")
 
-		if msm.GetFrom() == id {
-			go SendGroup(connect)
-		}
+		// if msm.GetFrom() == id {
+		// 	go SendGroup(connect)
+		// }
 
 		canal <- msm
 		fmt.Printf("RECEIVE => To: %s From: %s \n", id, msm.GetTo())

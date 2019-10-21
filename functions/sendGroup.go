@@ -23,8 +23,9 @@ func SendGroup(connect Connection) error {
 	}
 
 	for i, v := range connect.GetIds() {
-		println(v != id)
-		println(i)
+		// TODO PROBLEMAS CUANDO ENVIO MSM DE VUELTA NUEVAMENTE (CONDICION DE PARADA)
+		// println(v != id)
+		// println(i)
 		if v != id {
 			// Aplico delay en el envio
 			msm.Ignor = v
