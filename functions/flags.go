@@ -17,6 +17,7 @@ type Coordinates struct {
 	TimeDelay Delays
 	Target    Targets
 	Run       string
+	Port      string
 }
 
 func (i *Delays) String() string {

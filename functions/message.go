@@ -1,6 +1,7 @@
 package functions
 
 import (
+	"fmt"
 	v "practice1/vclock"
 )
 
@@ -35,4 +36,8 @@ func (m Message) GetIgnor() string {
 
 func (m Message) GetVector() v.VClock {
 	return m.Vector
+}
+
+func DistMsm(s string) {
+	fmt.Printf("###################### MAIN  %s ########################### \n", s)
 }

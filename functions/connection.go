@@ -1,6 +1,8 @@
 package functions
 
-import v "practice1/vclock"
+import (
+	v "practice1/vclock"
+)
 
 type Connection interface {
 	GetId() string
@@ -11,6 +13,7 @@ type Connection interface {
 	GetDelays() []int
 	GetDelay(n int) int
 	GetEnv(n int) string
+	GetValues(ip string) (string, string)
 	GetVector() v.VClock
 }
 
@@ -66,3 +69,13 @@ func (c Conn) GetDelays() []int {
 func (c Conn) GetVector() v.VClock {
 	return c.Vector
 }
+
+// func (c Conn) GetValues(ip string) (string,string) {
+// 	for i, v := range c.GetIds() {
+// 		s := strings.Split(v, ":")
+// 		if ip == s[:1] {
+// 			return
+// 		}
+// 	}
+// 	return 0
+// }
