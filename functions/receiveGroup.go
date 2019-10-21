@@ -1,7 +1,6 @@
 package functions
 
 import (
-	"fmt"
 	v "practice1/vclock"
 	"sort"
 )
@@ -11,14 +10,14 @@ func ReceiveGroup(connect Connection, n int) error {
 	var arrayMsms []Message
 	bufferMsm := make(chan Message, len(connect.GetIds()))
 	var err error
-	vector := connect.GetVector()
 	id := connect.GetId()
+	vector := connect.GetVector()
 
 	go Receive(connect, bufferMsm)
 
 	for {
 		msm, ok := <-bufferMsm
-		fmt.Println(msm.GetData())
+		// fmt.Println(msm.GetData())
 
 		//TODO  -> Organizar elementos que me llegaron
 		vector.Merge(msm.GetVector())

@@ -19,7 +19,7 @@ func Receive(connect Connection, canal chan Message) error {
 	listener, err = net.Listen("tcp", connect.GetPort())
 	Error(err, "Listen Error")
 
-	for i := 0; i < len(connect.GetIds())+1; i++ {
+	for i := 0; i < len(connect.GetIds()); i++ {
 		red, err = listener.Accept()
 		Error(err, "Server accept red error")
 
@@ -32,7 +32,7 @@ func Receive(connect Connection, canal chan Message) error {
 		// }
 
 		canal <- msm
-		fmt.Printf("RECEIVE => To: %s From: %s \n", id, msm.GetTo())
+		fmt.Printf("[RECEIVE] => %s -- %s -> %s \n", msm.GetTo(), msm.GetData(), id)
 	}
 
 	red.Close() //lo tenia dentro del for

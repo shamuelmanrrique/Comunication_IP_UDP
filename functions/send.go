@@ -19,7 +19,9 @@ func Send(msm Msm) error {
 	encoder = gob.NewEncoder(connection)
 	err = encoder.Encode(msm)
 
-	fmt.Printf("SEND => To: %s From: %s \n", msm.GetTo(), sendAddress)
+	if msm.GetFrom() == sendAddress {
+		fmt.Printf("[SEND] => To: %s From: %s \n", msm.GetTo(), sendAddress)
+	}
 
 	return err
 

@@ -2,26 +2,27 @@ package functions
 
 import (
 	v "practice1/vclock"
+	"time"
 )
 
 type Connection interface {
 	GetId() string
 	GetIp() string
 	GetPort() string
-	GetKill() string //puedo elminar
+	GetKill() []string //puedo elminar
 	GetIds() []string
-	GetDelays() []int
-	GetDelay(n int) int
+	GetDelays() Delays
+	GetDelay(n int) time.Duration
+	GetTarget(n int) string
 	GetEnv(n int) string
-	// GetValues(ip string) (string, string)
 	GetVector() v.VClock
 }
 
 type Conn struct {
-	Id, Ip, Port, Host, Env, Kill string
-	Vector                        v.VClock
-	Ids                           []string
-	Delay                         []int
+	Id, Ip, Port, Host, Env string
+	Vector                  v.VClock
+	Ids, Kill               []string
+	Delay                   Delays
 }
 
 func (c Conn) GetId() string {
@@ -41,7 +42,7 @@ func (c Conn) GetEnv(n int) string {
 	return ""
 }
 
-func (c Conn) GetDelay(n int) int {
+func (c Conn) GetDelay(n int) time.Duration {
 	for i, v := range c.GetDelays() {
 		if i == n {
 			return v
@@ -58,11 +59,11 @@ func (c Conn) GetIds() []string {
 	return c.Ids
 }
 
-func (c Conn) GetKill() string {
+func (c Conn) GetKill() []string {
 	return c.Kill
 }
 
-func (c Conn) GetDelays() []int {
+func (c Conn) GetDelays() Delays {
 	return c.Delay
 }
 
@@ -70,12 +71,11 @@ func (c Conn) GetVector() v.VClock {
 	return c.Vector
 }
 
-// func (c Conn) GetValues(ip string) (string,string) {
-// 	for i, v := range c.GetIds() {
-// 		s := strings.Split(v, ":")
-// 		if ip == s[:1] {
-// 			return
-// 		}
-// 	}
-// 	return 0
-// }
+func (c Conn) GetTarget(n int) string {
+	for i, v := range c.GetKill() {
+		if i == n {
+			return v
+		}
+	}
+	return ""
+}

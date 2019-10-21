@@ -12,7 +12,7 @@ func IdProcess(n int, mode string) []string {
 
 	if mode == "local" {
 		for i := 1; i <= n; i++ {
-			id = "127.0.0.1:500" + strconv.Itoa(i)
+			id = "127.0.1.1:500" + strconv.Itoa(i)
 			ids = append(ids, id)
 		}
 
