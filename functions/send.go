@@ -20,9 +20,8 @@ func Send(msm Msm) error {
 	err = encoder.Encode(msm)
 
 	if msm.GetFrom() == sendAddress {
-		fmt.Printf("[SEND] => To: %s From: %s \n", msm.GetTo(), sendAddress)
+		fmt.Printf("[KILL] => To: %s From: %s \n", msm.GetTo(), sendAddress)
 	}
-
 	return err
 
 }

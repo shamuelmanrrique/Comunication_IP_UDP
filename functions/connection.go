@@ -1,6 +1,7 @@
 package functions
 
 import (
+	"net"
 	v "practice1/vclock"
 	"time"
 )
@@ -16,6 +17,7 @@ type Connection interface {
 	GetTarget(n int) string
 	GetEnv(n int) string
 	GetVector() v.VClock
+	GetListe() net.Listener
 }
 
 type Conn struct {
@@ -23,6 +25,7 @@ type Conn struct {
 	Vector                  v.VClock
 	Ids, Kill               []string
 	Delay                   Delays
+	Liste                   net.Listener
 }
 
 func (c Conn) GetId() string {
@@ -78,4 +81,8 @@ func (c Conn) GetTarget(n int) string {
 		}
 	}
 	return ""
+}
+
+func (c Conn) GetListe() net.Listener {
+	return c.Liste
 }

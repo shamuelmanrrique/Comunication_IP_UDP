@@ -7,37 +7,35 @@ import (
 	"net"
 )
 
-func Receive(connect Connection, canal chan Message) error {
+func Receive(connect Connection, canal chan Message, liste net.Listener) error {
 	var msm Message
 	var red net.Conn
 	var err error
 	var decoder *gob.Decoder
-	var listener net.Listener
-
 	id := connect.GetId()
 
-	listener, err = net.Listen("tcp", connect.GetPort())
-	Error(err, "Listen Error")
+	red, err = liste.Accept()
+	Error(err, "Server accept red error")
+	defer red.Close()
 
-	for i := 0; i < len(connect.GetIds()); i++ {
-		red, err = listener.Accept()
-		Error(err, "Server accept red error")
+	decoder = gob.NewDecoder(red)
+	err = decoder.Decode(&msm)
+	Error(err, "Receive error "+id+" \n")
 
-		decoder = gob.NewDecoder(red)
-		err = decoder.Decode(&msm)
-		Error(err, "Receive error "+id+" \n")
+	if msm.GetTo() != id {
+		fmt.Printf("[NEWS] %s --> %s \n", msm.GetTo(), msm.GetFrom())
 
-		// if msm.GetFrom() == id {
-		// 	go SendGroup(connect)
-		// }
-
-		canal <- msm
-		fmt.Printf("[RECEIVE] => %s -- %s -> %s \n", msm.GetTo(), msm.GetData(), id)
 	}
 
-	red.Close() //lo tenia dentro del for
-	listener.Close()
-	close(canal)
+	// fmt.Println(msm.GetFrom())
+	// fmt.Println(id)
+	// if msm.GetFrom() == id {
+	// 	fmt.Printf("[DEAD] => %s -- %s -> %s \n", msm.GetTo(), msm.GetData(), id)
+	// 	go SendGroup(connect)
+	// }
+
+	canal <- msm
+	// close(canal)
 	return err
 
 }

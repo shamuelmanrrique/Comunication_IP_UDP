@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -12,9 +13,9 @@ import (
 )
 
 // Estas constantes pasaran como flash en la consola
-// go run main.go -r "local" -t "127.0.1.1:5002" -d "10s" -n 3 -m=true -p=":5001"
-// go run main.go -r "local" -t "127.0.1.1:5001" -d "30s" -n 3 -p=":5003"
-// go run main.go -r "local" -t "127.0.1.1:5003" -d "20s" -n 3 -p=":5002"
+// go run main.go -r "local" -t "127.0.1.1:5003" -d "10s" -n 3 -m=true -p=":5001"
+// go run main.go -r "local" -t "127.0.1.1:5001" -d "20s" -n 3 -p=":5002"
+// go run main.go -r "local" -t "127.0.1.1:5002" -d "30s" -n 3 -p=":5003"
 
 var flags f.Coordinates
 
@@ -58,14 +59,12 @@ func main() {
 		Vector: vector,
 	}
 
-	// fmt.Println(ids)
-	// Proceso maestro llama el send y receive de una vez
-
 	go f.ReceiveGroup(connect, n)
-	time.Sleep(time.Second * 2)
 	if flags.Master {
+		fmt.Println("Llamo sendGroup MAIN")
+		time.Sleep(time.Second * 1)
 		go f.SendGroup(connect)
 	}
 
-	<-time.After(time.Second * 20)
+	<-time.After(time.Second * 15)
 }
