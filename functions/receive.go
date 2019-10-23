@@ -1,18 +1,19 @@
 package functions
 
 import (
-	// "time"
 	"encoding/gob"
 	"fmt"
 	"net"
 )
 
-func Receive(connect Connection, canal chan Message, liste net.Listener) error {
+func Receive(canal chan Message, liste net.Listener) error {
 	var msm Message
 	var red net.Conn
 	var err error
 	var decoder *gob.Decoder
-	id := connect.GetId()
+
+	id := msm.GetTo()
+	// defer wg.Done()
 
 	red, err = liste.Accept()
 	Error(err, "Server accept red error")
@@ -22,20 +23,12 @@ func Receive(connect Connection, canal chan Message, liste net.Listener) error {
 	err = decoder.Decode(&msm)
 	Error(err, "Receive error "+id+" \n")
 
-	if msm.GetTo() != id {
-		fmt.Printf("[NEWS] %s --> %s \n", msm.GetTo(), msm.GetFrom())
-
-	}
-
-	// fmt.Println(msm.GetFrom())
-	// fmt.Println(id)
-	// if msm.GetFrom() == id {
-	// 	fmt.Printf("[DEAD] => %s -- %s -> %s \n", msm.GetTo(), msm.GetData(), id)
-	// 	go SendGroup(connect)
+	// if msm.GetTo() != id {
+	// 	fmt.Printf("[NEWS] %s --> %s \n", id, msm.GetFrom())
 	// }
 
+	fmt.Printf("Antes del canal \n")
 	canal <- msm
-	// close(canal)
+	fmt.Printf("Despuess del canal \n")
 	return err
-
 }

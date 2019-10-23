@@ -7,7 +7,6 @@ import (
 	"time"
 
 	// "net"
-
 	f "practice1/functions"
 	v "practice1/vclock"
 )
@@ -16,6 +15,9 @@ import (
 // go run main.go -r "local" -t "127.0.1.1:5003" -d "10s" -n 3 -m=true -p=":5001"
 // go run main.go -r "local" -t "127.0.1.1:5001" -d "20s" -n 3 -p=":5002"
 // go run main.go -r "local" -t "127.0.1.1:5002" -d "30s" -n 3 -p=":5003"
+
+// go run main.go -r "local" -t "127.0.1.1:5002" -d "10ms" -n 2 -m=true -p=":5001"
+// go run main.go -r "local" -t "127.0.1.1:5001" -d "20ms" -n 2 -p=":5002"
 
 var flags f.Coordinates
 
@@ -49,6 +51,7 @@ func main() {
 		vector[v] = 0
 	}
 
+	// connect := New(f.Conn)
 	var connect f.Conn = f.Conn{
 		Id:     ip + port,
 		Ip:     ip,
@@ -59,12 +62,12 @@ func main() {
 		Vector: vector,
 	}
 
-	go f.ReceiveGroup(connect, n)
+	go f.ReceiveGroup(connect)
 	if flags.Master {
 		fmt.Println("Llamo sendGroup MAIN")
 		time.Sleep(time.Second * 1)
 		go f.SendGroup(connect)
 	}
 
-	<-time.After(time.Second * 15)
+	<-time.After(time.Second * 40)
 }

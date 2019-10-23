@@ -14,10 +14,12 @@ type Connection interface {
 	GetIds() []string
 	GetDelays() Delays
 	GetDelay(n int) time.Duration
-	GetTarget(n int) string
+	GetTarget(n int) string //puedo elminar
 	GetEnv(n int) string
 	GetVector() v.VClock
 	GetListe() net.Listener
+	Conn([]string)
+	// SetKill(s []string) //puedo elminar
 }
 
 type Conn struct {
@@ -26,6 +28,10 @@ type Conn struct {
 	Ids, Kill               []string
 	Delay                   Delays
 	Liste                   net.Listener
+}
+
+func (c *Conn) SetKill(s []string) {
+	c.Kill = s
 }
 
 func (c Conn) GetId() string {
@@ -65,6 +71,7 @@ func (c Conn) GetIds() []string {
 func (c Conn) GetKill() []string {
 	return c.Kill
 }
+
 
 func (c Conn) GetDelays() Delays {
 	return c.Delay

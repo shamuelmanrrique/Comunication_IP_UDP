@@ -3,87 +3,52 @@ package functions
 import (
 	"fmt"
 	"net"
-	v "practice1/vclock"
-	"sort"
 )
 
-// ReceiveGroup snks
-func ReceiveGroup(connect Connection, n int) error {
-	var listener net.Listener
-	var arrayMsms []Message
-	bufferMsm := make(chan Message)
+func ReceiveGroup(connect Connection) error {
 	var err error
+	var listener net.Listener
+	// var wg sync.WaitGroup
+	var n = len(connect.GetIds())
 	id := connect.GetId()
-	vector := connect.GetVector()
+	// bufferMsm := make(chan Message, n)
+	bufferMsm := make(chan Message)
+	// defer close(bufferMsm)
 
 	listener, err = net.Listen("tcp", connect.GetPort())
 	Error(err, "Listen Error")
 	defer listener.Close()
 
-	// connect.GetListe =
+	fmt.Printf("EL VALOR N:       %d \n", n)
+	for i := 0; i < n; i++ {
+		// wg.Add(1)
+		fmt.Printf("FOR:       %d \n", i)
+		// go Receive(bufferMsm, listener, &wg)
+		go Receive(bufferMsm, listener)
 
-	go Receive(connect, bufferMsm, listener)
-
-	for {
-		// fmt.Printf("ESPERANDO BUFFER")
 		msm, ok := <-bufferMsm
-		// fmt.Printf("recibi del canal %")
-		// fmt.Println(ok)
-		if !ok {
-			break
-		} else {
-			// fmt.Printf("ELSE \n")
-			// fmt.Println(vector)
-			vector.Merge(msm.GetVector())
-			// fmt.Println(msm.GetVector())
-
-			// Guardo el msm en un array de msm
-			arrayMsms = append(arrayMsms, msm)
-			// fmt.Println(msm.GetFrom())
-			// fmt.Println(id)
-
-			// fmt.Println(msm.GetFrom() == id)
-			if msm.GetFrom() == id {
-				fmt.Println("SEND")
-
-
-				go SendGroup(connect)
-			}
-
-			// //TODO  -> Organizar elementos que me llegaron
-			// vector.Merge(msm.GetVector())
-
-			// // Guardo el msm en un array de msm
-			// arrayMsms = append(arrayMsms, msm)
-
-			// // Ordeno el arreglo de msm
-			// sort.SliceStable(arrayMsms, func(i, j int) bool {
-			// 	return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
-			// })
-
-			// // Meto el vector act
-			// connect.GetVector().Merge(vector)
-			// if msm.GetFrom() == id {
-			// 	go SendGroup(connect)
-			// }
-
+		fmt.Printf("[RECEIVE] %s --> \n", msm)
+		fmt.Printf("recibi del canal \n ", msm)
+		fmt.Println(ok)
+		if id == msm.To {
+			go SendGroup(connect)
 		}
-
 	}
 
-	close(bufferMsm)
-	// Ordeno el arreglo de msm
-	sort.SliceStable(arrayMsms, func(i, j int) bool {
-		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
-	})
+	// for i:+ n {
+	// 	fmt.Printf("------------->")
+	// 	msm, ok := <-bufferMsm
+	// 	fmt.Printf("[RECEIVE] %s -->", msm)
+	// 	fmt.Printf("recibi del canal \n ", msm)
+	// 	fmt.Println(ok)
+	// 	if id == msm.To {
+	// 		go SendGroup(connect)
+	// 	}
+	// }
 
-	// Meto el vector act
-	connect.GetVector().Merge(vector)
+	// wg.Wait()
 
-	for _, v := range arrayMsms {
-		fmt.Println(v)
-	}
-
+	fmt.Printf("--------------------------")
 	return err
 
 }
