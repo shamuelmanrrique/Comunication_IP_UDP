@@ -7,6 +7,7 @@ import (
 	"time"
 
 	// "net"
+	c "practice1/comunicacionCausal"
 	f "practice1/functions"
 	v "practice1/vclock"
 )
@@ -34,12 +35,12 @@ func main() {
 	flag.Parse()
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
 	if val {
-		panic("El tamaño del arreglo Targets debe ser igual al de Delay")
+		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
 		os.Exit(1)
 	}
 
-	var ip string = f.IpAddress()
-	var port string = flags.GetPort()
+	ip := f.IpAddress()
+	port := flags.GetPort()
 	n := flags.GetProcess()
 	f.DistMsm(ip + port)
 
@@ -57,17 +58,21 @@ func main() {
 		Ip:     ip,
 		Port:   port,
 		Ids:    ids,
-		Delay:  flags.GetTimeDelay(),
+		Delays: flags.GetTimeDelay(),
 		Kill:   flags.GetTarget(),
 		Vector: vector,
 	}
 
-	go f.ReceiveGroup(connect)
+	go c.ReceiveGroup(connect)
 	if flags.Master {
-		fmt.Println("Llamo sendGroup MAIN")
+		// targets := connect.GetKill()
+		// t := len(targets)
+
+		// connect.SetKill(connect.GetKill()[:t-1])
+		fmt.Println("Llamo sendGroup MAIN", connect)
 		time.Sleep(time.Second * 1)
-		go f.SendGroup(connect)
+		go c.SendGroup(connect)
 	}
 
-	<-time.After(time.Second * 40)
+	<-time.After(time.Second * 28)
 }

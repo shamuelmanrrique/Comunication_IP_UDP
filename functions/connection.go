@@ -12,13 +12,12 @@ type Connection interface {
 	GetPort() string
 	GetKill() []string //puedo elminar
 	GetIds() []string
-	GetDelays() Delays
+	GetDelays() []time.Duration
 	GetDelay(n int) time.Duration
 	GetTarget(n int) string //puedo elminar
 	GetEnv(n int) string
 	GetVector() v.VClock
 	GetListe() net.Listener
-	Conn([]string)
 	// SetKill(s []string) //puedo elminar
 }
 
@@ -26,7 +25,7 @@ type Conn struct {
 	Id, Ip, Port, Host, Env string
 	Vector                  v.VClock
 	Ids, Kill               []string
-	Delay                   Delays
+	Delays                  []time.Duration
 	Liste                   net.Listener
 }
 
@@ -72,9 +71,8 @@ func (c Conn) GetKill() []string {
 	return c.Kill
 }
 
-
-func (c Conn) GetDelays() Delays {
-	return c.Delay
+func (c Conn) GetDelays() []time.Duration {
+	return c.Delays
 }
 
 func (c Conn) GetVector() v.VClock {

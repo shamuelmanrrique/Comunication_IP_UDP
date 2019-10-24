@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type Delays []time.Duration
+type Retardos []time.Duration
 
 type Targets []string
 
@@ -23,13 +23,13 @@ type CoordinatesInt interface {
 type Coordinates struct {
 	Process   int
 	Master    bool
-	TimeDelay Delays
+	TimeDelay Retardos
 	Target    Targets
 	Run       string
 	Port      string
 }
 
-func (i *Delays) String() string {
+func (i *Retardos) String() string {
 	return fmt.Sprint(*i)
 }
 
@@ -37,7 +37,7 @@ func (i *Targets) String() string {
 	return fmt.Sprint(*i)
 }
 
-func (i *Delays) Set(value string) error {
+func (i *Retardos) Set(value string) error {
 	if len(*i) > 0 {
 		return errors.New("Delays flag already set")
 	}
@@ -67,7 +67,7 @@ func (c Coordinates) GetProcess() int {
 func (c Coordinates) GetMaster() bool {
 	return c.Master
 }
-func (c Coordinates) GetTimeDelay() Delays {
+func (c Coordinates) GetTimeDelay() Retardos {
 	return c.TimeDelay
 }
 func (c Coordinates) GetTarget() []string {

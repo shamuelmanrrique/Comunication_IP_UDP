@@ -1,19 +1,20 @@
-package functions
+package comunicacionCausal
 
 import (
 	"encoding/gob"
 	"fmt"
 	"net"
+	f "practice1/functions"
 )
 
-func Send(msm Msm) error {
+func Send(msm f.Msm) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
 	sendAddress := msm.GetIgnor()
 
 	connection, err = net.Dial("tcp", sendAddress)
-	Error(err, "Send connection error \n")
+	f.Error(err, "Send connection error \n")
 	defer connection.Close()
 
 	encoder = gob.NewEncoder(connection)
