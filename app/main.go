@@ -73,6 +73,8 @@ func main() {
 		time.Sleep(time.Second * 1)
 		go c.SendGroup(connect)
 	}
-
-	<-time.After(time.Second * 28)
+	for i := 0; i < 28; i = i + 3 {
+		time.Sleep(time.Second * 3)
+		fmt.Println("Fin del main, contando...", i, "segundos...")
+	}
 }

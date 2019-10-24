@@ -24,14 +24,14 @@ func ReceiveGroup(connect f.Conn) error {
 		// wg.Add(1)
 		fmt.Printf("FOR:       %d \n", i)
 		// go Receive(bufferMsm, listener, &wg)
-		go Receive(bufferMsm, listener)
+		go Receive(bufferMsm, listener, id)
 
 		msm, _ := <-bufferMsm
 
-		fmt.Println("targets:  ", id)
+		fmt.Println("targets en receive group:  ", connect.GetTarget(1))
 		// if id != msm.To {
 		if len(connect.GetKill()) > 0 {
-			fmt.Println("################## dfghj ", id, msm)
+			fmt.Println("Contenido del mensaje recibido:", msm)
 			go SendGroup(connect)
 		}
 	}
