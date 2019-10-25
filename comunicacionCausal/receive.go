@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	f "practice1/functions"
+	"time"
 )
 
 func Receive(canal chan f.Message, liste net.Listener, caller string) error {
@@ -25,6 +26,14 @@ func Receive(canal chan f.Message, liste net.Listener, caller string) error {
 	fmt.Println("Mensaje recibido desde", msm.GetFrom())
 	f.Error(err, "Receive error  \n")
 
-	canal <- msm
+	select {
+	case canal <- msm:
+		fmt.Println("RECIBI MSM EN RECEIVE  ")
+
+	case <-time.After(3 * time.Second):
+		fmt.Println("TIME OUT receive Group")
+		break
+	}
+
 	return err
 }

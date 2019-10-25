@@ -5,18 +5,23 @@ import (
 	f "practice1/functions"
 )
 
-func SendGroup(connect f.Conn) error {
+// SendGroup
+func SendGroup(connect *f.Conn) error {
 	var err error
 	id := connect.GetId()
-	targets := connect.GetKill()
 
-	t := len(targets)
+	fmt.Println("Target ANTES del cambio  ", connect.GetKill())
+	t := len(connect.GetKill())
 	if t > 0 {
-		// Obtengo target and delay y los elimino
 		target := connect.GetTarget(0)
+		connect.SetKill()
+		fmt.Println("Target despues del cambio  ", connect.GetKill())
+
+		// Obtengo target and delay y los elimino
+		// target := connect.GetTarget(0)
 		// delay := connect.GetDelay(0)
-		connect.SetKill(connect.GetKill()[:t-1])
-		connect.Delays = connect.GetDelays()[:t-1]
+		// connect.SetKill(connect.GetKill()[:t-1])
+		// connect.Delays = connect.GetDelays()[:t-1]
 		// fmt.Println("SENDGROUP  ", connect.GetKill())
 		// fmt.Println("Kill restantes", connect.GetKill())
 		// fmt.Println("Delays restantes", connect.GetDelays())

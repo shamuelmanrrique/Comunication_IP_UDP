@@ -1,0 +1,12 @@
+CASO 1
+
+go run main.go -r "local" -t "127.0.1.1:5002" -d "10s" -n 3 -m=true -p=":5001"
+go run main.go -r "local" -t "127.0.1.1:5001" -d "20s" -n 3 -p=":5002"
+go run main.go -r "local"  -n 3 -p=":5003"
+
+
+
+CASO 2
+go run main.go -r "local" -t "127.0.1.1:5003" -d "10s" -n 3 -m=true -p=":5001"
+go run main.go -r "local" -t "127.0.1.1:5001" -d "20s" -n 3 -p=":5002"
+go run main.go -r "local" -t "127.0.1.1:5002" -d "20s"  -n 3 -p=":5003"

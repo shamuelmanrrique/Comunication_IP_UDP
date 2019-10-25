@@ -24,13 +24,24 @@ type Connection interface {
 type Conn struct {
 	Id, Ip, Port, Host, Env string
 	Vector                  v.VClock
-	Ids, Kill               []string
+	Ids                     []string
+	Kill                    []string
 	Delays                  []time.Duration
 	Liste                   net.Listener
 }
 
-func (c *Conn) SetKill(s []string) {
-	c.Kill = s
+func (c *Conn) SetKill() {
+	n := len(c.Kill)
+	if n > 0 {
+		c.Kill = c.Kill[:n-1]
+	}
+}
+
+func (c *Conn) SetDelay() {
+	n := len(c.Kill)
+	if n > 0 {
+		c.Delays = c.Delays[:n-1]
+	}
 }
 
 func (c Conn) GetId() string {

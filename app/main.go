@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	// "net"
 	c "practice1/comunicacionCausal"
 	f "practice1/functions"
 	v "practice1/vclock"
@@ -52,8 +51,7 @@ func main() {
 		vector[v] = 0
 	}
 
-	// connect := New(f.Conn)
-	var connect f.Conn = f.Conn{
+	connect := &f.Conn{
 		Id:     ip + port,
 		Ip:     ip,
 		Port:   port,
@@ -65,14 +63,11 @@ func main() {
 
 	go c.ReceiveGroup(connect)
 	if flags.Master {
-		// targets := connect.GetKill()
-		// t := len(targets)
-
-		// connect.SetKill(connect.GetKill()[:t-1])
-		fmt.Println("Llamo sendGroup MAIN", connect)
+		fmt.Println("Llamo sendGroup MAIN", *connect)
 		time.Sleep(time.Second * 1)
 		go c.SendGroup(connect)
 	}
+
 	for i := 0; i < 28; i = i + 3 {
 		time.Sleep(time.Second * 3)
 		fmt.Println("Fin del main, contando...", i, "segundos...")
