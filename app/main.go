@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
+	"log"
 	"time"
 
-	c "practice1/communication"
 	f "practice1/functions"
+	u "practice1/multicast"
 	v "practice1/vclock"
 )
 
@@ -24,11 +24,12 @@ func init() {
 
 func main() {
 	flag.Parse()
-	var val bool = len(flags.TimeDelay) != len(flags.Target)
-	if val {
-		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
-		os.Exit(1)
-	}
+	// Comentados para pruebas con UDP
+	// var val bool = len(flags.TimeDelay) != len(flags.Target)
+	// if val {
+	// 	panic("El tamaño del arreglo Targets debe ser igual al de Delays")
+	// 	os.Exit(1)
+	// }
 
 	ip := f.IpAddress()
 	port := flags.GetPort()
@@ -44,7 +45,7 @@ func main() {
 	}
 
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
-	fmt.Println("ESTOY EN EL MAIN n ", msmreceive)
+	fmt.Println("ESTOY EN EL MAIN port: ", port, " ip : ", ip)
 
 	connect := &f.Conn{
 		Id:     ip + port,
@@ -57,15 +58,32 @@ func main() {
 		Vector: vector,
 	}
 
-	go c.ReceiveGroup(connect)
-	if flags.Master {
-		fmt.Println("Llamo sendGroup MAIN", *connect)
-		time.Sleep(time.Second * 1)
-		go c.SendGroup(connect)
+	// go c.ReceiveGroup(connect)
+	// if flags.Master {
+	// 	fmt.Println("Llamo sendGroup MAIN", *connect)
+	// 	time.Sleep(time.Second * 1)
+	// 	go c.SendGroup(connect)
+	// }
+
+	// ##################   UDP    ###############################
+	println("##################   UDP    ###############################")
+
+	var c chan f.Message
+
+	msm := &f.Message{
+		To:   connect.GetId(),
+		From: "4253647586970",
+		Data: "Hola",
 	}
+
+	log.Println(*connect)
+	go u.ReceiveMulticast(c, connect)
+	time.Sleep(time.Second * 3)
+	go u.SendMulticast(msm, connect)
 
 	for i := 0; i < 30; i = i + 5 {
 		time.Sleep(time.Second * 5)
-		fmt.Println("Fin del main, contando...", i, "segundos...")
+		fmt.Println("Fin del main, contando...", i, "segundos...", msm)
 	}
+
 }
