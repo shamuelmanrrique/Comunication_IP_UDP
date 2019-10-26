@@ -18,6 +18,7 @@ type Connection interface {
 	GetEnv(n int) string
 	GetVector() v.VClock
 	GetListe() net.Listener
+	GetAccept() int
 	// SetKill(s []string) //puedo elminar
 }
 
@@ -28,6 +29,7 @@ type Conn struct {
 	Kill                    []string
 	Delays                  []time.Duration
 	Liste                   net.Listener
+	Accept                  int
 }
 
 func (c *Conn) SetKill() {
@@ -43,6 +45,7 @@ func (c *Conn) SetDelay() {
 		c.Delays = c.Delays[:n-1]
 	}
 }
+
 func (c *Conn) SetClock(v v.VClock) {
 	c.Vector = v
 }
@@ -75,6 +78,10 @@ func (c Conn) GetDelay(n int) time.Duration {
 
 func (c Conn) GetPort() string {
 	return c.Port
+}
+
+func (c Conn) GetAccept() int {
+	return c.Accept
 }
 
 func (c Conn) GetIds() []string {
