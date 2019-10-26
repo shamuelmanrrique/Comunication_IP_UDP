@@ -6,11 +6,10 @@ import (
 	"os"
 	"time"
 
-	c "practice1/comunicacionCausal"
+	c "practice1/communication"
 	f "practice1/functions"
 	v "practice1/vclock"
 )
-
 
 var flags f.Coordinates
 
@@ -44,6 +43,9 @@ func main() {
 		vector[v] = 0
 	}
 
+	msmreceive := len(ids) - len(flags.GetTarget()) - 1
+	fmt.Println("ESTOY EN EL MAIN n ", msmreceive)
+
 	connect := &f.Conn{
 		Id:     ip + port,
 		Ip:     ip,
@@ -51,6 +53,7 @@ func main() {
 		Ids:    ids,
 		Delays: flags.GetTimeDelay(),
 		Kill:   flags.GetTarget(),
+		Accept: msmreceive,
 		Vector: vector,
 	}
 
@@ -61,8 +64,8 @@ func main() {
 		go c.SendGroup(connect)
 	}
 
-	for i := 0; i < 38; i = i + 5 {
+	for i := 0; i < 30; i = i + 5 {
 		time.Sleep(time.Second * 5)
-		// fmt.Println("Fin del main, contando...", i, "segundos...")
+		fmt.Println("Fin del main, contando...", i, "segundos...")
 	}
 }

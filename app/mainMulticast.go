@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	f "practice1/functions"
-	v "practice1/vclock"
-	"time"
+	// 	f "practice1/functions"
+	// 	v "practice1/vclock"
+	// 	// "time"
 )
 
 const (
 	defaultMulticastAddress = "229.0.040.000:9999"
 )
 
-func main() {
-
+func mainMul() {
+	fmt.Printf("hllll")
 }
