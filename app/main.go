@@ -11,13 +11,6 @@ import (
 	v "practice1/vclock"
 )
 
-// Estas constantes pasaran como flash en la consola
-// go run main.go -r "local" -t "127.0.1.1:5003" -d "10s" -n 3 -m=true -p=":5001"
-// go run main.go -r "local" -t "127.0.1.1:5001" -d "20s" -n 3 -p=":5002"
-// go run main.go -r "local" -t "127.0.1.1:5002" -d "30s" -n 3 -p=":5003"
-
-// go run main.go -r "local" -t "127.0.1.1:5002" -d "10ms" -n 2 -m=true -p=":5001"
-// go run main.go -r "local" -t "127.0.1.1:5001" -d "20ms" -n 2 -p=":5002"
 
 var flags f.Coordinates
 
@@ -68,8 +61,8 @@ func main() {
 		go c.SendGroup(connect)
 	}
 
-	for i := 0; i < 28; i = i + 3 {
-		time.Sleep(time.Second * 3)
-		fmt.Println("Fin del main, contando...", i, "segundos...")
+	for i := 0; i < 38; i = i + 5 {
+		time.Sleep(time.Second * 5)
+		// fmt.Println("Fin del main, contando...", i, "segundos...")
 	}
 }

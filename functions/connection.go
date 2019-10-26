@@ -43,6 +43,9 @@ func (c *Conn) SetDelay() {
 		c.Delays = c.Delays[:n-1]
 	}
 }
+func (c *Conn) SetClock(v v.VClock) {
+	c.Vector = v
+}
 
 func (c Conn) GetId() string {
 	return c.Id
