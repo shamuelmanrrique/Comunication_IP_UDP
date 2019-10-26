@@ -32,7 +32,7 @@ func SendGroup(connect *f.Conn) error {
 
 	// TODO CREATE SNAPSHOP RELOJ []VCLOCK
 	// Copio el vector
-	// copyVector := vector.Copy()
+	copyVector := vector.Copy()
 
 	// Envio el msm a todos
 	for _, v := range connect.GetIds() {
@@ -43,7 +43,7 @@ func SendGroup(connect *f.Conn) error {
 				From:   id,
 				Targ:   target,
 				Data:   inf,
-				Vector: vector,
+				Vector: copyVector,
 			}
 
 			if v != target {

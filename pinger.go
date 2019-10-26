@@ -12,7 +12,6 @@ func Sende(connect Connection) error {
 	var err error
 	var encoder *gob.Encoder
 
-	fmt.Println("Stay in send 1")
 	time.Sleep(2 * time.Second)
 	// connection, err = net.Dial("tcp", host)
 	connection, err = net.Dial("tcp", "127.0.0.1:5008")
