@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	// "fmt"
+	"os"
 	"time"
 
 	f "practice1/functions"
@@ -24,11 +27,11 @@ func init() {
 func main() {
 	flag.Parse()
 	// Comentados para pruebas con UDP
-	// var val bool = len(flags.TimeDelay) != len(flags.Target)
-	// if val {
-	// 	panic("El tamaño del arreglo Targets debe ser igual al de Delays")
-	// 	os.Exit(1)
-	// }
+	var val bool = len(flags.TimeDelay) != len(flags.Target)
+	if val {
+		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
+		os.Exit(1)
+	}
 
 	ip := f.IpAddress()
 	port := flags.GetPort()
@@ -44,7 +47,6 @@ func main() {
 	}
 
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
-	fmt.Println("ESTOY EN EL MAIN port: ", port, " ip : ", ip)
 
 	// connect := &f.Conn{
 	// 	Id:     ip + port,
@@ -64,12 +66,15 @@ func main() {
 	// 	go c.SendGroup(connect)
 	// }
 
-	println("##################   UDP ", ip, "   ###############################")
+	// ######################################################
+	// ################### MULTICAST	#####################
+	// ######################################################
+	f.DistMsm("UDP " + ip + port)
 
-	connect := &f.Conn{
-		Id:     "229.0.040.000:9999",
-		Ip:     "229.0.040.000",
-		Port:   ":9999",
+	connectM := &f.Conn{
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
 		Ids:    ids,
 		Delays: flags.GetTimeDelay(),
 		Kill:   flags.GetTarget(),
@@ -77,28 +82,54 @@ func main() {
 		Vector: vector,
 	}
 
-	var c chan f.Message
+	// inicio RReceiveGroupM
+	go u.ReceiveGroupM(connectM)
+	time.Sleep(time.Second * 2)
+	// Si soy master llamo SendGroupM msm
+	if flags.Master {
+		target := ""
+		delay, _ := time.ParseDuration("0s")
+		inf := "Me mataron"
+		id := connectM.GetId()
 
-	msm := &f.Message{
-		To:   connect.GetId(),
-		From: "4253647586970",
-		Data: "Hola",
+		// Actualizo el reloj
+		vector := connectM.GetVector()
+
+		if len(connectM.GetKill()) > 0 && len(connectM.GetDelays()) > 0 {
+			target = connectM.GetTarget(0)
+			delay = connectM.GetDelay(0)
+			inf = "He disparado"
+			connectM.SetKill()
+			connectM.SetDelay()
+		}
+
+		// Incremento el reloj
+		vector.Tick(id)
+		connectM.SetClock(vector)
+
+		// TODO CREATE SNAPSHOP RELOJ []VCLOCK
+		// Copio el vector
+		copyVector := vector.Copy()
+
+		// IMprimo TODO
+		fmt.Println("[Main] ", copyVector, target, delay, inf)
+
+		// En este caso tomo el target para enviar el delay
+		var msm f.Message = f.Message{
+			To:     f.MulticastAddress,
+			From:   id,
+			Targ:   target,
+			Data:   inf,
+			Vector: copyVector,
+			Delay:  delay,
+		}
+
+		fmt.Println("Llamo sendGroup MAIN", *connectM)
+		time.Sleep(time.Second * 1)
+		go u.SendGroupM(&msm, connectM)
 	}
 
-	// log.Println(*connect)
-	// go u.ReceiveMulticast(c, connect)
-	// time.Sleep(time.Second * 3)
-	// go u.SendMulticast(msm, connect)
-
-	go u.ReceiveGroupM(c, connect)
-	// time.Sleep(time.Second * 2)
-	// go u.SendGroupM(msm, connect)
-
-	// go u.SendGroupM(msm, connect)
-
-	// go u.SendGroupM(msm, connect)
-
-	for i := 0; i < 50000; i = i + 1 {
+	for i := 0; i < 30; i = i + 1 {
 		time.Sleep(time.Second * 5)
 		// fmt.Println("Fin del main, contando...", i, "segundos...", msm)
 	}

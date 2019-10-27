@@ -10,14 +10,11 @@ import (
 )
 
 // ReceiveGroupM  das
-func ReceiveGroupM(canal chan f.Message, connect *f.Conn) error {
+func ReceiveGroupM(connect *f.Conn) error {
 	var err error
-	// var red net.Conn
 	var msm f.Message
 	var decode *gob.Decoder
 	var listener *net.UDPConn
-	// var nRead int
-	// var listener net.PacketConn
 
 	// Parse the string address
 	addr, _ := net.ResolveUDPAddr("udp", f.MulticastAddress)
@@ -31,9 +28,22 @@ func ReceiveGroupM(canal chan f.Message, connect *f.Conn) error {
 	listener.SetReadBuffer(f.MaxBufferSize)
 
 	// Loop forever reading from the socket
-	for {
 
-		fmt.Println("[ReceiveGroupM]  Entre en el for: ", connect.GetId())
+	var arrayMsms []f.Message
+	n := connect.GetAccept()
+	vector := connect.GetVector()
+	id := connect.GetId()
+	fmt.Println("[ReceiveGroupM] ", arrayMsms, n, vector, id)
+	// for {
+
+	//TODO EL n NO ME QUEDA TAN CLARO
+	fmt.Println("[ReceiveGroupM]  Entre en el for con n: ", n)
+	for i := 0; i < n; i++ {
+		fmt.Println("[ReceiveGroupM] DEntro del for i: ", i)
+		// Recibo de multicast un numero de veces (aun no se )
+
+		// Si recibe por multicast envio un ack de confirmación
+
 		buffer := make([]byte, f.MaxBufferSize)
 		nRead, src, _ := listener.ReadFromUDP(buffer)
 		fmt.Println("[ReceiveGroupM] print BUFFER: ", src)
@@ -52,6 +62,11 @@ func ReceiveGroupM(canal chan f.Message, connect *f.Conn) error {
 
 		fmt.Println("[ReceiveGroupM] IF: PRINT MSM", msm)
 
+		ackID := &f.Ack{Code: msm.GetTo() + msm.GetFrom()}
+
+		// Send confirmacion ack
+		go SendM(ackID, connect.GetId())
+
 		if msm.GetTo() == connect.GetId() {
 			break
 		}
@@ -61,3 +76,7 @@ func ReceiveGroupM(canal chan f.Message, connect *f.Conn) error {
 	return err
 
 }
+
+// func SendAck(id string, addr string)  {
+
+// }

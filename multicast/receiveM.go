@@ -10,7 +10,7 @@ import (
 )
 
 // Receive TODO ELIMINAR
-func ReceiveMulticast(canal chan f.Message, conn *f.Conn) error {
+func ReceiveM(canal chan f.Message, conn *f.Conn) error {
 	var msm f.Message
 	// var listener net.PacketConn
 	var err error

@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-// SendMulticast functionkl;
-func SendMulticast(msm *f.Message, conn *f.Conn) error {
+// SendM functionkl;
+func SendM(i interface{}, ip string) error {
 	// func SendMulticast(ip string, msm *f.Msm, reader io.Reader) error {
 	var connection net.Conn
 	var red *net.UDPAddr
 	var buffer bytes.Buffer
 	var err error
 
-	red, err = net.ResolveUDPAddr("udp", conn.GetId())
+	red, err = net.ResolveUDPAddr("udp", ip)
 	f.Error(err, "Send connection error \n")
 
 	connection, err = net.DialUDP("udp", nil, red)
@@ -27,19 +27,19 @@ func SendMulticast(msm *f.Message, conn *f.Conn) error {
 	// log.Println("Estoy en SM")
 	// var buffer bytes.Buffer
 
-	for {
-		fmt.Println("[SM]  Entre en el for: ", conn.GetId())
+	// for {
+	fmt.Println("[SM]  Entre en el for: ", ip)
 
-		encoder := gob.NewEncoder(&buffer)
-		// for  i := 0; i < 5000; i++{
-		err = encoder.Encode(msm)
-		f.Error(err, "Error en broacast: ")
-		_, err = connection.Write(buffer.Bytes())
-		f.Error(err, "Error al recibir el msm")
-		buffer.Reset()
+	encoder := gob.NewEncoder(&buffer)
+	// for  i := 0; i < 5000; i++{
+	err = encoder.Encode(i)
+	f.Error(err, "Error en broacast: ")
+	_, err = connection.Write(buffer.Bytes())
+	f.Error(err, "Error al recibir el msm")
+	buffer.Reset()
 
-		time.Sleep(2 * time.Second)
-	}
+	time.Sleep(2 * time.Second)
+	// }
 
 	return err
 }

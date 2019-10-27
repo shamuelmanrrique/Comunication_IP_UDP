@@ -24,18 +24,19 @@ func SendGroupM(msm *f.Message, connect *f.Conn) error {
 	f.Error(err, "SendGroupM error DialUDP connection \n")
 	defer connection.Close()
 
-	for {
-		fmt.Println("[SendGroupM]  Entre en el for: ", connect.GetId())
+	//Por aora defino un n que no se como limitarlo aun
+	// for {
+	fmt.Println("[SendGroupM]  Entre en el for: ", connect.GetId())
 
-		encoder = gob.NewEncoder(&buffer)
-		err = encoder.Encode(msm)
-		f.Error(err, "SendGroupM encoder error \n")
-		_, err = connection.Write(buffer.Bytes())
-		f.Error(err, "Error al recibir el msm")
-		// buffer.Reset()
+	encoder = gob.NewEncoder(&buffer)
+	err = encoder.Encode(msm)
+	f.Error(err, "SendGroupM encoder error \n")
+	_, err = connection.Write(buffer.Bytes())
+	f.Error(err, "Error al recibir el msm")
+	// buffer.Reset()
 
-		time.Sleep(1 * time.Second)
-	}
+	time.Sleep(1 * time.Second)
+	// }
 
 	return err
 

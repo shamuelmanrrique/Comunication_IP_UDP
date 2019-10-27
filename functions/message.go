@@ -3,6 +3,7 @@ package functions
 import (
 	"fmt"
 	v "practice1/vclock"
+	"time"
 )
 
 // MULTICAST CONN.STD TIEMPO PARA QUE SE MUERA EN CADA RECEPCION
@@ -13,11 +14,13 @@ type Msm interface {
 	GetFrom() string
 	GetData() string
 	GetTarg() string
+	GetDelay() time.Duration
 	GetVector() v.VClock
 }
 
 type Message struct {
 	To, From, Data, Targ string
+	Delay                time.Duration
 	Vector               v.VClock
 }
 
@@ -39,6 +42,14 @@ func (m Message) GetTarg() string {
 
 func (m Message) GetVector() v.VClock {
 	return m.Vector
+}
+
+func (m *Message) SetDelay(t time.Duration) {
+	m.Delay = t
+}
+
+func (m *Message) GetDelay() time.Duration {
+	return m.Delay
 }
 
 func DistMsm(s string) {
