@@ -25,7 +25,6 @@ func SendGroupM(msm *f.Message, connect *f.Conn) error {
 	defer connection.Close()
 
 	//Por aora defino un n que no se como limitarlo aun
-	// for {
 	fmt.Println("[SendGroupM]  Entre en el for: ", connect.GetId())
 
 	encoder = gob.NewEncoder(&buffer)
@@ -41,3 +40,5 @@ func SendGroupM(msm *f.Message, connect *f.Conn) error {
 	return err
 
 }
+
+

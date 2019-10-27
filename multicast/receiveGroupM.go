@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net"
 	f "practice1/functions"
-	"time"
 )
 
 // ReceiveGroupM  das
@@ -45,27 +44,45 @@ func ReceiveGroupM(connect *f.Conn) error {
 		// Si recibe por multicast envio un ack de confirmación
 
 		buffer := make([]byte, f.MaxBufferSize)
-		nRead, src, _ := listener.ReadFromUDP(buffer)
-		fmt.Println("[ReceiveGroupM] print BUFFER: ", src)
+		nRead, _, _ := listener.ReadFromUDP(buffer)
+		// fmt.Println("[ReceiveGroupM] print BUFFER: ", src)
 
-		// nRead, addr, err := listener.ReadFrom(buffer)
 		dataBuffer := bytes.NewBuffer(buffer)
 		decode = gob.NewDecoder(dataBuffer)
-		fmt.Println("[ReceiveGroupM]  DECODE: ", decode)
+		// fmt.Println("[ReceiveGroupM]  DECODE: ", decode)
 		err = decode.Decode(&msm)
-		f.Error(err, "Receive error  Decode\n")
+		// f.Error(err, "Receive error  Decode\n")
 
-		deadline := time.Now().Add(2)
-		err = listener.SetWriteDeadline(deadline)
-		f.Error(err, "ReceiveGroupM Error SetWriteDeadline ")
-		fmt.Println(nRead, addr)
+		// deadline := time.Now().Add(2)
+		// err = listener.SetWriteDeadline(deadline)
+		// f.Error(err, "ReceiveGroupM Error SetWriteDeadline ")
+		// fmt.Println(nRead, addr)
 
-		fmt.Println("[ReceiveGroupM] IF: PRINT MSM", msm)
+		//Recibo el msm y envio el ack
 
-		ackID := &f.Ack{Code: msm.GetTo() + msm.GetFrom()}
+		fmt.Println("[ReceiveGroupM] IF: PRINT MSM", msm, nRead)
+
+		ackID := &f.Ack{Code: msm.GetTo() + "," + msm.GetFrom()}
 
 		// Send confirmacion ack
 		go SendM(ackID, connect.GetId())
+
+		// Numero de msm a recibir
+		// n := len(connect.GetIds())
+
+		// Creo un buffer de Ack
+		bufferAck := make(chan f.Ack)
+		defer close(bufferAck)
+
+		bufferMessage := make(chan f.Message)
+		defer close(bufferMessage)
+
+		// for i := 0; i < n; i++ {
+		// 	fmt.Println(ackID)
+		// 	// COmo limite que voy a escuchar un ACK O MSM
+		// 	// go ReceiveM(bufferMessage, connect)
+
+		// }
 
 		if msm.GetTo() == connect.GetId() {
 			break

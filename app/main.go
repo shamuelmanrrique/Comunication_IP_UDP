@@ -82,11 +82,15 @@ func main() {
 		Vector: vector,
 	}
 
-	// inicio RReceiveGroupM
+	fmt.Println("[RGM] -------  +++++++++++++ ")
+	// inicio ReceiveGroupM
 	go u.ReceiveGroupM(connectM)
 	time.Sleep(time.Second * 2)
+
+	fmt.Println("[RGM] -------  -------------")
 	// Si soy master llamo SendGroupM msm
 	if flags.Master {
+
 		target := ""
 		delay, _ := time.ParseDuration("0s")
 		inf := "Me mataron"
@@ -112,7 +116,7 @@ func main() {
 		copyVector := vector.Copy()
 
 		// IMprimo TODO
-		fmt.Println("[Main] ", copyVector, target, delay, inf)
+		// fmt.Println("[Main] ", copyVector, target, delay, inf)
 
 		// En este caso tomo el target para enviar el delay
 		var msm f.Message = f.Message{
@@ -125,9 +129,22 @@ func main() {
 		}
 
 		fmt.Println("Llamo sendGroup MAIN", *connectM)
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 2)
 		go u.SendGroupM(&msm, connectM)
 	}
+
+	fmt.Println("[RGM] -------  ============== ")
+	var canal chan f.Message
+	u.ReceiveM(canal, connectM.GetPort())
+	// var canal chan f.Message
+	// ackID := &f.Ack{Code: "GABO GAY"}
+	// go u.SendM(ackID, "127.0.1.1:1400")
+	// go u.ReceiveM(canal, "127.0.1.1:5002")
+	// time.Sleep(time.Second * 5)
+	// go u.SendM(ackID, "127.0.1.1:5002")
+	// go u.SendM(ackID, f.MulticastAddress)
+	// go u.ReceiveM(canal, f.MulticastAddress)
+	// gob.NewEncoder(&buffer)
 
 	for i := 0; i < 30; i = i + 1 {
 		time.Sleep(time.Second * 5)
