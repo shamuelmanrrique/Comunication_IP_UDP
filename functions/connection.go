@@ -6,6 +6,11 @@ import (
 	"time"
 )
 
+const (
+	MulticastAddress = "229.0.40.000:9999"
+	MaxBufferSize    = 2048
+)
+
 type Connection interface {
 	GetId() string
 	GetIp() string

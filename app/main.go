@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"time"
 
 	f "practice1/functions"
@@ -47,16 +46,16 @@ func main() {
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
 	fmt.Println("ESTOY EN EL MAIN port: ", port, " ip : ", ip)
 
-	connect := &f.Conn{
-		Id:     ip + port,
-		Ip:     ip,
-		Port:   port,
-		Ids:    ids,
-		Delays: flags.GetTimeDelay(),
-		Kill:   flags.GetTarget(),
-		Accept: msmreceive,
-		Vector: vector,
-	}
+	// connect := &f.Conn{
+	// 	Id:     ip + port,
+	// 	Ip:     ip,
+	// 	Port:   port,
+	// 	Ids:    ids,
+	// 	Delays: flags.GetTimeDelay(),
+	// 	Kill:   flags.GetTarget(),
+	// 	Accept: msmreceive,
+	// 	Vector: vector,
+	// }
 
 	// go c.ReceiveGroup(connect)
 	// if flags.Master {
@@ -65,8 +64,18 @@ func main() {
 	// 	go c.SendGroup(connect)
 	// }
 
-	// ##################   UDP    ###############################
-	println("##################   UDP    ###############################")
+	println("##################   UDP ", ip, "   ###############################")
+
+	connect := &f.Conn{
+		Id:     "229.0.040.000:9999",
+		Ip:     "229.0.040.000",
+		Port:   ":9999",
+		Ids:    ids,
+		Delays: flags.GetTimeDelay(),
+		Kill:   flags.GetTarget(),
+		Accept: msmreceive,
+		Vector: vector,
+	}
 
 	var c chan f.Message
 
@@ -76,14 +85,22 @@ func main() {
 		Data: "Hola",
 	}
 
-	log.Println(*connect)
-	go u.ReceiveMulticast(c, connect)
-	time.Sleep(time.Second * 3)
-	go u.SendMulticast(msm, connect)
+	// log.Println(*connect)
+	// go u.ReceiveMulticast(c, connect)
+	// time.Sleep(time.Second * 3)
+	// go u.SendMulticast(msm, connect)
 
-	for i := 0; i < 30; i = i + 5 {
+	go u.ReceiveGroupM(c, connect)
+	// time.Sleep(time.Second * 2)
+	// go u.SendGroupM(msm, connect)
+
+	// go u.SendGroupM(msm, connect)
+
+	// go u.SendGroupM(msm, connect)
+
+	for i := 0; i < 50000; i = i + 1 {
 		time.Sleep(time.Second * 5)
-		fmt.Println("Fin del main, contando...", i, "segundos...", msm)
+		// fmt.Println("Fin del main, contando...", i, "segundos...", msm)
 	}
 
 }

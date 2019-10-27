@@ -12,32 +12,35 @@ import (
 // Receive TODO ELIMINAR
 func ReceiveMulticast(canal chan f.Message, conn *f.Conn) error {
 	var msm f.Message
-	var listener net.PacketConn
+	// var listener net.PacketConn
 	var err error
-	const maxBufferSize = 2048
+	const maxBufferSize = 4046
 
-	// var err error
-	// localAddress, err := net.ResolveUDPAddr("udp", port)
-	// connection, err := net.ListenUDP("udp", localAddress)
-	// defer connection.Close()
-	// var message CommData
 	// NO necesitamos llamar al ResolveUDPAddr
+	// log.Println("[RM] mi ip : ", conn.GetId(), "port: ", conn.GetPort())
+	// listener, err = net.ListenPacket("udp", conn.GetId())
+	localhostAddress, _ := net.ResolveUDPAddr("udp", conn.GetPort())
+	// printError("ResolvingUDPAddr in Broadcast localhost failed.", er)
+	listener, _ := net.ListenMulticastUDP("udp", nil, localhostAddress)
+	// printError("DialUDP in Broadcast localhost failed.", e)
+	// defer connection.Close()
 
-	// fmt.Println("[RM]  El 	IP: ", conn.GetId())
-	log.Println("[RM] mi ip : ", conn.GetId(), "port: ", conn.GetPort())
-	listener, err = net.ListenPacket("udp", conn.GetPort())
 	f.Error(err, "Listen Error")
 	defer listener.Close()
 
 	for {
 
-		log.Println("[RM] ITS HERE")
-
+		log.Println("[RM] -------Estoy Escuchando FOR: ")
 		buffer := make([]byte, maxBufferSize)
+		log.Println("[RM] buffer: ")
 		nRead, addr, err := listener.ReadFrom(buffer)
+		f.Error(err, "Error en RM")
+		log.Println("[RM] listener: ")
 		dataBuffer := bytes.NewBuffer(buffer[:nRead])
+		log.Println("[RM] databuffer: ")
 		decode := gob.NewDecoder(dataBuffer)
 		err = decode.Decode(&msm)
+		log.Println("[RM] -------Estoy Escuchando FOR: ", msm)
 		f.Error(err, "Receive error  \n")
 
 		deadline := time.Now().Add(2)

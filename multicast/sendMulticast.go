@@ -17,7 +17,6 @@ func SendMulticast(msm *f.Message, conn *f.Conn) error {
 	var buffer bytes.Buffer
 	var err error
 
-	fmt.Println("[SM]  El 	IP: ", conn.GetId())
 	red, err = net.ResolveUDPAddr("udp", conn.GetId())
 	f.Error(err, "Send connection error \n")
 
@@ -29,6 +28,7 @@ func SendMulticast(msm *f.Message, conn *f.Conn) error {
 	// var buffer bytes.Buffer
 
 	for {
+		fmt.Println("[SM]  Entre en el for: ", conn.GetId())
 
 		encoder := gob.NewEncoder(&buffer)
 		// for  i := 0; i < 5000; i++{
