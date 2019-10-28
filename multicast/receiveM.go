@@ -8,10 +8,8 @@ import (
 	f "practice1/functions"
 )
 
-// Receive TODO ELIMINAR
 // func ReceiveM(canalAck chan f.Ack, canal chan f.Message, conn *f.Conn) error {
 func ReceiveM(canal chan f.Message, addr string) error {
-	// func ReceiveM(canal chan f.Message, conn *f.Conn) error {
 	// var msm f.Message
 	var ac f.Ack
 	// var listener net.PacketConn
@@ -20,14 +18,9 @@ func ReceiveM(canal chan f.Message, addr string) error {
 
 	log.Println("[RM]             ReceiveM ")
 
-	// NO necesitamos llamar al ResolveUDPAddr
-	// log.Println("[RM] mi ip : ", conn.GetId(), "port: ", conn.GetPort())
-	// listener, err = net.ListenPacket("udp", conn.GetId())
-
 	//Duda solo debo pasar el puerto o el ip completo por ser UDP
 	localhostAddress, _ := net.ResolveUDPAddr("udp", addr)
 	log.Println("[RM]             localhostAddress ", localhostAddress)
-	// localhostAddress, _ := net.ResolveUDPAddr("udp", conn.GetPort())
 
 	// printError("ResolvingUDPAddr in Broadcast localhost failed.", er)
 	listener, _ := net.ListenUDP("udp", localhostAddress)
