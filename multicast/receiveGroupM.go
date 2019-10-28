@@ -51,30 +51,32 @@ func ReceiveGroupM(connect *f.Conn) error {
 
 		fmt.Println("[ReceiveGroupM] IF: PRINT MSM", msm, nRead)
 
-		// Numero de msm a recibir
-		n := len(connect.GetIds())
-		ackID := &f.Ack{Code: msm.GetTo() + "," + msm.GetFrom()}
-		// var arrayAcks []f.Ack
-		// Creo un buffer de Ack
-		bufferAck := make(chan f.Ack)
-		defer close(bufferAck)
+		if msm.GetFrom() != connect.GetId() {
 
-		bufferMessage := make(chan f.Message)
-		defer close(bufferMessage)
+			// Numero de msm a recibir
+			n := len(connect.GetIds())
+			ackID := &f.Ack{Code: msm.GetTo() + "," + msm.GetFrom()}
+			// var arrayAcks []f.Ack
+			// Creo un buffer de Ack
+			bufferAck := make(chan f.Ack)
+			defer close(bufferAck)
 
-		for i := 0; i < n; i++ {
+			bufferMessage := make(chan f.Message)
+			defer close(bufferMessage)
 
-			// Send confirmacion ack
-			go SendM(ackID, connect.GetId())
+			for i := 0; i < n; i++ {
 
-			// 	fmt.Println(ackID)
-			// 	// Como limite que voy a escuchar un ACK O MSM
-			// 	// go ReceiveM(bufferMessage, connect)
+				// Send confirmacion ack
+				go SendM(ackID, connect.GetId())
 
+				// 	fmt.Println(ackID)
+				// 	// Como limite que voy a escuchar un ACK O MSM
+				// 	// go ReceiveM(bufferMessage, connect)
+
+			}
 		}
 	}
 
 	return err
 
 }
-

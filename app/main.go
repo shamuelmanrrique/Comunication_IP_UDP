@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-
-	// "fmt"
 	"os"
 	"time"
 
@@ -82,12 +80,10 @@ func main() {
 		Vector: vector,
 	}
 
-	fmt.Println("[RGM] -------  +++++++++++++ ")
 	// inicio ReceiveGroupM
 	go u.ReceiveGroupM(connectM)
 	time.Sleep(time.Second * 2)
 
-	fmt.Println("[RGM] -------  -------------")
 	// Si soy master llamo SendGroupM msm
 	if flags.Master {
 
@@ -133,9 +129,10 @@ func main() {
 		go u.SendGroupM(&msm, connectM)
 	}
 
-	fmt.Println("[RGM] -------  ============== ")
-	var canal chan f.Message
-	u.ReceiveM(canal, connectM.GetPort())
+	// fmt.Println("[RGM] -------  ============== ")
+	// var canal chan f.Message
+	// // u.ReceiveM(canal, connectM.GetPort())
+
 	// var canal chan f.Message
 	// ackID := &f.Ack{Code: "GABO GAY"}
 	// go u.SendM(ackID, "127.0.1.1:1400")

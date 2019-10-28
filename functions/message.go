@@ -6,9 +6,6 @@ import (
 	"time"
 )
 
-// MULTICAST CONN.STD TIEMPO PARA QUE SE MUERA EN CADA RECEPCION
-// setreaddeadtimeline
-
 type Msm interface {
 	GetTo() string
 	GetFrom() string

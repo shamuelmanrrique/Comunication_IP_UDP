@@ -82,7 +82,7 @@ func ReceiveGroup(connect *f.Conn) error {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
 
-	log.Println("|||||||||||||||-----------------------")
+	log.Println("|||||||||||||||||||||||||||||||||||||||||||")
 	for _, m := range arrayMsms {
 		log.Println("{}{}{}{}Mensaje enviado To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
 	}
