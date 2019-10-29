@@ -8,8 +8,8 @@ import (
 	f "practice1/functions"
 )
 
-// SendM functionkl;
-func SendPack(i interface{}, ip string) error {
+// SendM functionkl jfjh
+func SendPack(i *interface{}, ip string) error {
 	// func SendMulticast(ip string, msm *f.Msm, reader io.Reader) error {
 	var connection net.Conn
 	var red *net.UDPAddr

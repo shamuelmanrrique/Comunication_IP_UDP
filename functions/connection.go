@@ -8,7 +8,7 @@ import (
 
 const (
 	MulticastAddress = "229.0.40.000:9999"
-	MaxBufferSize    = 2048
+	MaxBufferSize    = 8192
 )
 
 type Connection interface {

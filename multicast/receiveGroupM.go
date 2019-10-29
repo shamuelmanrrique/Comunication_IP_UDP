@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net"
 	f "practice1/functions"
+	"time"
 )
 
 // ReceiveGroupM  das
@@ -30,39 +31,59 @@ func ReceiveGroupM(connect *f.Conn) error {
 	defer listener.Close()
 
 	//TODO EL n NO ME QUEDA TAN CLARO
-	fmt.Println("[ReceiveGroupM]  Entre en el for con n: ", n)
-	for i := 0; i < n; i++ {
+	// for i := 0; i < n; i++ {
 
-		listener.SetReadBuffer(f.MaxBufferSize)
+	listener.SetReadBuffer(f.MaxBufferSize)
 
-		buffer := make([]byte, f.MaxBufferSize)
-		nRead, _, _ := listener.ReadFromUDP(buffer)
-		fmt.Println("[ReceiveGroupM] Dentro del for i: ", i, nRead)
+	buffer := make([]byte, f.MaxBufferSize)
+	nRead, _, _ := listener.ReadFromUDP(buffer)
+	fmt.Println("[ReceiveGroupM] Dentro del for i: ", nRead)
 
-		dataBuffer := bytes.NewBuffer(buffer)
-		decode = gob.NewDecoder(dataBuffer)
-		err = decode.Decode(&msm)
-		f.Error(err, "Receive error  Decode\n")
+	dataBuffer := bytes.NewBuffer(buffer)
+	decode = gob.NewDecoder(dataBuffer)
+	err = decode.Decode(&msm)
+	f.Error(err, "Receive error  Decode\n")
 
-		if msm.GetFrom() != id {
-			fmt.Println("[ReceiveGroupM] que yo no envie el msm", msm.GetFrom(), "comparo con ", connect.GetId())
+	// RECIBO y sumo 1 al vector
+	vector.Tick(id)
+	// SEt la nueva actualizacion de recepcion
+	connect.SetClock(vector)
+	// Uno los relojes
+	vector.Merge(msm.GetVector())
+	// connect.GetVector().Merge(vector)
+	// Seteo nuevamente el reloj
+	connect.SetClock(vector)
 
-			// Numero de msm a recibir
-			ackID := &f.Ack{Code: id + "," + msm.GetFrom()}
+	fmt.Println("[ReceiveGroupM]  REcibido de: ", msm.GetFrom(), " Yo soy ", id)
+	if msm.GetFrom() != id {
 
-			chanelAck := make(chan f.Pack)
-			defer close(chanelAck)
-
-			pack := &f.Pack{ConfACK: *ackID}
-
-			// for i := 0; i < n; i++ {
-			SendPack(pack, msm.GetFrom())
-			// go SendPack(pack, msm.GetFrom())
-
-			// }
-
+		fmt.Println("[ReceiveGroupM]  Target: ", msm.GetTarg(), " Recibio ", id)
+		if msm.GetTarg() == id {
+			SendGroupM(&msm, connect)
 		}
+
+		//Aplico delay receive
+		delay := msm.GetDelay()
+		time.Sleep(delay * time.Second)
+
+		// 	fmt.Println("[ReceiveGroupM] que yo no envie el msm", msm.GetFrom(), "comparo con ", connect.GetId())
+
+		// 	// Numero de msm a recibir
+		// 	ackID := &f.Ack{Code: id + "," + msm.GetFrom()}
+
+		// 	chanelAck := make(chan f.Pack)
+		// 	defer close(chanelAck)
+
+		// 	pack := &f.Pack{ConfACK: *ackID}
+
+		// 	// for i := 0; i < n; i++ {
+		// 	SendPack(pack, msm.GetFrom())
+		// 	// go SendPack(pack, msm.GetFrom())
+
+		// 	// }
+
 	}
+	// }
 
 	return err
 

@@ -1,8 +1,9 @@
-// package main
-
+package main
 
 import (
+	"bytes"
 	"flag"
+	"fmt"
 	"os"
 	"time"
 
@@ -22,7 +23,7 @@ func init() {
 	flag.Var(&flags.Target, "t", "listas de ip objectivos")
 }
 
-func mainr() {
+func main() {
 	flag.Parse()
 	// Comentados para pruebas con UDP
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
@@ -57,6 +58,17 @@ func mainr() {
 		Vector: vector,
 	}
 
+	if true {
+		v, _ := f.InitSSH("shamuel", "localhost", "/home/shamuel/.ssh/id_rsa")
+		var b bytes.Buffer
+		v.Stdout = &b
+
+		// Finally, run the command
+		// v.Run("go run go/src/game/main.go -proc " + strconv.Itoa(i+1) + " -n 4 >> log" + middleware.Addresses[i+1] + ".txt")
+		v.Run("cd \"/home/shamuel/go/src/practice1/app\" ;ls ; pwd;go run main.go -r \"local\" -t \"127.0.1.1:5002\" -d \"5s\" -n 3 -m=true -p=\":5001\" > ho.txt")
+		fmt.Println(b.String())
+	}
+	fmt.Println("ESTOY FUERA")
 	go c.ReceiveGroup(connect)
 	if flags.Master {
 		// fmt.Println("Llamo sendGroup MAIN", *connect)
