@@ -20,7 +20,8 @@ func Send(ip string, msm f.Msm, caller string) error {
 	encoder = gob.NewEncoder(connection)
 	err = encoder.Encode(msm)
 
-	log.Println(" ++> SEND : from ", caller, " to ", ip, "|| OBJ: ", msm.GetTarg(), " Vector: ", msm.GetVector())
+	log.Println(" ++> SEND : from ", caller, " to ", ip, "|| OBJ: ", msm.GetTarg(),
+		"\n                     Vector: ", msm.GetVector())
 	return err
 
 }
