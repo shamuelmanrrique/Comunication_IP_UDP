@@ -1,4 +1,5 @@
-package main
+// package main
+
 
 import (
 	"flag"
@@ -21,7 +22,7 @@ func init() {
 	flag.Var(&flags.Target, "t", "listas de ip objectivos")
 }
 
-func main() {
+func mainr() {
 	flag.Parse()
 	// Comentados para pruebas con UDP
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
