@@ -14,6 +14,12 @@ func ReceiveGroupM(connect *f.Conn) error {
 	var msm f.Message
 	var decode *gob.Decoder
 	var listener *net.UDPConn
+	var arrayMsms []f.Message
+	n := len(connect.GetIds())
+	vector := connect.GetVector()
+	id := connect.GetId()
+
+	fmt.Println(arrayMsms, n, vector, id)
 
 	// Parse the string address
 	addr, _ := net.ResolveUDPAddr("udp", f.MulticastAddress)
@@ -23,57 +29,38 @@ func ReceiveGroupM(connect *f.Conn) error {
 	f.Error(err, "ReceiveGroupM error ListenPacket")
 	defer listener.Close()
 
-	listener.SetReadBuffer(f.MaxBufferSize)
-
-	// Loop forever reading from the socket
-	var arrayMsms []f.Message
-	n := connect.GetAccept()
-	vector := connect.GetVector()
-	id := connect.GetId()
-	fmt.Println("[ReceiveGroupM] ", arrayMsms, n, vector, id)
-	// for {
-
 	//TODO EL n NO ME QUEDA TAN CLARO
 	fmt.Println("[ReceiveGroupM]  Entre en el for con n: ", n)
 	for i := 0; i < n; i++ {
-		fmt.Println("[ReceiveGroupM] DEntro del for i: ", i)
 
-		// Si recibe por multicast envio un ack de confirmación
+		listener.SetReadBuffer(f.MaxBufferSize)
+
 		buffer := make([]byte, f.MaxBufferSize)
 		nRead, _, _ := listener.ReadFromUDP(buffer)
+		fmt.Println("[ReceiveGroupM] Dentro del for i: ", i, nRead)
 
 		dataBuffer := bytes.NewBuffer(buffer)
 		decode = gob.NewDecoder(dataBuffer)
 		err = decode.Decode(&msm)
 		f.Error(err, "Receive error  Decode\n")
 
-		//Recibo el msm y envio el ack
-
-		fmt.Println("[ReceiveGroupM] IF: PRINT MSM", msm, nRead)
-
-		if msm.GetFrom() != connect.GetId() {
+		if msm.GetFrom() != id {
+			fmt.Println("[ReceiveGroupM] que yo no envie el msm", msm.GetFrom(), "comparo con ", connect.GetId())
 
 			// Numero de msm a recibir
-			n := len(connect.GetIds())
-			ackID := &f.Ack{Code: msm.GetTo() + "," + msm.GetFrom()}
-			// var arrayAcks []f.Ack
-			// Creo un buffer de Ack
-			bufferAck := make(chan f.Ack)
-			defer close(bufferAck)
+			ackID := &f.Ack{Code: id + "," + msm.GetFrom()}
 
-			bufferMessage := make(chan f.Message)
-			defer close(bufferMessage)
+			chanelAck := make(chan f.Pack)
+			defer close(chanelAck)
 
-			for i := 0; i < n; i++ {
+			pack := &f.Pack{ConfACK: *ackID}
 
-				// Send confirmacion ack
-				go SendM(ackID, connect.GetId())
+			// for i := 0; i < n; i++ {
+			SendPack(pack, msm.GetFrom())
+			// go SendPack(pack, msm.GetFrom())
 
-				// 	fmt.Println(ackID)
-				// 	// Como limite que voy a escuchar un ACK O MSM
-				// 	// go ReceiveM(bufferMessage, connect)
+			// }
 
-			}
 		}
 	}
 

@@ -2,12 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
+	c "practice1/communication"
 	f "practice1/functions"
-	u "practice1/multicast"
 	v "practice1/vclock"
 )
 
@@ -46,30 +45,7 @@ func main() {
 
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
 
-	// connect := &f.Conn{
-	// 	Id:     ip + port,
-	// 	Ip:     ip,
-	// 	Port:   port,
-	// 	Ids:    ids,
-	// 	Delays: flags.GetTimeDelay(),
-	// 	Kill:   flags.GetTarget(),
-	// 	Accept: msmreceive,
-	// 	Vector: vector,
-	// }
-
-	// go c.ReceiveGroup(connect)
-	// if flags.Master {
-	// 	fmt.Println("Llamo sendGroup MAIN", *connect)
-	// 	time.Sleep(time.Second * 1)
-	// 	go c.SendGroup(connect)
-	// }
-
-	// ######################################################
-	// ################### MULTICAST	#####################
-	// ######################################################
-	f.DistMsm("UDP " + ip + port)
-
-	connectM := &f.Conn{
+	connect := &f.Conn{
 		Id:     ip + port,
 		Ip:     ip,
 		Port:   port,
@@ -80,72 +56,13 @@ func main() {
 		Vector: vector,
 	}
 
-	// inicio ReceiveGroupM
-	go u.ReceiveGroupM(connectM)
-	time.Sleep(time.Second * 2)
-
-	// Si soy master llamo SendGroupM msm
+	go c.ReceiveGroup(connect)
 	if flags.Master {
-
-		target := ""
-		delay, _ := time.ParseDuration("0s")
-		inf := "Me mataron"
-		id := connectM.GetId()
-
-		// Actualizo el reloj
-		vector := connectM.GetVector()
-
-		if len(connectM.GetKill()) > 0 && len(connectM.GetDelays()) > 0 {
-			target = connectM.GetTarget(0)
-			delay = connectM.GetDelay(0)
-			inf = "He disparado"
-			connectM.SetKill()
-			connectM.SetDelay()
-		}
-
-		// Incremento el reloj
-		vector.Tick(id)
-		connectM.SetClock(vector)
-
-		// TODO CREATE SNAPSHOP RELOJ []VCLOCK
-		// Copio el vector
-		copyVector := vector.Copy()
-
-		// IMprimo TODO
-		// fmt.Println("[Main] ", copyVector, target, delay, inf)
-
-		// En este caso tomo el target para enviar el delay
-		var msm f.Message = f.Message{
-			To:     f.MulticastAddress,
-			From:   id,
-			Targ:   target,
-			Data:   inf,
-			Vector: copyVector,
-			Delay:  delay,
-		}
-
-		fmt.Println("Llamo sendGroup MAIN", *connectM)
-		time.Sleep(time.Second * 2)
-		go u.SendGroupM(&msm, connectM)
+		// fmt.Println("Llamo sendGroup MAIN", *connect)
+		time.Sleep(time.Second * 1)
+		go c.SendGroup(connect)
 	}
 
-	// fmt.Println("[RGM] -------  ============== ")
-	// var canal chan f.Message
-	// // u.ReceiveM(canal, connectM.GetPort())
-
-	// var canal chan f.Message
-	// ackID := &f.Ack{Code: "GABO GAY"}
-	// go u.SendM(ackID, "127.0.1.1:1400")
-	// go u.ReceiveM(canal, "127.0.1.1:5002")
-	// time.Sleep(time.Second * 5)
-	// go u.SendM(ackID, "127.0.1.1:5002")
-	// go u.SendM(ackID, f.MulticastAddress)
-	// go u.ReceiveM(canal, f.MulticastAddress)
-	// gob.NewEncoder(&buffer)
-
-	for i := 0; i < 30; i = i + 1 {
-		time.Sleep(time.Second * 5)
-		// fmt.Println("Fin del main, contando...", i, "segundos...", msm)
-	}
+	<-time.After(time.Second * 30)
 
 }

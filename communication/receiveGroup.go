@@ -6,6 +6,7 @@ import (
 	f "practice1/functions"
 	v "practice1/vclock"
 	"sort"
+	"time"
 )
 
 // ReceiveGroup SLMA
@@ -24,30 +25,20 @@ func ReceiveGroup(connect *f.Conn) error {
 	f.Error(err, "Listen Error")
 	defer listener.Close()
 
-	// a := n - len(connect.GetKill())
-	// switch connect.GetPort() {
-	// case ":5001":
-	// 	n = 1
-	// case ":5002":
-	// 	n = 1
-	// case ":5003":
-	// 	n = 2
-	// }
-
 	for i := 0; i < n; i++ {
-		log.Println("[RG] EL VALOR N:       ", n, " El valor de i :", i)
+		// log.Println("[RG] EL VALOR N:       ", n, " El valor de i :", i)
 		// i := 0
 		// for {
-		log.Println("[RG] FOR RECEIVE GROUP:      ", i)
+		// log.Println("[RG] FOR RECEIVE GROUP:      ", i)
 
-		log.Println("[RG] LLAMO A Receive")
+		// log.Println("[RG] LLAMO A Receive")
 		go Receive(bufferMsm, listener, id)
 
-		log.Println("[RG]________________________")
+		// log.Println("[RG]________________________")
 		msm, ok := <-bufferMsm
-		log.Println("[RG]+++++++++++++++++++++++++")
+		// log.Println("[RG]+++++++++++++++++++++++++")
 
-		log.Println("[RG] VALOR DE OK: ", ok)
+		// log.Println("[RG] VALOR DE OK: ", ok)
 		if ok {
 			// RECIBO y sumo 1 al vector
 			vector.Tick(id)
@@ -59,7 +50,7 @@ func ReceiveGroup(connect *f.Conn) error {
 			// Seteo nuevamente el reloj
 			connect.SetClock(vector)
 
-			log.Println("[RG] IF RG >>>: ", id, " TO: ", msm.GetTo())
+			// log.Println("[RG] IF RG >>>: ", id, " TO: ", msm.GetTo())
 			if id == msm.GetTarg() {
 				n = n - 1
 				log.Println("[RG] Soy el target llamo a SG ")
@@ -76,15 +67,16 @@ func ReceiveGroup(connect *f.Conn) error {
 		// i = i + 1
 	}
 
-	log.Println(" [RG] Estoy fuera del FOR ")
+	// log.Println(" [RG] Estoy fuera del FOR ")
 	// // Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
 
-	log.Println("|||||||||||||||||||||||||||||||||||||||||||")
+	// log.Println("|||||||||||||||||||||||||||||||||||||||||||")
+	<-time.After(time.Second * 6)
 	for _, m := range arrayMsms {
-		log.Println("{}{}{}{}Mensaje enviado To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
+		log.Println("[Message] --> To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
 	}
 
 	return err

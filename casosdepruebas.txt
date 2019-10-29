@@ -46,3 +46,74 @@ go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001"
 go run main.go -r "local" -n 3 -p=":5001" -m=true
 go run main.go -r "local"  -n 3 -p=":5003"
 go run main.go -r "local" -n 3 -p=":5002"
+
+
+
+##PRUEBAS DE CONNECTIONS
+	// fmt.Println("[RGM] -------  ============== ")
+	// var canal chan f.Message
+	// // u.ReceiveM(canal, connectM.GetPort())
+
+	// var canal chan f.Message
+	// ackID := &f.Ack{Code: "GABO GAY"}
+	// go u.SendM(ackID, "127.0.1.1:1400")
+	// go u.ReceiveM(canal, "127.0.1.1:5002")
+	// time.Sleep(time.Second * 5)
+	// go u.SendM(ackID, "127.0.1.1:5002")
+	// go u.SendM(ackID, f.MulticastAddress)
+	// go u.ReceiveM(canal, f.MulticastAddress)
+	// gob.NewEncoder(&buffer)
+
+
+	
+	
+	Pruebas con paquetes
+
+	connectM := &f.Conn{
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
+		Ids:    ids,
+		Delays: flags.GetTimeDelay(),
+		Kill:   flags.GetTarget(),
+		Accept: msmreceive,
+		Vector: vector,
+	}
+
+	red, _ := net.ResolveUDPAddr("udp", connectM.GetId())
+	log.Println("[RM]             localhostAddress ", red)
+
+	// printError("ResolvingUDPAddr in Broadcast localhost failed.", er)
+	listener, err := net.ListenUDP("udp", red)
+	f.Error(err, "[RM] ListenUDP Error")
+	defer listener.Close()
+
+	msm := &f.Message{
+		To:   f.MulticastAddress,
+		From: connectM.GetId(),
+		Targ: connectM.GetId(),
+		Data: "inf",
+	}
+	ackID := &f.Ack{Code: connectM.GetId() + "," + msm.GetFrom()}
+
+	pack := &f.Pack{
+		Mes:     *msm,
+		ConfACK: *ackID,
+	}
+
+	// fmt.Println("[Main] envio el msm que recibi: ", pack)
+
+	canalPacks := make(chan f.Pack)
+	defer close(canalPacks)
+
+	v := "pack"
+
+	go u.ReceivePack(canalPacks, listener, connectM.GetPort())
+	time.Sleep(time.Second * 1)
+	fmt.Println("[Main] before send ")
+	go u.SendPack(pack, connectM.GetId())
+
+	fmt.Println("[Main] espero en el canal  ")
+	recpack, ok := <-canalPacks
+
+	fmt.Println("[Main] recibi por el canal: ", recpack, v, ok)

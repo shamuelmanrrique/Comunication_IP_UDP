@@ -22,7 +22,7 @@ func Receive(canal chan f.Message, liste net.Listener, caller string) error {
 	err = decoder.Decode(&msm)
 	f.Error(err, "Receive error  \n")
 
-	log.Println(" RECEIVE -->: from ", msm.GetFrom(), " to ", msm.GetTo(), "|| OBJ: ", msm.GetTarg())
+	log.Println(" RECEIVE -->: from ", msm.GetFrom(), " to ", msm.GetTo(), "|| OBJ: ", msm.GetTarg(), " Vector: ", msm.GetVector())
 	canal <- msm
 
 	return err

@@ -6,6 +6,16 @@ import (
 	"time"
 )
 
+type PackInt interface {
+	GetMes() Message
+	GetConfACK() Ack
+}
+
+type Pack struct {
+	Mes     Message
+	ConfACK Ack
+}
+
 type Msm interface {
 	GetTo() string
 	GetFrom() string
@@ -51,4 +61,12 @@ func (m *Message) GetDelay() time.Duration {
 
 func DistMsm(s string) {
 	fmt.Printf("###################### MAIN  %s ########################### \n", s)
+}
+
+func (p *Pack) GetMes() Message {
+	return p.Mes
+}
+
+func (p *Pack) GetConfACK() Ack {
+	return p.ConfACK
 }

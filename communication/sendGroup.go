@@ -1,7 +1,6 @@
 package communication
 
 import (
-	"log"
 	f "practice1/functions"
 	"time"
 )
@@ -38,7 +37,7 @@ func SendGroup(connect *f.Conn) error {
 	for _, v := range connect.GetIds() {
 		if v != id {
 
-			var msm f.Message = f.Message{
+			msm := &f.Message{
 				To:     v,
 				From:   id,
 				Targ:   target,
@@ -48,11 +47,11 @@ func SendGroup(connect *f.Conn) error {
 
 			if v != target {
 				// Aplico delay y envio
-				log.Println("[SG] Ejecutando delay de ", delay, "milisegundos")
+				// log.Println("[SG] Ejecutando delay de ", delay, "milisegundos")
 				time.Sleep(delay)
 			}
 
-			log.Println("[SG] LLAMO A SEND", msm)
+			// log.Println("[SG] LLAMO A SEND", msm)
 			go Send(v, msm, id)
 			// log.Println("[SG] Envio MSM ", id, "+++++>>", v)
 

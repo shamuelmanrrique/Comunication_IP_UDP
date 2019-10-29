@@ -13,7 +13,6 @@ func ReceiveM(canalAck chan f.Ack, canal chan f.Message, addr string) error {
 	var ac f.Ack
 	var err error
 	var listener *net.UDPConn
-	const maxBufferSize = 4046
 
 	log.Println("[RM]             ReceiveM ")
 
@@ -26,7 +25,7 @@ func ReceiveM(canalAck chan f.Ack, canal chan f.Message, addr string) error {
 	f.Error(err, "[RM] ListenUDP Error")
 	defer listener.Close()
 
-	buffer := make([]byte, maxBufferSize)
+	buffer := make([]byte, f.MaxBufferSize)
 	log.Println("[RM] buffer: ")
 	nRead, src, err := listener.ReadFrom(buffer)
 	f.Error(err, "Error en RM")
