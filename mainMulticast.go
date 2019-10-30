@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"reflect"
 	"time"
 
 	f "practice1/functions"
@@ -86,31 +85,25 @@ func main() {
 	go u.ReceivePack(chanInterf, connectM.GetPort())
 	// go u.ReceiveM(chanInterf, connectM.GetPort())
 	time.Sleep(1 * time.Second)
-	go u.SendM(&vr, connectM.GetId())
+	go u.SendM(ackID, connectM.GetId())
 
 	data := <-chanInterf
 	fmt.Println("[MAIN]  --> ", ackID, data, vr, msm)
 
 	// ve, ok := data.(f.Message)
-	vEe, ok1 := data.(f.AckInterface)
-	fmt.Println("[Main] Soy Message", type(data))
+	vEe, ok1 := data.(f.Ack)
+	// fmt.Println("[Main] Soy Message", d)
 	fmt.Println("[Main] Soy Message", vEe, ok1)
-	// switch t := data.(type) {
-	// case f.Msm:
-	// 	// var ms f.Message = data
-	// 	fmt.Println("[Main] Soy Message", data, t)
-	// case f.Message:
-	// 	// var ms f.Message = data
-	// 	fmt.Println("[Main] Soy Message", data, t)
-	// case f.Ack:
-	// 	// var ms f.Message = data
-	// 	fmt.Println("[Main] Soy Message", data, t)
-	// case f.AckInterface:
-	// 	// var ack f.Ack = data
-	// 	fmt.Println("[Main] Soy ACK", data)
-	// default:
-	// 	fmt.Println("abkb")
-	// }
+
+	ve, ok := data.(f.Message)
+	// fmt.Println("[Main] Soy Message", d)
+	fmt.Println("[Main] Soy Message", ve, ok)
+	switch packNew := data.(type) {
+	case f.Message:
+		fmt.Println("[Main] Soy Message 11", data, t)
+	case f.Ack:
+		fmt.Println("[Main] Soy ACK", data, t)
+	}
 
 	if false {
 
