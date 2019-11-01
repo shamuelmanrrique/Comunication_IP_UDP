@@ -59,14 +59,25 @@ func main() {
 	}
 
 	if true {
-		v, _ := f.InitSSH("shamuel", "localhost", "/home/shamuel/.ssh/id_rsa")
+
+		// var s []ssh.Session
+		// for _, v := range ids {
+
+		v, _ := f.InitSSH("a802400", "195.210.154.210", "/home/shamuel/.ssh/id_rsa")
+		// s = append(s, aux)
+
+		// }
+
+		// // v, _ := f.InitSSH("shamuel", "localhost", "/home/shamuel/.ssh/id_rsa")
 		var b bytes.Buffer
 		v.Stdout = &b
 
-		// Finally, run the command
-		// v.Run("go run go/src/game/main.go -proc " + strconv.Itoa(i+1) + " -n 4 >> log" + middleware.Addresses[i+1] + ".txt")
-		v.Run("cd \"/home/shamuel/go/src/practice1/app\" ;ls ; pwd;go run main.go -r \"local\" -t \"127.0.1.1:5002\" -d \"5s\" -n 3 -m=true -p=\":5001\" > ho.txt")
+		// // Finally, run the command
+		// // v.Run("go run go/src/game/main.go -proc " + strconv.Itoa(i+1) + " -n 4 >> log" + middleware.Addresses[i+1] + ".txt")
+		v.Run("bash; ls ; pwd")
+		// v.Run("cd \"/home/shamuel/go/src/practice1/app\" ;ls ; pwd;go run main.go -r \"local\" -t \"127.0.1.1:5002\" -d \"5s\" -n 3 -m=true -p=\":5001\" > ho.txt")
 		fmt.Println(b.String())
+
 	}
 	fmt.Println("ESTOY FUERA")
 	go c.ReceiveGroup(connect)

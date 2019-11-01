@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/gob"
 	"flag"
-	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -64,25 +64,64 @@ func main() {
 		Vector: vector,
 	}
 
-	// msm := &f.Message{
-	// 	To:   f.MulticastAddress,
-	// 	From: connectM.GetId(),
-	// 	Targ: connectM.GetId(),
-	// 	Data: "inf",
-	// }
+	msm := &f.Message{
+		To:   f.MulticastAddress,
+		From: connectM.GetId(),
+		Targ: connectM.GetId(),
+		Data: "inf",
+	}
 
-	chanAck := make(chan f.Ack, len(connectM.GetIds()))
-	chanMessage := make(chan f.Message, len(connectM.GetIds()))
+	// chanInterf := make(chan interface{})
+	chanAck := make(chan f.Ack)
+	chanMessage := make(chan f.Message)
+
+	ackID := &f.Ack{Code: " idESTOY EN ENE SKNALND" + "," + msm.GetFrom()}
+	// vr := "6"
+	// red, _ := net.ResolveUDPAddr("udp", connectM.GetId())
+	// log.Println("[RM]             localhostAddress ", red)
+
+	// // printError("ResolvingUDPAddr in Broadcast localhost failed.", er)
+	// listener, err := net.ListenUDP("udp", red)
+	// f.Error(err, "[RM] ListenUDP Error")
+	// defer listener.Close()
+
+	go pp(chanAck)
+	go pp1(chanMessage)
 
 	go u.ReceiveM(chanAck, chanMessage, connectM.GetPort())
-
-	go u.ReceiveGroupM(chanMessage, connectM)
-	if flags.GetMaster() {
-		go u.SendGroupM(chanMessage, connectM)
+	// go u.ReceiveM(chanInterf, connectM.GetPort())
+	for i := 0; i < 1; i++ {
+		time.Sleep(800 * time.Millisecond)
+		go u.SendM(ackID, connectM.GetId())
+		time.Sleep(200 * time.Millisecond)
+		go u.SendM(msm, connectM.GetId())
+		time.Sleep(1 * time.Second)
+		go u.SendM(ackID, connectM.GetId())
 	}
+
+	// data := <-chanInterf
 
 	for i := 0; i < 20; i = i + 3 {
 		time.Sleep(time.Second * 5)
-		fmt.Println("[MAIN] Fin contando...", i, "segundos...")
+		// fmt.Println("Fin del main, contando...", i, "segundos...", msm)
+	}
+	// }
+}
+
+func pp(c chan f.Ack) {
+	for i := 0; i < 4; i++ {
+		h := <-c
+		log.Println(" [Main]  |||| -->valor en pp ACK ", h)
+
+	}
+}
+
+func pp1(c chan f.Message) {
+
+	r := []string{"a", "b", "c"}
+	for i, _ := range r {
+		h := <-c
+		log.Println(" |||| -->valor en pp1 MESSAGE  ", i, h)
+
 	}
 }

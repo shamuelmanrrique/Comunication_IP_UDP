@@ -54,7 +54,7 @@ func ReceiveGroupM(connect *f.Conn) error {
 	// Seteo nuevamente el reloj
 	connect.SetClock(vector)
 
-	fmt.Println("[ReceiveGroupM]  REcibido de: ", msm.GetFrom(), " Yo soy ", id)
+	fmt.Println("[ReceiveGroupM]  Recibido de: ", msm.GetFrom(), " Yo soy ", id)
 	if msm.GetFrom() != id {
 
 		fmt.Println("[ReceiveGroupM]  Target: ", msm.GetTarg(), " Recibio ", id)
