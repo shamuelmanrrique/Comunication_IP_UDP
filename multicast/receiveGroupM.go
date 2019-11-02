@@ -37,17 +37,11 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	defer close(m)
 
 	go func() {
-		// for i := 0; i < n; i++ {
-		deadline := time.Now().Add(10 * time.Second)
-		for time.Now().Before(deadline) {
-			// log.Println("[ReceiveGroupM]  ++++ INICIO FOR ReceiveGroupM i: ", i, " N ", n)
-
+		for i := 0; i < n; i++ {
+			log.Println("[ReceiveGroupM]  Segundo FOR", i, " el valor de n ", n)
 			listener.SetReadBuffer(f.MaxBufferSize)
-
 			buffer := make([]byte, f.MaxBufferSize)
-			// nRead, _, _ := listener.ReadFromUDP(buffer)
 			listener.ReadFromUDP(buffer)
-
 			dataBuffer := bytes.NewBuffer(buffer)
 			decode = gob.NewDecoder(dataBuffer)
 			err = decode.Decode(&msm)
@@ -62,16 +56,10 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	}()
 
 	var msm1 f.Message
-	// Chequeamos si el msm recibido esta en el array de msm
 	log.Println("[ReceiveGroupM]  Segundo FOR")
-	for {
-		// for i := 0; i < n; i++ {
+	for i := 0; i < n; i++ {
 		// log.Println("[ReceiveGroupM]  Esperando tomar un segundo msm")
 		msm1, ok = <-m
-		// log.Println("[ReceiveGroupM]  ++++ INICIO FOR ReceiveGroupM i: ", i, " N ", n)
-		if !ok {
-			break
-		}
 		from := msm1.GetFrom()
 		if from != id {
 			log.Println("[ReceiveGroupM]  ELSE  CON MSM DE ", msm1.GetFrom())
@@ -83,12 +71,8 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 
 			// RECIBO y sumo 1 al vector
 			vector.Tick(id)
-			// SEt la nueva actualizacion de recepcion
 			connect.SetClock(vector)
-			// Uno los relojes
 			vector.Merge(msm1.GetVector())
-			// connect.GetVector().Merge(vector)
-			// Seteo nuevamente el reloj
 			connect.SetClock(vector)
 
 			log.Println("[ReceiveGroupM]  Recibido de: ", msm1.GetFrom(), " Yo soy ", id, "Target: ", msm1.GetTarg())

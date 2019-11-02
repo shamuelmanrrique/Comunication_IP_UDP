@@ -1,102 +1,130 @@
-fmt.Println("[MAIN]  --> ", ackID, data, vr, msm)
+package multicast
 
-// ve, ok := data.(f.Message)
-vEe, ok1 := data.(f.Ack)
-// fmt.Println("[Main] Soy Message", d)
-fmt.Println("[Main] Soy Message", vEe, ok1)
+import (
+	"bytes"
+	"encoding/gob"
+	"log"
+	"net"
+	f "practice1/functions"
+	"time"
+)
 
-ve, ok := data.(f.Message)
-// fmt.Println("[Main] Soy Message", d)
-fmt.Println("[Main] Soy Message", ve, ok)
-switch packNew := data.(type) {
-case f.Message:
-	fmt.Println("[Main] Soy Message 11", data, packNew)
-case f.Ack:
-	fmt.Println("[Main] Soy ACK", data, packNew)
-}
+// SendGroupM send message to ip multicast and wait ack
+func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
+	var red *net.UDPAddr
+	var connection *net.UDPConn
+	var encoder *gob.Encoder
+	var buffer bytes.Buffer
+	var ok bool
+	var err error
+	var bufferAck []f.Ack
 
-if false {
+	target := ""
+	delay, _ := time.ParseDuration("0s")
+	inf := "Me mataron"
+	id := connect.GetId()
 
-	// inicio ReceiveGroupM
-	go u.ReceiveGroupM(connectM)
-	time.Sleep(time.Second * 2)
+	// Update vClock and make a copy
+	vector := connect.GetVector()
+	vector.Tick(id)
+	connect.SetClock(vector)
+	copyVector := vector.Copy()
 
-	// Si soy master llamo SendGroupM msm
-	if flags.Master {
-
-		target := ""
-		delay, _ := time.ParseDuration("0s")
-		inf := "Me mataron"
-		id := connectM.GetId()
-
-		// Actualizo el reloj
-		vector := connectM.GetVector()
-
-		if len(connectM.GetKill()) > 0 && len(connectM.GetDelays()) > 0 {
-			target = connectM.GetTarget(0)
-			delay = connectM.GetDelay(0)
-			inf = "He disparado"
-			connectM.SetKill()
-			connectM.SetDelay()
-		}
-
-		// Incremento el reloj
-		vector.Tick(id)
-		connectM.SetClock(vector)
-
-		// TODO CREATE SNAPSHOP RELOJ []VCLOCK
-		// Copio el vector
-		copyVector := vector.Copy()
-
-		// IMprimo TODO
-		// fmt.Println("[Main] ", copyVector, target, delay, inf)
-
-		// En este caso tomo el target para enviar el delay
-		var msm f.Message = f.Message{
-			To:     f.MulticastAddress,
-			From:   id,
-			Targ:   target,
-			Data:   inf,
-			Vector: copyVector,
-			Delay:  delay,
-		}
-
-		fmt.Println("Llamo sendGroup MAIN", *connectM)
-		time.Sleep(time.Second * 2)
-		go u.SendGroupM(&msm, connectM)
+	// Check if it has a target
+	log.Println("[SendGroupM] Check if it has a target")
+	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
+		target = connect.GetTarget(0)
+		delay = connect.GetDelay(0)
+		inf = "He disparado"
+		connect.SetKill()
+		connect.SetDelay()
 	}
 
-	
-	
-	
-	
-	// // Define connection to udp
-	// redUDP, err = net.ResolveUDPAddr("udp", connect.GetId())
-	// f.Error(err, "Send connection error \n")
+	// Created message to send
+	msm := &f.Message{
+		To:     f.MulticastAddress,
+		From:   id,
+		Targ:   target,
+		Data:   inf,
+		Vector: copyVector,
+		Delay:  delay,
+	}
 
-	// connectionUDP, err = net.ListenUDP("udp", redUDP)
-	// f.Error(err, "Send connection error \n")
-	// defer connectionUDP.Close()
+	// Creating red connection
+	red, err = net.ResolveUDPAddr("udp", f.MulticastAddress)
+	f.Error(err, "SendGroupM error ResolveUDPAddr connection \n")
 
-	// // red, _ := net.ResolveUDPAddr("udp", connect.GetId())
-	// // log.Println("[RM]             localhostAddress ", red)
+	connection, err = net.DialUDP("udp", nil, red)
+	f.Error(err, "SendGroupM error DialUDP connection \n")
+	defer connection.Close()
 
-	// // // printError("ResolvingUDPAddr in Broadcast localhost failed.", er)
-	// // listener, err := net.ListenUDP("udp", red)
-	// // f.Error(err, "[RM] ListenUDP Error")
-	// // defer listener.Close()
+	// Send msm to ip multicast 3 times
+	go func() {
+		log.Println("[SendGroupM] FOR Send msm to multicast three times ")
+		for i := 0; i < 3; i++ {
+			log.Println("[SendGroupM] ENVIO Numero ", i, " al ip ")
+			encoder = gob.NewEncoder(&buffer)
+			err = encoder.Encode(msm)
+			f.Error(err, "SendGroupM encoder error \n")
+			_, err = connection.Write(buffer.Bytes())
+			f.Error(err, "Error al enviar el msm")
+			time.Sleep(200 * time.Millisecond)
+		}
 
-	// var bufferPacks []f.Pack
-	// canalPacks := make(chan f.Pack)
+	}()
 
-	// for i := 0; i < n-1; i++ {
-	// 	go ReceivePack(canalPacks, connectionUDP, connect.GetId())
+	log.Println("[SendGroupM] 77 VOY A RECIBIR ACK")
+	// dictAck := make(map[string]f.Ack)
+	deadline := time.Now().Add(2 * time.Second)
+	log.Println("[SendGroupM] 81  FOR Time ")
+	for time.Now().Before(deadline) {
+		pack := <-chanAck
+		log.Println("[SendGroupM] 82 me llego ACK ")
+		if connect.GetId() != pack.GetOrigen() {
+			// dictAck[pack.GetOrigen()] = pack
+			bufferAck, ok = f.AddAcks(bufferAck, pack)
+		}
+	}
 
-	// 	pt, _ := <-canalPacks
-	// 	fmt.Println("[SendGroupM] recibo del canal: ", pt)
-	// 	bufferPacks = append(bufferPacks, pt)
+	log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
+	pendCheck, chec := f.CheckAcks(bufferAck, connect)
 
+	// TODO Call Receive
+	log.Println("[SendGroupM] IMPRIMO A VER SI FALTAN ACK ", chec, " Y LOS ACKS ", pendCheck)
+	if !chec {
+		//Necesito enviar tres veces
+		log.Println("[SendGroupM] me faltan ACK los envio rirectamente")
+		go func() {
+			for i := 0; i < 3; i++ {
+				for _, v := range pendCheck {
+					log.Println("[SendGroupM] envio a ", v)
+					go SendM(msm, v)
+				}
+				time.Sleep(200 * time.Millisecond)
+			}
+		}()
+
+		deadline2 := time.Now().Add(3 * time.Second)
+		for time.Now().Before(deadline2) {
+			// for i := 0; i < nless; i++ {
+			log.Println("[SendGroupM] FOR RECEIVE ACK for 3 seconds ")
+			pack := <-chanAck
+			if connect.GetId() != pack.GetOrigen() {
+				// dictAck[pack.GetOrigen()] = pack
+				bufferAck, ok = f.AddAcks(bufferAck, pack)
+			}
+		}
+	}
+
+	log.Print("[SendGroupM] communication error finished program ", ok)
+	// _, ok := f.CheckAcks(bufferAck, connect)
+
+	// if !ok {
+	// 	log.Print("[SendGroupM] communication error finished program ")
+	// 	return err
 	// }
 
-	// deadline := time.Now().Add(2 * time.Second)
-	// err = connection.SetDeadline(deadline)
+	// TODO Sort vclock
+	return err
+
+}

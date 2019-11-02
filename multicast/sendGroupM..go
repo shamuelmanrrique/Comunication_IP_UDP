@@ -24,12 +24,10 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	inf := "Me mataron"
 	id := connect.GetId()
 
-	// Update vClock
+	// Update vClock and make a copy
 	vector := connect.GetVector()
 	vector.Tick(id)
 	connect.SetClock(vector)
-
-	// Create copy of vector to send into the message
 	copyVector := vector.Copy()
 
 	// Check if it has a target
@@ -64,29 +62,38 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	go func() {
 		log.Println("[SendGroupM] FOR Send msm to multicast three times ")
 		for i := 0; i < 3; i++ {
-			log.Println("[SendGroupM] ENVIO Numero ", i)
+			log.Println("[SendGroupM] ENVIO Numero ", i, " al ip ")
 			encoder = gob.NewEncoder(&buffer)
 			err = encoder.Encode(msm)
 			f.Error(err, "SendGroupM encoder error \n")
 			_, err = connection.Write(buffer.Bytes())
-			f.Error(err, "Error al enviar el msm")
+			// f.Error(err, "Error al enviar el msm")
 			time.Sleep(200 * time.Millisecond)
 		}
+
 	}()
 
 	log.Println("[SendGroupM] 77 VOY A RECIBIR ACK")
 	// dictAck := make(map[string]f.Ack)
-	deadline := time.Now().Add(3 * time.Second)
+	deadline := time.Now().Add(2 * time.Second)
+	log.Println("[SendGroupM] 79  FOR Time  0000000000000 ", deadline)
 	for time.Now().Before(deadline) {
-		log.Println("[SendGroupM] 81  FOR RECEIVE ACK for 3 seconds ")
-		pack := <-chanAck
+		log.Println("[SendGroupM] 81 ")
+		pack, _ := <-chanAck
+
+		log.Println("[SendGroupM] 82 me llego ACK ")
 		if connect.GetId() != pack.GetOrigen() {
 			// dictAck[pack.GetOrigen()] = pack
 			bufferAck, ok = f.AddAcks(bufferAck, pack)
 		}
+
+		if len(bufferAck) == len(connect.GetIds())-1 {
+			break
+		}
+
 	}
 
-	log.Println("[SendGroupM] Salgo del FOR de recibir ACKS ")
+	log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
 	pendCheck, chec := f.CheckAcks(bufferAck, connect)
 
 	// TODO Call Receive
@@ -116,7 +123,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 		}
 	}
 
-	log.Print("[SendGroupM] communication error finished program ", ok)
+	log.Println("[SendGroupM] |||||| Fin send Group |||| ", ok)
 	// _, ok := f.CheckAcks(bufferAck, connect)
 
 	// if !ok {
