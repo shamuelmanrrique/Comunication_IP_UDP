@@ -67,8 +67,7 @@ func ReceiveGroup(connect *f.Conn) error {
 		// i = i + 1
 	}
 
-	// log.Println(" [RG] Estoy fuera del FOR ")
-	// // Ordeno el arreglo de msm
+	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})

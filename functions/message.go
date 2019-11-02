@@ -70,3 +70,18 @@ func (p *Pack) GetMes() Message {
 func (p *Pack) GetConfACK() Ack {
 	return p.ConfACK
 }
+
+func CheckMsm(msms []Message, m Message) ([]Message, bool, Message) {
+	for _, a := range msms {
+		if m.GetFrom() == a.GetFrom() && m.GetVector().Compare(a.GetVector(), v.Equal) {
+			fmt.Println("[CheckMsm] El msm ya lo tengo agregado")
+			return msms, true, m
+		}
+	}
+
+	fmt.Println("[CheckMsm] El msm ya lo tengo agregado EL msm lo envio ", m.GetFrom())
+	msms = append(msms, m)
+
+	return msms, false, m
+
+}

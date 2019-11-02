@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/gob"
 	"flag"
-	"fmt"
 	"os"
 	"time"
 
@@ -64,25 +63,20 @@ func main() {
 		Vector: vector,
 	}
 
-	// msm := &f.Message{
-	// 	To:   f.MulticastAddress,
-	// 	From: connectM.GetId(),
-	// 	Targ: connectM.GetId(),
-	// 	Data: "inf",
-	// }
-
 	chanAck := make(chan f.Ack, len(connectM.GetIds()))
+	defer close(chanAck)
 	chanMessage := make(chan f.Message, len(connectM.GetIds()))
+	defer close(chanMessage)
 
 	go u.ReceiveM(chanAck, chanMessage, connectM.GetPort())
 
-	go u.ReceiveGroupM(chanMessage, connectM)
+	go u.ReceiveGroupM(chanMessage, chanAck, connectM)
 	if flags.GetMaster() {
-		go u.SendGroupM(chanMessage, connectM)
+		go u.SendGroupM(chanAck, connectM)
 	}
 
-	for i := 0; i < 20; i = i + 3 {
+	for i := 0; i < 40; i = i + 3 {
 		time.Sleep(time.Second * 5)
-		fmt.Println("[MAIN] Fin contando...", i, "segundos...")
+		// log.Println("[MAIN] Fin contando...", i, "segundos...")
 	}
 }

@@ -16,20 +16,21 @@ func (a Ack) GetCode() string {
 	return a.Code
 }
 
-func CheckAcks(acks []Ack, c *Conn) (bool, []string) {
+// La funcion toma el Ack y chequea
+func CheckAcks(acks []Ack, c *Conn) ([]string, bool) {
 	ips := c.GetIds()
 	ips = Remove(ips, c.GetId())
 
 	if len(acks) == len(ips) {
-		return true, []string{}
+		return []string{}, true
 	}
 
 	for _, a := range acks {
 		code := strings.Split(a.GetCode(), ",")
-		ips = Remove(ips, code[1])
+		ips = Remove(ips, code[0])
 	}
 
-	return false, ips
+	return ips, false
 
 }
 
