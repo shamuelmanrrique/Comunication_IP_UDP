@@ -33,10 +33,14 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	defer listener.Close()
 
 	var msmMult []f.Message
+	m := make(chan f.Message)
+	defer close(m)
 
-	func() {
-		for i := 0; i < n; i++ {
-			log.Println("[ReceiveGroupM]  ++++ INICIO FOR ReceiveGroupM i: ", i, " N ", n)
+	go func() {
+		// for i := 0; i < n; i++ {
+		deadline := time.Now().Add(10 * time.Second)
+		for time.Now().Before(deadline) {
+			// log.Println("[ReceiveGroupM]  ++++ INICIO FOR ReceiveGroupM i: ", i, " N ", n)
 
 			listener.SetReadBuffer(f.MaxBufferSize)
 
@@ -50,23 +54,31 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			f.Error(err, "Receive error  Decode\n")
 
 			msmMult, ok, _ = f.CheckMsm(msmMult, msm)
-			log.Println("[ReceiveGroupM]  RESULTADO DE msmMult ", msmMult, " el valor de OK :", ok)
-			if ok {
-				i--
+			if !ok {
+				log.Println("[ReceiveGroupM]  ENVIO UN MSM POR EL CANAL++++++")
+				m <- msm
 			}
 		}
 	}()
 
+	var msm1 f.Message
 	// Chequeamos si el msm recibido esta en el array de msm
-	from := msm.GetFrom()
-	if from != id {
-		msmMult, ok, msm = f.CheckMsm(msmMult, msm)
-		log.Println("[ReceiveGroupM]  RESULTADO DE msmMult ", msmMult, " el valor de OK :", ok)
-		if ok {
-			i--
-		} else {
-			log.Println("[ReceiveGroupM]  ELSE  CON MSM DE ", msm.GetFrom())
-			ackID := &f.Ack{Code: connect.GetId() + "," + from}
+	log.Println("[ReceiveGroupM]  Segundo FOR")
+	for {
+		// for i := 0; i < n; i++ {
+		// log.Println("[ReceiveGroupM]  Esperando tomar un segundo msm")
+		msm1, ok = <-m
+		// log.Println("[ReceiveGroupM]  ++++ INICIO FOR ReceiveGroupM i: ", i, " N ", n)
+		if !ok {
+			break
+		}
+		from := msm1.GetFrom()
+		if from != id {
+			log.Println("[ReceiveGroupM]  ELSE  CON MSM DE ", msm1.GetFrom())
+			ackID := &f.Ack{
+				Origen: connect.GetId(),
+				Code:   connect.GetId() + "," + from,
+			}
 			go SendM(ackID, from)
 
 			// RECIBO y sumo 1 al vector
@@ -74,34 +86,32 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			// SEt la nueva actualizacion de recepcion
 			connect.SetClock(vector)
 			// Uno los relojes
-			vector.Merge(msm.GetVector())
+			vector.Merge(msm1.GetVector())
 			// connect.GetVector().Merge(vector)
 			// Seteo nuevamente el reloj
 			connect.SetClock(vector)
 
-			log.Println("[ReceiveGroupM]  Recibido de: ", msm.GetFrom(), " Yo soy ", id, "Target: ", msm.GetTarg())
-			if msm.GetTarg() == id {
+			log.Println("[ReceiveGroupM]  Recibido de: ", msm1.GetFrom(), " Yo soy ", id, "Target: ", msm1.GetTarg())
+			if msm1.GetTarg() == id {
 				log.Println("[ReceiveGroupM] SOY TARGET entre en el IF")
 				n--
 				//Aplico delay receive
-				delay := msm.GetDelay()
+				// delay := msm1.GetDelay()
 				log.Println("[ReceiveGroupM] Aplico Delay")
-				time.Sleep(delay * time.Second)
+				// time.Sleep(delay * time.Second)
 
-				log.Println("[ReceiveGroupM]  Target: ", msm.GetTarg(), " Recibio ", id)
-				// if msm.GetTarg() == id {
+				log.Println("[ReceiveGroupM]  Llamo a send group : ")
+				// if msm1.GetTarg() == id {
 				go SendGroupM(chanAck, connect)
 				// }
-
 			}
+			// log.Println("[ReceiveGroupM]  ------ FIN FOR ReceiveGroupM i: ", i, " N ", n)
 		}
 
-		log.Println("[ReceiveGroupM]  ------ FIN FOR ReceiveGroupM i: ", i, " N ", n)
 	}
 
 	// TODO debo recibir paquetes directamente
-
-	log.Println("[ReceiveGroupM] SALDO DEL FOR")
+	log.Println("[ReceiveGroupM] SALGO DEL FOR")
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)

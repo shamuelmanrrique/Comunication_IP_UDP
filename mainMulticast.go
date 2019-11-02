@@ -75,7 +75,7 @@ func main() {
 		go u.SendGroupM(chanAck, connectM)
 	}
 
-	for i := 0; i < 40; i = i + 3 {
+	for i := 0; i < 25; i = i + 3 {
 		time.Sleep(time.Second * 5)
 		// log.Println("[MAIN] Fin contando...", i, "segundos...")
 	}

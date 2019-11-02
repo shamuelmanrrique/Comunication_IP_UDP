@@ -22,12 +22,11 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	f.Error(err, "[ReceiveM] ListenUDP Error")
 	defer listener.Close()
 
-	timeoutDuration := 10 * time.Second
+	timeoutDuration := 20 * time.Second
+	listener.SetReadDeadline(time.Now().Add(timeoutDuration))
 
 	for {
-		// log.Println("[ReceiveM]+++++++++++++++FOR++++++++")
-		listener.SetReadDeadline(time.Now().Add(timeoutDuration))
-
+		log.Println("[ReceiveM] estoy en el for")
 		buffer := make([]byte, f.MaxBufferSize)
 		nRead, src, err := listener.ReadFrom(buffer)
 		if err != nil {
@@ -36,25 +35,9 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 
 		dataBuffer := bytes.NewBuffer(buffer[:nRead])
 		decode := gob.NewDecoder(dataBuffer)
-		// log.Println("[ReceiveM] buffer: ", nRead)
 
 		err = decode.Decode(&pack)
 		f.Error(err, "Receive error  \n")
-
-		// ack, oka := pack.(f.Ack)
-		// if oka {
-		// 	fmt.Println("[ReceiveM] Me llego un ack", ack)
-		// 	chanAc <- ack
-		// }
-
-		// msm, okm := pack.(f.Message)
-		// if okm {
-		// 	fmt.Println("[ReceiveM] Me llego un message", msm)
-		// 	chanMes <- msm
-		// }
-
-		// fmt.Println("[Main] Soy Message", d)
-		// fmt.Println("[Main] Soy Message", ve, ok)
 
 		switch packNew := pack.(type) {
 		case f.Message:

@@ -1,19 +1,26 @@
 package functions
 
 import (
+	"log"
 	"strings"
 )
 
 type AckInterface interface {
 	GetCode() string
+	GetOrigen() string
 }
 
 type Ack struct {
-	Code string
+	Origen string
+	Code   string
 }
 
 func (a Ack) GetCode() string {
 	return a.Code
+}
+
+func (a Ack) GetOrigen() string {
+	return a.Origen
 }
 
 // La funcion toma el Ack y chequea
@@ -42,4 +49,19 @@ func Remove(l []string, item string) []string {
 		}
 	}
 	return aux
+}
+
+func AddAcks(acks []Ack, a Ack) ([]Ack, bool) {
+	for _, ac := range acks {
+		if a == ac {
+			log.Println(" [SendGroupM] = [CheckMsm] Ya lento ese ACK")
+			return acks, true
+		}
+	}
+
+	log.Println("[SendGroupM] = [CheckMsm] Agrego el ACK ")
+	acks = append(acks, a)
+
+	return acks, false
+
 }

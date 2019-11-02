@@ -2,6 +2,7 @@ package functions
 
 import (
 	"fmt"
+	"log"
 	v "practice1/vclock"
 	"time"
 )
@@ -74,12 +75,12 @@ func (p *Pack) GetConfACK() Ack {
 func CheckMsm(msms []Message, m Message) ([]Message, bool, Message) {
 	for _, a := range msms {
 		if m.GetFrom() == a.GetFrom() && m.GetVector().Compare(a.GetVector(), v.Equal) {
-			fmt.Println("[CheckMsm] El msm ya lo tengo agregado")
+			log.Println("[CheckMsm] LO TENGO,  IGNORO EL MSM")
 			return msms, true, m
 		}
 	}
 
-	fmt.Println("[CheckMsm] El msm ya lo tengo agregado EL msm lo envio ", m.GetFrom())
+	log.Println("[CheckMsm] Lo agrego y envio ", m.GetFrom())
 	msms = append(msms, m)
 
 	return msms, false, m
