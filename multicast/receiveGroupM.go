@@ -56,12 +56,17 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 				}
 			}
 		}
+
+		// go func (chM chan f.Message, chan f.Message,)  {
+		// 	select{
+		// 	}
+		// }(chanMess)
+		// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+		// Falta recibir por UDP DIRECTAMENTE
+		// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 	}()
 
-	// go func (chM chan f.Message, chan f.Message,)  {
-	// 	select{
-	// 	}
-	// }(chanMess)
 readMessage:
 	for {
 		var messag f.Message
