@@ -15,13 +15,14 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	var connection *net.UDPConn
 	var encoder *gob.Encoder
 	var buffer bytes.Buffer
+	var msm f.Message
 	var ok bool
 	var err error
 	var bufferAck []f.Ack
 
-	target := ""
-	delay, _ := time.ParseDuration("0s")
-	inf := "Me mataron"
+	// target := ""
+	// delay, _ := time.ParseDuration("0s")
+	// inf := "Me mataron"
 	id := connect.GetId()
 
 	// Update vClock and make a copy
@@ -31,23 +32,36 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	copyVector := vector.Copy()
 
 	// Check if it has a target
-	log.Println("[SendGroupM] Check if it has a target")
+	// log.Println("[SendGroupM] Check if it has a target &&&&&&&&&&&&&&&&&&&")
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
-		target = connect.GetTarget(0)
-		delay = connect.GetDelay(0)
-		inf = "He disparado"
-		connect.SetKill()
-		connect.SetDelay()
-	}
+		// log.Println("[SendGroupM]pppppppppppppppppppppppppppppppppppppppppppp")
+		// target = connect.GetTarget(0)
+		// delay = connect.GetDelay(0)
+		// inf = "He disparado"
+		// connect.SetKill()
+		// connect.SetDelay()
+		msm = f.Message{
+			To:     f.MulticastAddress,
+			From:   id,
+			Targ:   connect.GetTarget(0),
+			Data:   "kill",
+			Vector: copyVector,
+			Delay:  connect.GetDelay(0),
+		}
+		// log.Println("[SendGroupM] Creo el  MSM en if", msm)
+	} else {
+		delay, _ := time.ParseDuration("0s")
+		// Created message to send
+		msm = f.Message{
+			To:     f.MulticastAddress,
+			From:   id,
+			Targ:   "",
+			Data:   "am dead",
+			Vector: copyVector,
+			Delay:  delay,
+		}
+		// log.Println("[SendGroupM] Creo el  MSM en else", msm)
 
-	// Created message to send
-	msm := &f.Message{
-		To:     f.MulticastAddress,
-		From:   id,
-		Targ:   target,
-		Data:   inf,
-		Vector: copyVector,
-		Delay:  delay,
 	}
 
 	// Creating red connection
@@ -64,19 +78,19 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 		for i := 0; i < 3; i++ {
 			log.Println("[SendGroupM] ENVIO Numero ", i, " al ip ")
 			encoder = gob.NewEncoder(&buffer)
-			err = encoder.Encode(msm)
+			err = encoder.Encode(&msm)
 			f.Error(err, "SendGroupM encoder error \n")
 			_, err = connection.Write(buffer.Bytes())
 			// f.Error(err, "Error al enviar el msm")
 			time.Sleep(200 * time.Millisecond)
 		}
-
+		log.Println("[SendGroupM] ENVIO ", msm)
 	}()
 
 	log.Println("[SendGroupM] 77 VOY A RECIBIR ACK")
 	// dictAck := make(map[string]f.Ack)
 	deadline := time.Now().Add(2 * time.Second)
-	log.Println("[SendGroupM] 79  FOR Time  0000000000000 ", deadline)
+	// log.Println("[SendGroupM] 79  FOR Time  0000000000000 ", deadline)
 	for time.Now().Before(deadline) {
 		log.Println("[SendGroupM] 81 ")
 		pack, _ := <-chanAck
@@ -93,14 +107,14 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 
 	}
 
-	log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
+	// log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
 	pendCheck, chec := f.CheckAcks(bufferAck, connect)
 
 	// TODO Call Receive
-	log.Println("[SendGroupM] IMPRIMO A VER SI FALTAN ACK ", chec, " Y LOS ACKS ", pendCheck)
+	// log.Println("[SendGroupM] IMPRIMO A VER SI FALTAN ACK ", chec, " Y LOS ACKS ", pendCheck)
 	if !chec {
 		//Necesito enviar tres veces
-		log.Println("[SendGroupM] me faltan ACK los envio rirectamente")
+		// log.Println("[SendGroupM] me faltan ACK los envio rirectamente")
 		go func() {
 			for i := 0; i < 3; i++ {
 				for _, v := range pendCheck {
@@ -114,7 +128,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 		deadline2 := time.Now().Add(3 * time.Second)
 		for time.Now().Before(deadline2) {
 			// for i := 0; i < nless; i++ {
-			log.Println("[SendGroupM] FOR RECEIVE ACK for 3 seconds ")
+			// log.Println("[SendGroupM] FOR RECEIVE ACK for 3 seconds ")
 			pack := <-chanAck
 			if connect.GetId() != pack.GetOrigen() {
 				// dictAck[pack.GetOrigen()] = pack
@@ -124,14 +138,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	}
 
 	log.Println("[SendGroupM] |||||| Fin send Group |||| ", ok)
-	// _, ok := f.CheckAcks(bufferAck, connect)
 
-	// if !ok {
-	// 	log.Print("[SendGroupM] communication error finished program ")
-	// 	return err
-	// }
-
-	// TODO Sort vclock
 	return err
 
 }

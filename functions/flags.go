@@ -18,6 +18,7 @@ type CoordinatesInt interface {
 	GetTarget()
 	GetRun()
 	GetPort()
+	GetExec()
 }
 
 type Coordinates struct {
@@ -27,6 +28,7 @@ type Coordinates struct {
 	Target    Targets
 	Run       string
 	Port      string
+	Exec      string
 }
 
 func (i *Retardos) String() string {
@@ -78,4 +80,7 @@ func (c Coordinates) GetRun() string {
 }
 func (c Coordinates) GetPort() string {
 	return c.Port
+}
+func (c Coordinates) GetExec() string {
+	return c.Exec
 }

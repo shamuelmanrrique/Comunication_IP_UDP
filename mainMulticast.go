@@ -50,6 +50,9 @@ func main() {
 		vector[v] = 0
 	}
 
+	log.Println("[MAIN] Fin contando...vector", ids)
+	log.Println("[MAIN] Fin contando...vector", vector)
+
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
 	f.DistMsm("UDP " + ip + port)
 
@@ -64,9 +67,11 @@ func main() {
 		Vector: vector,
 	}
 
-	chanAck := make(chan f.Ack, len(connectM.GetIds()))
+	chanAck := make(chan f.Ack, len(connectM.GetIds())-1)
+	// chanAck := make(chan f.Ack)
 	defer close(chanAck)
 	chanMessage := make(chan f.Message, len(connectM.GetIds()))
+	// chanMessage := make(chan f.Message)
 	defer close(chanMessage)
 
 	go u.ReceiveM(chanAck, chanMessage, connectM.GetPort())

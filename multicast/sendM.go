@@ -3,7 +3,8 @@ package multicast
 import (
 	"bytes"
 	"encoding/gob"
-	"log"
+
+	// "log"
 	"net"
 	f "practice1/functions"
 )
@@ -31,7 +32,7 @@ func SendM(i interface{}, ip string) error {
 	_, err = connection.Write(buffer.Bytes())
 	f.Error(err, "Error al recibir el msm")
 
-	log.Println("[SendM] ==> Envio  ", i)
+	// log.Println("[SendM] ==> Envio  ", i)
 
 	return err
 }

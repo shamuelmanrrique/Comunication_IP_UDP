@@ -15,7 +15,7 @@ type Connection interface {
 	GetId() string
 	GetIp() string
 	GetPort() string
-	GetKill() []string //puedo elminar
+	GetKill() []string 
 	GetIds() []string
 	GetDelays() []time.Duration
 	GetDelay(n int) time.Duration
