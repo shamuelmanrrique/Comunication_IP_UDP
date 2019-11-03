@@ -53,7 +53,6 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 				if !ok {
 					log.Println("[ReceiveGroupM] RECIBO DE MULTICAST", msm)
 					m <- msm
-					// arrayMsms = app
 				}
 			}
 		}
@@ -61,49 +60,47 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 
 	// go func (chM chan f.Message, chan f.Message,)  {
 	// 	select{
-
 	// 	}
 	// }(chanMess)
-
-	for i := 0; i < n; i++ {
+readMessage:
+	for {
 		var messag f.Message
-		messag, ok = <-m
-		// log.Println("[ReceiveGroupM] MSM a Procesar EN FOR", messag)
-		// for _, v := range msmMult {
-		go func() {
-			ackID := &f.Ack{
-				Origen: connect.GetId(),
-				Code:   connect.GetId() + "," + messag.GetFrom(),
-			}
-			// log.Println("[ReceiveGroupM] ", messag)
-			// Aplico Delay
-			if messag.GetTarg() != id {
-				delay := messag.GetDelay()
-				log.Println("[ReceiveGroupM] Aplico Delay  ", delay, " ENVIADO ", messag.GetFrom())
-				time.Sleep(delay)
-				log.Println("[ReceiveGroupM] FIN Delay de 99999", messag.GetFrom())
-			}
+		select {
+		case messag, ok = <-m:
+			go func() {
+				ackID := &f.Ack{
+					Origen: connect.GetId(),
+					Code:   connect.GetId() + "," + messag.GetFrom(),
+				}
+				// log.Println("[ReceiveGroupM] ", messag)
+				// Aplico Delay
+				if messag.GetTarg() != id {
+					delay := messag.GetDelay()
+					log.Println("[ReceiveGroupM] Aplico Delay  ", delay, " ENVIADO ", messag.GetFrom())
+					time.Sleep(delay)
+					log.Println("[ReceiveGroupM] FIN Delay de 99999", messag.GetFrom())
+				}
 
-			SendM(ackID, messag.GetFrom())
-			vector.Tick(id)
-			connect.SetClock(vector)
-			vector.Merge(messag.GetVector())
-			connect.SetClock(vector)
+				SendM(ackID, messag.GetFrom())
+				vector.Tick(id)
+				connect.SetClock(vector)
+				vector.Merge(messag.GetVector())
+				connect.SetClock(vector)
 
-			log.Println("[ReceiveGroupM]  Recibido de: ", messag.GetFrom(), " Yo soy ", id)
-			if messag.GetTarg() == id {
-				n--
-				go SendGroupM(chanAck, connect)
-				log.Println("[ReceiveGroupM]  Llamo a send group : ")
-			}
-			arrayMsms = append(arrayMsms, messag)
-		}()
+				log.Println("[ReceiveGroupM]  Recibido de: ", messag.GetFrom(), " Yo soy ", id)
+				if messag.GetTarg() == id {
+					n--
+					go SendGroupM(chanAck, connect)
+					log.Println("[ReceiveGroupM]  Llamo a send group : ")
+				}
+				arrayMsms = append(arrayMsms, messag)
+			}()
+		case <-time.After(5 * time.Second):
+			break readMessage
+		}
 	}
 
 	<-time.After(time.Second * 4)
-	// TODO debo recibir paquetes directamente
-	log.Println("[ReceiveGroupM]  Print ARRAYMSM ", arrayMsms)
-
 	log.Println("[ReceiveGroupM] SALGO DEL FOR")
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {

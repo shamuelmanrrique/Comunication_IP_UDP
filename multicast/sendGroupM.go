@@ -77,27 +77,27 @@ readAck:
 	for {
 		select {
 		case pack := <-chanAck:
-			log.Println("[SendGroupM] Adding ACK ", pack)
+			// log.Println("[SendGroupM] Adding ACK ", pack)
 			if id != pack.GetOrigen() {
 				bufferAck, ok = f.AddAcks(bufferAck, pack)
 			}
 			if len(bufferAck) == n {
-				log.Println("[SendGroupM] Salgo me llegaron todos los ACK ")
+				// log.Println("[SendGroupM] Salgo me llegaron todos los ACK ")
 				break readAck
 			}
 		case <-time.After(4 * time.Second):
-			log.Println("[SendGroupM] TIMEOUT readAck")
+			// log.Println("[SendGroupM] TIMEOUT readAck")
 			break readAck
 		}
 	}
 
 	ackWait, ok = f.CheckAcks(ackWait, bufferAck)
-	log.Println("[SendGroupM] IMPRIMO LOS VALORES DE CHECKACKS ",  ackWait, ok)
+	// log.Println("[SendGroupM] IMPRIMO LOS VALORES DE CHECKACKS ",  ackWait, ok)
 	if !ok && aux {
 		go func() {
 			for i := 0; i < 3; i++ {
 				for _, v := range ackWait {
-					log.Println("[SendGroupM] MSM UNICAST TO ", v)
+					// log.Println("[SendGroupM] MSM UNICAST TO ", v)
 					go SendM(msm, v)
 				}
 				time.Sleep(200 * time.Millisecond)
