@@ -1,7 +1,6 @@
 package functions
 
 import (
-	"log"
 	"strings"
 )
 
@@ -54,12 +53,10 @@ func Remove(l []string, item string) []string {
 func AddAcks(acks []Ack, a Ack) ([]Ack, bool) {
 	for _, ac := range acks {
 		if a == ac {
-			log.Println(" [SendGroupM] = [CheckMsm] Ya lento ese ACK")
 			return acks, true
 		}
 	}
 
-	log.Println("[SendGroupM] = [CheckMsm] Agrego el ACK ")
 	acks = append(acks, a)
 
 	return acks, false

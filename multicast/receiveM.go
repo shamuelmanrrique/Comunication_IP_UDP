@@ -45,7 +45,7 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 			log.Println("[ReceiveM] ===> MESSAGE ", packNew, " DE ", packNew.GetFrom())
 		case f.Ack:
 			chanAc <- packNew
-			log.Println("[ReceiveM] ----> ACK ", packNew, " DE ", packNew.GetCode())
+			log.Println("[ReceiveM] ----> ACK ", packNew, " DE ", packNew.GetOrigen())
 		}
 
 	}

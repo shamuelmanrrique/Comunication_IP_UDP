@@ -20,9 +20,6 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	var err error
 	var bufferAck []f.Ack
 
-	// target := ""
-	// delay, _ := time.ParseDuration("0s")
-	// inf := "Me mataron"
 	id := connect.GetId()
 
 	// Update vClock and make a copy
@@ -32,14 +29,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	copyVector := vector.Copy()
 
 	// Check if it has a target
-	// log.Println("[SendGroupM] Check if it has a target &&&&&&&&&&&&&&&&&&&")
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
-		// log.Println("[SendGroupM]pppppppppppppppppppppppppppppppppppppppppppp")
-		// target = connect.GetTarget(0)
-		// delay = connect.GetDelay(0)
-		// inf = "He disparado"
-		// connect.SetKill()
-		// connect.SetDelay()
 		msm = f.Message{
 			To:     f.MulticastAddress,
 			From:   id,
@@ -48,10 +38,8 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 			Vector: copyVector,
 			Delay:  connect.GetDelay(0),
 		}
-		// log.Println("[SendGroupM] Creo el  MSM en if", msm)
 	} else {
 		delay, _ := time.ParseDuration("0s")
-		// Created message to send
 		msm = f.Message{
 			To:     f.MulticastAddress,
 			From:   id,
@@ -60,8 +48,6 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 			Vector: copyVector,
 			Delay:  delay,
 		}
-		// log.Println("[SendGroupM] Creo el  MSM en else", msm)
-
 	}
 
 	// Creating red connection
@@ -74,67 +60,75 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 
 	// Send msm to ip multicast 3 times
 	go func() {
-		log.Println("[SendGroupM] FOR Send msm to multicast three times ")
 		for i := 0; i < 3; i++ {
-			log.Println("[SendGroupM] ENVIO Numero ", i, " al ip ")
 			encoder = gob.NewEncoder(&buffer)
 			err = encoder.Encode(&msm)
 			f.Error(err, "SendGroupM encoder error \n")
 			_, err = connection.Write(buffer.Bytes())
-			// f.Error(err, "Error al enviar el msm")
 			time.Sleep(200 * time.Millisecond)
 		}
-		log.Println("[SendGroupM] ENVIO ", msm)
+		log.Println("[SendGroupM] ENVIO MULTICAST", msm)
 	}()
 
 	log.Println("[SendGroupM] 77 VOY A RECIBIR ACK")
-	// dictAck := make(map[string]f.Ack)
 	deadline := time.Now().Add(2 * time.Second)
-	// log.Println("[SendGroupM] 79  FOR Time  0000000000000 ", deadline)
 	for time.Now().Before(deadline) {
-		log.Println("[SendGroupM] 81 ")
-		pack, _ := <-chanAck
+		select {
+		case pack, _ := <-chanAck:
+			log.Println("[SendGroupM] bufferAck ", <-chanAck)
 
-		log.Println("[SendGroupM] 82 me llego ACK ")
-		if connect.GetId() != pack.GetOrigen() {
-			// dictAck[pack.GetOrigen()] = pack
-			bufferAck, ok = f.AddAcks(bufferAck, pack)
-		}
-
-		if len(bufferAck) == len(connect.GetIds())-1 {
-			break
+			if connect.GetId() != pack.GetOrigen() {
+				bufferAck, ok = f.AddAcks(bufferAck, pack)
+			}
+			log.Println("[SendGroupM] buffer:", len(bufferAck), "lenght", len(connect.GetIds())-1)
+			if len(bufferAck) == len(connect.GetIds())-1 {
+				break
+			}
+		default:
+			if len(bufferAck) == len(connect.GetIds())-1 {
+				break
+			}
 		}
 
 	}
 
-	// log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
+	log.Println("[SendGroupM] CHEQUEOS LOS ACKS ")
 	pendCheck, chec := f.CheckAcks(bufferAck, connect)
 
 	// TODO Call Receive
-	// log.Println("[SendGroupM] IMPRIMO A VER SI FALTAN ACK ", chec, " Y LOS ACKS ", pendCheck)
 	if !chec {
-		//Necesito enviar tres veces
-		// log.Println("[SendGroupM] me faltan ACK los envio rirectamente")
 		go func() {
 			for i := 0; i < 3; i++ {
 				for _, v := range pendCheck {
-					log.Println("[SendGroupM] envio a ", v)
+					log.Println("[SendGroupM] MSM UNICAST TO ", v)
 					go SendM(msm, v)
 				}
 				time.Sleep(200 * time.Millisecond)
 			}
 		}()
 
-		deadline2 := time.Now().Add(3 * time.Second)
-		for time.Now().Before(deadline2) {
-			// for i := 0; i < nless; i++ {
-			// log.Println("[SendGroupM] FOR RECEIVE ACK for 3 seconds ")
-			pack := <-chanAck
-			if connect.GetId() != pack.GetOrigen() {
-				// dictAck[pack.GetOrigen()] = pack
-				bufferAck, ok = f.AddAcks(bufferAck, pack)
+		log.Println("[SendGroupM] WAITING ACK LOST")
+
+	readChannel:
+		for {
+			select {
+			case pack := <-chanAck:
+				log.Println("[SendGroupM] Adding ACK ", pack)
+				if connect.GetId() != pack.GetOrigen() {
+					bufferAck, ok = f.AddAcks(bufferAck, pack)
+				}
+			case <-time.After(3 * time.Second):
+				log.Println("[SendGroupM] TIMEOUT ")
+				break readChannel
 			}
 		}
+	}
+
+	pendCheck, chec = f.CheckAcks(bufferAck, connect)
+	log.Println("[SendGroupM] CHEC ", chec, "array", pendCheck, "faltan", chec)
+	if chec {
+		log.Println("[SendGroupM] Communication error messsage whitout confirmation program finished ")
+		return err
 	}
 
 	log.Println("[SendGroupM] |||||| Fin send Group |||| ", ok)
