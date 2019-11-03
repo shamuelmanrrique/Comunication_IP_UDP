@@ -3,6 +3,7 @@ package multicast
 import (
 	"bytes"
 	"encoding/gob"
+	"log"
 	"net"
 	f "practice1/functions"
 	"time"
@@ -41,15 +42,14 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 		switch packNew := pack.(type) {
 		case f.Message:
 			chanMes <- packNew
-			// log.Println("[ReceiveM] ===> MESSAGE ", packNew, " DE ", src)
+			log.Println("[ReceiveM] ===> MESSAGE ", packNew, " DE ", packNew.GetFrom())
 		case f.Ack:
 			chanAc <- packNew
-			// log.Println("[ReceiveM] ----> ACK ", packNew, " DE ", src)
+			log.Println("[ReceiveM] ----> ACK ", packNew, " DE ", packNew.GetCode())
 		}
 
 	}
 
 	// log.Println("[ReceiveM] |||||| FOR ReceiveM timeout |||| ")
-
 	return err
 }
