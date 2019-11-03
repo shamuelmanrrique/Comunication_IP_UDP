@@ -50,6 +50,5 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 
 	}
 
-	// log.Println("[ReceiveM] |||||| FOR ReceiveM timeout |||| ")
 	return err
 }

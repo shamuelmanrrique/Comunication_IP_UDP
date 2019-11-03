@@ -1,9 +1,5 @@
 package functions
 
-import (
-	"strings"
-)
-
 type AckInterface interface {
 	GetCode() string
 	GetOrigen() string
@@ -22,22 +18,32 @@ func (a Ack) GetOrigen() string {
 	return a.Origen
 }
 
+func AddAcks(acks []Ack, a Ack) ([]Ack, bool) {
+	for _, ac := range acks {
+		if a == ac {
+			return acks, true
+		}
+	}
+	acks = append(acks, a)
+	return acks, false
+
+}
+
 // La funcion toma el Ack y chequea
-func CheckAcks(acks []Ack, c *Conn) ([]string, bool) {
-	ips := c.GetIds()
-	ips = Remove(ips, c.GetId())
-
-	if len(acks) == len(ips) {
-		return []string{}, true
-	}
-
+func CheckAcks(waitAks []string, acks []Ack) ([]string, bool) {
+	aux := waitAks
 	for _, a := range acks {
-		code := strings.Split(a.GetCode(), ",")
-		ips = Remove(ips, code[0])
+		for _, ip := range waitAks {
+			if a.GetOrigen() == ip {
+				aux = Remove(aux, ip)
+			}
+		}
 	}
 
-	return ips, false
-
+	if len(waitAks) == 0 {
+		return aux, true
+	}
+	return aux, false
 }
 
 func Remove(l []string, item string) []string {
@@ -48,17 +54,4 @@ func Remove(l []string, item string) []string {
 		}
 	}
 	return aux
-}
-
-func AddAcks(acks []Ack, a Ack) ([]Ack, bool) {
-	for _, ac := range acks {
-		if a == ac {
-			return acks, true
-		}
-	}
-
-	acks = append(acks, a)
-
-	return acks, false
-
 }
