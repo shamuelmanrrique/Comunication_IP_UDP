@@ -46,7 +46,8 @@ func SendGroup(chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Con
 				time.Sleep(delay)
 			}
 
-			// go Send(&msm, v)
+			fmt.Println("[SendGroup]: Imprimo value")
+			go Send(msm, v)
 			fmt.Println(msm)
 
 		}

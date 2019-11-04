@@ -67,10 +67,12 @@ func main() {
 	defer close(chanMessage)
 
 	fmt.Println("ESTOY FUERA")
+
 	go c.ReceiveGroup(chanMessage, chanMarker, connect)
+
 	if flags.Master {
 		// fmt.Println("Llamo sendGroup MAIN", *connect)
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 2)
 		go c.SendGroup(chanMessage, chanMarker, connect)
 	}
 

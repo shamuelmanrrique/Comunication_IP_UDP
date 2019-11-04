@@ -9,15 +9,17 @@ import (
 )
 
 // ReceiveGroup SLMA
-func ReceiveGroup(chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
+func ReceiveGroup(chanMessage chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
 	var arrayMsms []f.Message
 	n := connect.GetAccept()
 	vector := connect.GetVector()
 	id := connect.GetId()
 
+	go Receive(chanMarker, chanMessage, connect.GetPort())
+
 	for i := 0; i < n; i++ {
-		msm, ok := <-chanMess
+		msm, ok := <-chanMessage
 		if ok {
 			vector.Tick(id)
 			connect.SetClock(vector)
@@ -32,7 +34,7 @@ func ReceiveGroup(chanMess chan f.Message, chanMarker chan f.Marker, connect *f.
 			if id == msm.GetTarg() {
 				n = n - 1
 				log.Println("[RG] Soy el target llamo a SG ")
-				go SendGroup(chanMess, chanMarker, connect)
+				go SendGroup(chanMessage, chanMarker, connect)
 			}
 
 			// Guardo el msm en un array de msm
@@ -51,7 +53,12 @@ func ReceiveGroup(chanMess chan f.Message, chanMarker chan f.Marker, connect *f.
 
 	<-time.After(time.Second * 6)
 	for _, m := range arrayMsms {
-		log.Println("[Message] --> To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
+		// log.Println("[Message] --> To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
+		if m.GetTarg() != "" {
+			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg())
+		} else {
+			log.Println("[Message] -->", m.GetFrom(), m.GetData())
+		}
 	}
 
 	return err
