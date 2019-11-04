@@ -1,4 +1,4 @@
-package multicast
+package chandylamport
 
 import (
 	"bytes"
