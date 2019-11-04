@@ -1,6 +1,7 @@
 package chandylamport
 
 import (
+	"fmt"
 	"log"
 	f "practice1/functions"
 	v "practice1/vclock"
@@ -9,51 +10,98 @@ import (
 )
 
 // ReceiveGroup SLMA
-func ReceiveGroup(chanMessage chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
+func ReceiveGroup(chanPoint chan string, chanMessage chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
+	var marker = &f.Marker{}
 	var arrayMsms []f.Message
-	n := connect.GetAccept()
+	var recordMsms []f.Message
+	n := len(connect.GetIds())
 	vector := connect.GetVector()
 	id := connect.GetId()
+	go Receive(chanPoint, chanMarker, chanMessage, connect.GetPort())
 
-	go Receive(chanMarker, chanMessage, connect.GetPort())
+receiveChannel:
+	for {
+		select {
+		case msm, ok := <-chanMessage:
+			log.Println("[ReceiveGroup] REcibi un msm ")
+			if ok {
+				vector.Tick(id)
+				connect.SetClock(vector)
+				vector.Merge(msm.GetVector())
+				connect.SetClock(vector)
 
-	for i := 0; i < n; i++ {
-		msm, ok := <-chanMessage
-		if ok {
-			vector.Tick(id)
-			connect.SetClock(vector)
-			vector.Merge(msm.GetVector())
-			connect.SetClock(vector)
+				if id == msm.GetTarg() {
+					log.Println("[ReceiveGroup] Soy el target llamo a SG ")
+					go SendGroup(chanPoint, chanMessage, chanMarker, connect)
+				}
 
-			// 	receiveChannel:
-			// case <-time.After(20 * time.Second) :
-			// 	break receiveChannel
-			// log.Println("[RG] IF RG >>>: ", id, " TO: ", msm.GetTo())
+				// Guardo el msm en un array de msm
+				arrayMsms = append(arrayMsms, msm)
+				recordMsms = append(recordMsms, msm)
 
-			if id == msm.GetTarg() {
-				n = n - 1
-				log.Println("[RG] Soy el target llamo a SG ")
-				go SendGroup(chanMessage, chanMarker, connect)
+			} else {
+				log.Println("[RG] Estoy ELSE ")
+				break receiveChannel
 			}
 
-			// Guardo el msm en un array de msm
-			arrayMsms = append(arrayMsms, msm)
+		// Init Snapshot
+		case (*marker) = <-chanMarker:
+			log.Println("[ReceiveGroup] PRINT ARRAY ", arrayMsms)
+			log.Println("[ReceiveGroup]____________ RECIBI INIT MARKER _______ ")
+			marker.SetRecoder(true)
+			marker.SetHeader(arrayMsms)
+			sendPoint(id, connect.GetIds())
+			marker.SetCounter(n - 1)
+			recordMsms = []f.Message{}
+			log.Println("[ReceiveGroup]  MARKER INIT: ", marker)
 
-		} else {
-			log.Println("[RG] Estoy ELSE ")
-			break
+		// Init Recibo CheckPoint
+		case checkPoint := <-chanPoint:
+			log.Println("[ReceiveGroup] CHECKPOINT _______ ", checkPoint, "VALUE OF MASTER ", marker)
+			if !marker.GetRecoder() && marker.GetCounter() == 0 {
+				log.Println("[ReceiveGroup] INIT CHECKPOINT")
+				marker.SetRecoder(true)
+				marker.SetCounter(n - 1)
+				marker.SetHeader(recordMsms)
+				marker.SetCheckPoints(checkPoint)
+				sendPoint(id, connect.GetIds())
+				marker.SetCounter(n - 1)
+				log.Println("[ReceiveGroup] IF CHECKPOINT", marker)
+				recordMsms = []f.Message{}
+
+			} else {
+				if marker.GetCounter() == 0 {
+					log.Println("[ReceiveGroup] IF RECEIVE ALL VALUES")
+					marker.SetRecoder(false)
+					marker.SetCheckPoints(checkPoint)
+
+					// marker.SetChanString(checkPoint)
+					marker.SetCounter(marker.GetCounter() - 1)
+					// Termino ejecucion imprimiendo mis estados
+				} else {
+					log.Println("[ReceiveGroup] ELSE RECEIVE ALL VALUES")
+					marker.SetChannel(recordMsms)
+					marker.SetCheckPoints(checkPoint)
+					marker.SetCounter(marker.GetCounter() - 1)
+					recordMsms = []f.Message{}
+				}
+			}
+		case <-time.After(time.Second * 10):
+			break receiveChannel
 		}
 	}
 
+	<-time.After(time.Second * 5)
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
+	
+	fmt.Println("|||||||||||||||||||| END |||||||||||||||||||||||")
+	marker.PrintMarker(id)
 
-	<-time.After(time.Second * 6)
 	for _, m := range arrayMsms {
-		// log.Println("[Message] --> To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
 		if m.GetTarg() != "" {
 			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg())
 		} else {
@@ -62,5 +110,16 @@ func ReceiveGroup(chanMessage chan f.Message, chanMarker chan f.Marker, connect 
 	}
 
 	return err
+}
+
+func sendPoint(id string, ids []string) {
+	for _, v := range ids {
+		if v != id {
+			// time.Sleep(time.Millisecond * 130)
+			point := id + "," + v
+			log.Println("[ReceiveGroup] -->", id, " pointcheck ", v)
+			go Send(point, v)
+		}
+	}
 
 }

@@ -65,15 +65,31 @@ func main() {
 	defer close(chanMarker)
 	chanMessage := make(chan f.Message, n)
 	defer close(chanMessage)
+	chanPoint := make(chan string, n)
+	defer close(chanPoint)
 
-	fmt.Println("ESTOY FUERA")
+	// var marker = &f.Marker{}
+	fmt.Println("ESTOY FUERA", ids)
+	ids = nil
+	fmt.Println("ESTOY FUERA", ids)
 
-	go c.ReceiveGroup(chanMessage, chanMarker, connect)
-
+	go c.ReceiveGroup(chanPoint, chanMessage, chanMarker, connect)
 	if flags.Master {
 		// fmt.Println("Llamo sendGroup MAIN", *connect)
-		time.Sleep(time.Second * 2)
-		go c.SendGroup(chanMessage, chanMarker, connect)
+		time.Sleep(time.Second * 1)
+		go c.SendGroup(chanPoint, chanMessage, chanMarker, connect)
+	}
+
+	marker := f.Marker{
+		Counter: len(connect.GetIds()),
+		Recoder: false,
+	}
+
+	// Init Snapshot
+	if flags.Master {
+		time.Sleep(time.Second * 4)
+		cap := connect.GetEnv(0)
+		go c.Send(marker, cap)
 	}
 
 	// target := ""

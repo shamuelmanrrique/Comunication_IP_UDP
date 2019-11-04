@@ -8,7 +8,7 @@ import (
 )
 
 // Receive TODO ELIMINAR CALLER
-func Receive(chanMar chan<- f.Marker, chanMes chan<- f.Message, addr string) error {
+func Receive(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f.Message, addr string) error {
 	var listener net.Listener
 	var decoder *gob.Decoder
 	var pack interface{}
@@ -38,6 +38,10 @@ func Receive(chanMar chan<- f.Marker, chanMes chan<- f.Message, addr string) err
 		case f.Marker:
 			chanMar <- packNew
 			log.Println("[ReceiveM] ----> Marker ", packNew, " DE ", packNew.GetCounter())
+		case string:
+			chanPoint <- packNew
+			log.Println("[ReceiveM] ----> checkpoint ", packNew )
+
 		}
 
 		red.Close()
