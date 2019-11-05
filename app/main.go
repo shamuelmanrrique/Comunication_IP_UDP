@@ -6,12 +6,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
+
 	l "practice1/chandylamport"
 	c "practice1/communication"
 	f "practice1/functions"
 	u "practice1/multicast"
 	v "practice1/vclock"
-	"time"
 )
 
 var flags f.Coordinates
@@ -95,18 +96,18 @@ func main() {
 	if false {
 		f.DistMsm("UDP " + ip + port)
 
-		chanAck := make(chan f.Ack, len(connectGetIds())-1)
+		chanAck := make(chan f.Ack, len(connect.GetIds())-1)
 		// chanAck := make(chan f.Ack)
 		defer close(chanAck)
-		chanMessage := make(chan f.Message, len(connectGetIds()))
+		chanMessage := make(chan f.Message, len(connect.GetIds()))
 		// chanMessage := make(chan f.Message)
 		defer close(chanMessage)
 
-		go u.ReceiveM(chanAck, chanMessage, connectGetPort())
+		go u.ReceiveM(chanAck, chanMessage, connect.GetPort())
 
-		go u.ReceiveGroupM(chanMessage, chanAck, connectM)
+		go u.ReceiveGroupM(chanMessage, chanAck, connect)
 		if flags.GetMaster() {
-			go u.SendGroupM(chanAck, connectM)
+			go u.SendGroupM(chanAck, connect)
 		}
 	}
 
