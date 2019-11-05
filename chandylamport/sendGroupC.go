@@ -7,7 +7,7 @@ import (
 )
 
 // SendGroup dda
-func SendGroup(chanPoint chan string, chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
+func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
 	target := ""
 	delay, _ := time.ParseDuration("0s")
@@ -48,7 +48,7 @@ func SendGroup(chanPoint chan string, chanMess chan f.Message, chanMarker chan f
 
 			fmt.Println("[SendGroup]: Imprimo value envio a ", v)
 			// f.BufferMsm[id+","+v] = *msm
-			go Send(msm, v)
+			go SendC(msm, v)
 			fmt.Println(msm)
 
 		}

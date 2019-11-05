@@ -8,7 +8,7 @@ import (
 )
 
 // Send function
-func Send(pack interface{}, addr string) error {
+func SendC(pack interface{}, addr string) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder

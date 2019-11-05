@@ -10,7 +10,7 @@ import (
 )
 
 // ReceiveGroup SLMA
-func ReceiveGroup(chanPoint chan string, chanMessage chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
+func ReceiveGroupC(chanPoint chan string, chanMessage chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
 	var marker = &f.Marker{}
 	var arrayMsms []f.Message
@@ -18,7 +18,7 @@ func ReceiveGroup(chanPoint chan string, chanMessage chan f.Message, chanMarker 
 	n := len(connect.GetIds())
 	vector := connect.GetVector()
 	id := connect.GetId()
-	go Receive(chanPoint, chanMarker, chanMessage, connect.GetPort())
+	go ReceiveC(chanPoint, chanMarker, chanMessage, connect.GetPort())
 
 receiveChannel:
 	for {
@@ -33,7 +33,7 @@ receiveChannel:
 
 				if id == msm.GetTarg() {
 					log.Println("[ReceiveGroup] Soy el target llamo a SG ")
-					go SendGroup(chanPoint, chanMessage, chanMarker, connect)
+					go SendGroupC(chanPoint, chanMessage, chanMarker, connect)
 				}
 
 				// Guardo el msm en un array de msm
@@ -118,7 +118,7 @@ func sendPoint(id string, ids []string) {
 			// time.Sleep(time.Millisecond * 130)
 			point := id + "," + v
 			log.Println("[ReceiveGroup] -->", id, " pointcheck ", v)
-			go Send(point, v)
+			go SendC(point, v)
 		}
 	}
 

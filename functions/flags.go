@@ -14,6 +14,7 @@ type Targets []string
 type CoordinatesInt interface {
 	GetProcess()
 	GetMaster()
+	GetChandy()
 	GetTimeDelay()
 	GetTarget()
 	GetRun()
@@ -29,6 +30,7 @@ type Coordinates struct {
 	Run       string
 	Port      string
 	Exec      string
+	Chandy    bool
 }
 
 func (i *Retardos) String() string {
@@ -68,6 +70,9 @@ func (c Coordinates) GetProcess() int {
 }
 func (c Coordinates) GetMaster() bool {
 	return c.Master
+}
+func (c Coordinates) GetChandy() bool {
+	return c.Chandy
 }
 func (c Coordinates) GetTimeDelay() Retardos {
 	return c.TimeDelay

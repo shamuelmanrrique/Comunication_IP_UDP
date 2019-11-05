@@ -18,13 +18,11 @@ func IdProcess(n int, mode string) []string {
 
 	} else if mode == "remote" {
 		for i := 1; i < 21; i++ {
-			// id = "144.210.154." + strconv.Itoa(190 + i) + ":1400"
 			id = "155.210.154." + strconv.Itoa(190+i) + ":1400"
 			ids = append(ids, id)
 		}
 
 	}
-
 	return ids
 }
 

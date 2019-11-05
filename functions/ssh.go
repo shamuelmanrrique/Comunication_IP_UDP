@@ -26,7 +26,6 @@ func InitSSH(user string, addr string, idRsa string) (ssh.Session, error) {
 	}
 
 	config := &ssh.ClientConfig{
-		// User: "a792900",
 		User: user,
 		Auth: []ssh.AuthMethod{
 			// Use the PublicKeys method for remote authentication.

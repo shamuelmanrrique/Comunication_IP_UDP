@@ -8,7 +8,7 @@ import (
 )
 
 // Receive TODO ELIMINAR CALLER
-func Receive(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f.Message, addr string) error {
+func ReceiveC(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f.Message, addr string) error {
 	var listener net.Listener
 	var decoder *gob.Decoder
 	var pack interface{}

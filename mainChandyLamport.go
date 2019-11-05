@@ -3,13 +3,12 @@
 // import (
 // 	"encoding/gob"
 // 	"flag"
-// 	"log"
+// 	"fmt"
 // 	"os"
 // 	"time"
 
+// 	c "practice1/chandylamport"
 // 	f "practice1/functions"
-
-// 	u "practice1/multicast"
 // 	v "practice1/vclock"
 // )
 
@@ -24,12 +23,10 @@
 // 	flag.Var(&flags.Target, "t", "listas de ip objectivos")
 // }
 
-// func mainddf() {
+// func mainssds() {
 // 	flag.Parse()
-
 // 	gob.Register(f.Message{})
-// 	gob.Register(f.Ack{})
-
+// 	gob.Register(f.Marker{})
 // 	// Comentados para pruebas con UDP
 // 	var val bool = len(flags.TimeDelay) != len(flags.Target)
 // 	if val {
@@ -50,13 +47,9 @@
 // 		vector[v] = 0
 // 	}
 
-// 	log.Println("[MAIN] Fin contando...vector", ids)
-// 	log.Println("[MAIN] Fin contando...vector", vector)
-
 // 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
-// 	f.DistMsm("UDP " + ip + port)
 
-// 	connectM := &f.Conn{
+// 	connect := &f.Conn{
 // 		Id:     ip + port,
 // 		Ip:     ip,
 // 		Port:   port,
@@ -67,22 +60,37 @@
 // 		Vector: vector,
 // 	}
 
-// 	chanAck := make(chan f.Ack, len(connectM.GetIds())-1)
-// 	// chanAck := make(chan f.Ack)
-// 	defer close(chanAck)
-// 	chanMessage := make(chan f.Message, len(connectM.GetIds()))
-// 	// chanMessage := make(chan f.Message)
+// 	chanMarker := make(chan f.Marker, n)
+// 	defer close(chanMarker)
+// 	chanMessage := make(chan f.Message, n)
 // 	defer close(chanMessage)
+// 	chanPoint := make(chan string, n)
+// 	defer close(chanPoint)
 
-// 	go u.ReceiveM(chanAck, chanMessage, connectM.GetPort())
+// 	// var marker = &f.Marker{}
+// 	fmt.Println("ESTOY FUERA", ids)
+// 	ids = nil
+// 	fmt.Println("ESTOY FUERA", ids)
 
-// 	go u.ReceiveGroupM(chanMessage, chanAck, connectM)
-// 	if flags.GetMaster() {
-// 		go u.SendGroupM(chanAck, connectM)
+// 	go c.ReceiveGroup(chanPoint, chanMessage, chanMarker, connect)
+// 	if flags.Master {
+// 		// fmt.Println("Llamo sendGroup MAIN", *connect)
+// 		time.Sleep(time.Second * 1)
+// 		go c.SendGroup(chanPoint, chanMessage, chanMarker, connect)
 // 	}
 
-// 	for i := 0; i < 20; i = i + 5 {
-// 		time.Sleep(time.Second * 5)
-// 		// log.Println("[MAIN] Fin contando...", i, "segundos...")
+// 	marker := f.Marker{
+// 		Counter: len(connect.GetIds()),
+// 		Recoder: false,
 // 	}
+
+// 	// Init Snapshot
+// 	if flags.Master {
+// 		time.Sleep(time.Second * 4)
+// 		cap := connect.GetEnv(0)
+// 		go c.Send(marker, cap)
+// 	}
+
+// 	<-time.After(time.Second * 30)
+
 // }

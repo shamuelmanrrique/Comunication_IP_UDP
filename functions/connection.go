@@ -24,7 +24,6 @@ type Connection interface {
 	GetVector() v.VClock
 	GetListe() net.Listener
 	GetAccept() int
-	// SetKill(s []string) //puedo elminar
 }
 
 type Conn struct {
