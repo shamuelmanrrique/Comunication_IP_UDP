@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
-	"os"
 	"time"
 
 	l "practice1/chandylamport"
@@ -24,18 +23,20 @@ func init() {
 	flag.BoolVar(&flags.Master, "m", false, "pppo")
 	flag.Var(&flags.TimeDelay, "d", "Lista de flags separados por coma")
 	flag.Var(&flags.Target, "t", "listas de ip objectivos")
+	flag.StringVar(&flags.Exec, "tcp", "e", "Execution mode")
 }
 
 func main() {
 	flag.Parse()
 	gob.Register(f.Message{})
+	gob.Register(f.Marker{})
 	gob.Register(f.Ack{})
 
 	// Comentados para pruebas con UDP
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
 	if val {
 		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
-		os.Exit(1)
+		// os.Exit(1)
 	}
 
 	ip := f.IpAddress()
@@ -82,7 +83,7 @@ func main() {
 	}
 
 	// TCP
-	if false {
+	if flags.GetExec() == "tcp" {
 		fmt.Println("ESTOY FUERA")
 		go c.ReceiveGroup(connect)
 		if flags.Master {
@@ -93,7 +94,7 @@ func main() {
 	}
 
 	//UDP
-	if false {
+	if flags.GetExec() == "udp"  {
 		f.DistMsm("UDP " + ip + port)
 
 		chanAck := make(chan f.Ack, len(connect.GetIds())-1)
@@ -112,7 +113,7 @@ func main() {
 	}
 
 	//lamport
-	if false {
+	if flags.GetExec() == "chandy"  {
 		chanMarker := make(chan f.Marker, n)
 		defer close(chanMarker)
 		chanMessage := make(chan f.Message, n)

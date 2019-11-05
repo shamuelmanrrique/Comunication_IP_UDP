@@ -45,14 +45,6 @@ func InitSSH(user string, addr string, idRsa string) (ssh.Session, error) {
 		panic(err.Error())
 	}
 
-	// // defer session.Close()
-	// var b bytes.Buffer
-	// session.Stdout = &b
-
-	// // Finally, run the command
-	// err = session.Run("bash; ls")
-	// fmt.Println(b.String())
-
 	return *session, err
 
 }

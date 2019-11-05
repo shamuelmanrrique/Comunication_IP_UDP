@@ -22,7 +22,11 @@ func IdProcess(n int, mode string) []string {
 			ids = append(ids, id)
 		}
 
+	} else if mode == "proof" {
+		// Ip con las que voy hacer la prueba
+		ids = []string{"155.210.154.199", "155.210.154.197", "155.210.154.197"}
 	}
+
 	return ids
 }
 
