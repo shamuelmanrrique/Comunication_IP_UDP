@@ -37,7 +37,6 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 		deadline := time.Now().Add(30 * time.Second)
 		for time.Now().Before(deadline) {
 			var msm f.Message
-			// log.Println("[ReceiveGroupM]  Segundo FOR", i, " el valor de n ", n)
 			listener.SetReadBuffer(f.MaxBufferSize)
 			buffer := make([]byte, f.MaxBufferSize)
 			listener.ReadFromUDP(buffer)
