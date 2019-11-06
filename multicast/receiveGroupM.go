@@ -34,7 +34,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	defer close(m)
 
 	go func() {
-		deadline := time.Now().Add(10 * time.Second)
+		deadline := time.Now().Add(30 * time.Second)
 		for time.Now().Before(deadline) {
 			var msm f.Message
 			// log.Println("[ReceiveGroupM]  Segundo FOR", i, " el valor de n ", n)
@@ -51,7 +51,8 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			if msm.GetFrom() != id {
 				msmMult, ok, _ = f.CheckMsm(msmMult, msm)
 				if !ok {
-					log.Println("[ReceiveGroupM] RECIBO DE MULTICAST", msm)
+					log.Println(" RECEIVE MULTICAST-->: from ", msm.GetFrom(), " to ", msm.GetTo(), "  || OBJ: ", msm.GetTarg(),
+						"\n                                 Vector: ", msm.GetVector())
 					m <- msm
 				}
 			}
@@ -77,13 +78,12 @@ readMessage:
 					Origen: connect.GetId(),
 					Code:   connect.GetId() + "," + messag.GetFrom(),
 				}
-				// log.Println("[ReceiveGroupM] ", messag)
+
 				// Aplico Delay
 				if messag.GetTarg() != id {
 					delay := messag.GetDelay()
-					log.Println("[ReceiveGroupM] Aplico Delay  ", delay, " ENVIADO ", messag.GetFrom())
+					log.Println("Delay: ", delay)
 					time.Sleep(delay)
-					log.Println("[ReceiveGroupM] FIN Delay de 99999", messag.GetFrom())
 				}
 
 				SendM(ackID, messag.GetFrom())
@@ -92,27 +92,25 @@ readMessage:
 				vector.Merge(messag.GetVector())
 				connect.SetClock(vector)
 
-				log.Println("[ReceiveGroupM]  Recibido de: ", messag.GetFrom(), " Yo soy ", id)
 				if messag.GetTarg() == id {
 					n--
 					go SendGroupM(chanAck, connect)
-					log.Println("[ReceiveGroupM]  Llamo a send group : ")
 				}
 				arrayMsms = append(arrayMsms, messag)
 			}()
-		case <-time.After(5 * time.Second):
+		case <-time.After(15 * time.Second):
 			break readMessage
 		}
 	}
 
 	<-time.After(time.Second * 4)
-	log.Println("[ReceiveGroupM] SALGO DEL FOR")
-	// Ordeno el arreglo de msm
+
+	// Sort vector Array
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
 
-	log.Println("|||||||||||||| FIN ReceiveGroupM ||||||||||||||||||||")
+	f.DistUnic("Output Message")
 	for _, men := range arrayMsms {
 		if men.GetTarg() != "" {
 			log.Println("[Message] -->", men.GetFrom(), men.GetData(), men.GetTarg())

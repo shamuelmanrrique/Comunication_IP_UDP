@@ -49,12 +49,13 @@ func ReceiveGroup(connect *f.Conn) error {
 		}
 	}
 
+	<-time.After(time.Second * 6)
+	
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
-
-	<-time.After(time.Second * 6)
+	
 	f.DistUnic("Output Message")
 	for _, m := range arrayMsms {
 		if m.GetTarg() != "" {

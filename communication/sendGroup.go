@@ -10,7 +10,7 @@ func SendGroup(connect *f.Conn) error {
 	var err error
 	target := ""
 	delay, _ := time.ParseDuration("0s")
-	inf := "Me mataron"
+	inf := "am dead"
 	id := connect.GetId()
 
 	// Update Clock
@@ -19,7 +19,7 @@ func SendGroup(connect *f.Conn) error {
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
 		target = connect.GetTarget(0)
 		delay = connect.GetDelay(0)
-		inf = "He disparado"
+		inf = "kill"
 		connect.SetKill()
 		connect.SetDelay()
 	}

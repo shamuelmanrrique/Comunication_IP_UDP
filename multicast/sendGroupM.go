@@ -68,7 +68,6 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 			_, err = connection.Write(buffer.Bytes())
 			time.Sleep(200 * time.Millisecond)
 		}
-		log.Println("[SendGroupM] ENVIO MULTICAST", msm)
 	}()
 
 	ackWait := f.Remove(ids, id)
@@ -77,27 +76,22 @@ readAck:
 	for {
 		select {
 		case pack := <-chanAck:
-			// log.Println("[SendGroupM] Adding ACK ", pack)
 			if id != pack.GetOrigen() {
 				bufferAck, ok = f.AddAcks(bufferAck, pack)
 			}
 			if len(bufferAck) == n {
-				// log.Println("[SendGroupM] Salgo me llegaron todos los ACK ")
 				break readAck
 			}
 		case <-time.After(4 * time.Second):
-			// log.Println("[SendGroupM] TIMEOUT readAck")
 			break readAck
 		}
 	}
 
 	ackWait, ok = f.CheckAcks(ackWait, bufferAck)
-	// log.Println("[SendGroupM] IMPRIMO LOS VALORES DE CHECKACKS ",  ackWait, ok)
 	if !ok && aux {
 		go func() {
 			for i := 0; i < 3; i++ {
 				for _, v := range ackWait {
-					// log.Println("[SendGroupM] MSM UNICAST TO ", v)
 					go SendM(msm, v)
 				}
 				time.Sleep(200 * time.Millisecond)
@@ -108,25 +102,6 @@ readAck:
 			aux = false
 			goto readAck
 		}
-
-		// readAck2:
-		// 	for {
-		// 		select {
-		// 		case pack := <-chanAck:
-		// 			log.Println("[SendGroupM] Adding ACK 222", pack)
-		// 			if id != pack.GetOrigen() {
-		// 				bufferAck, ok = f.AddAcks(bufferAck, pack)
-		// 			}
-		// 			if len(bufferAck) == n {
-		// 				break readAck2
-		// 			}
-		// 		case <-time.After(6 * time.Second):
-		// 			log.Println("[SendGroupM] TIMEOUT 22")
-		// 			break readAck2
-		// 		}
-		// 	}
-
-		// ackWait, ok = f.CheckAcks(ackWait, bufferAck)
 	}
 
 	if !ok {
@@ -134,8 +109,5 @@ readAck:
 		return err
 	}
 
-	log.Println("[SendGroupM] |||||| Fin send Group |||| ")
-
 	return err
-
 }
