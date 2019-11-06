@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"time"
 
@@ -24,6 +25,7 @@ func init() {
 	flag.IntVar(&flags.Process, "n", 3, "numero de procesos que vas a crear")
 	flag.StringVar(&flags.Run, "r", "local", "Se va correr local o remote")
 	flag.StringVar(&flags.Port, "p", ":1400", "puerto que usara el proceso :XXXX")
+	flag.StringVar(&flags.IPuse, "i", "127.0.1.1", "puerto que usara el proceso :XXXX")
 	flag.BoolVar(&flags.Master, "m", false, "pppo")
 	flag.BoolVar(&flags.SshExc, "ssh", false, "pppo")
 	flag.Var(&flags.TimeDelay, "d", "Lista de flags separados por coma")
@@ -45,7 +47,7 @@ func main() {
 	}
 
 	var err error
-	ip := f.IpAddress()
+	var ip = flags.GetIPuse()
 	port := flags.GetPort()
 	n := flags.GetProcess()
 
@@ -59,17 +61,25 @@ func main() {
 	}
 
 	// Save output in log
-	// //create your file with desired read/write permissions
-	// file, err := os.OpenFile("/home/shamuel/go/src/practice1/logs/"+ip+port+".log.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	// if err != nil {
-	// 	log.Fatal(err)
+	//create your file with desired read/write permissions
+	// var paths string
+	// if !flags.GetSshExc() {
+	// 	paths = "/home/a802400/go/src/practice1/logs/"
+	// } else {
+	// 	paths = "/home/shamuel/go/src/practice1/logs/"
 	// }
+	// g := paths + ip + port
+	g := ip + port
+	file, err := os.OpenFile(g+".log.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// //defer to close when you're done with it, not because you think it's idiomatic!
-	// defer file.Close()
+	//defer to close when you're done with it, not because you think it's idiomatic!
+	defer file.Close()
 
-	// //set output of logs to f
-	// log.SetOutput(file)
+	//set output of logs to f
+	log.SetOutput(file)
 
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
 
@@ -102,13 +112,12 @@ func main() {
 					session.Stdout = &b
 
 					// session.Run("bash; ls ; pwd")
-					fmt.Println("go run /home/shamuel/go/src/practice1/app/main.go", f.FlagsExec(com, k))
-					run := "go run /home/shamuel/go/src/practice1/app/main.go " + f.FlagsExec(com, k)
+					// fmt.Println("go run /home/shamuel/go/src/practice1/app/main.go", f.FlagsExec(com, k))
+					run := "/snap/go/4762/go run /home/shamuel/go/src/practice1/app/main.go " + f.FlagsExec(com, k)
 					err = session.Run(run)
 					if err != nil {
 						log.Fatal(err.Error())
 					}
-					// session.Run("cd /home/shamuel/go/src/practice1/logs;  cat *.txt > " + flags.GetExec() + "_logs.txt")
 
 				} else if name == "proof" {
 					session, _ = f.InitSSH("a802400", k, "/home/shamuel/.ssh/id_rsa")
@@ -116,7 +125,8 @@ func main() {
 					var b bytes.Buffer
 					session.Stdout = &b
 
-					session.Run("bash;export PATH=$PATH:/usr/local/go/bin; export GOPATH=/home/a802400/go; export GOROOT=/usr/local/go;")
+					run := "/usr/local/go/bin/go run /home/shamuel/go/src/practice1/app/main.go " + f.FlagsExec(com, k)
+					session.Run(run)
 					fmt.Println("go run /home/shamuel/go/src/practice1/app/main.go", f.FlagsExec(com, k))
 				}
 			}

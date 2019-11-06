@@ -35,7 +35,7 @@ go run main.go -r "local" -t "127.0.1.1:5002" -d "1s" -n 3 -p=":5003"
 
 
 CASO BASE PRUEBA
-go run main.go -r "local"  -n 3 -p=":5003"
+go run main.go -r "local" -ip -n 3 -p=":5003"
 go run main.go -r "local" -n 3 -p=":5002"
 go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001"
 
@@ -62,13 +62,42 @@ go run main.go -r "proof" -t "155.210.154.197" -d "5s" -n 3 -m=true -p=":1400"
 go run main.go -r "proof" -n 3 -p=":1400"
 go run main.go -r "proof" -n 3 -p=":1400"
 
+// ######################################################
+// ################### REMOTE	#####################
+// ######################################################
+{"155.210.154.199", "155.210.154.197", "155.210.154.196"}
+
+bash;
+cd /home/a802400/go/src/practice1/app;
+export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT=/usr/local/go;
+
+go run main.go -r "proof" -i="155.210.154.199" -t "155.210.154.197" -d "5s" -n 3 -m=true -p=":1400"
+go run main.go -r "proof" -i="155.210.154.197" -n 3 -p=":1400"
+go run main.go -r "proof" -i="155.210.154.196" -n 3 -p=":1400"
+
 
 CASO 2
  go run mainMulticast.go -r "local" -t "127.0.1.1:5002" -d "3s" -n 3 -m=true -p=":5001"
 
-export PATH=$PATH:/usr/local/go/bin; export GOPATH=/home/a802400/go; export GOROOT=/usr/local/go;
+
+
+
+
 
 go run main.go -r "local"  -n 3 -p=":5003" -e="chandy"
 go run main.go -r "local" -n 3 -p=":5002" -e="chandy"
 go run main.go -r "local" -t "127.0.1.1:5002" -d "2s" -n 3 -m=true -p=":5001" -e="chandy"
 
+// -ip="155.210.154.199", -ip="155.210.154.197", -ip="155.210.154.196"
+-ip="155.210.154.199"
+
+Based on @JimB's feedback and my experiment in update #2, you must specify &> or 2>&1 in the shell command to interleave stderr and stdout.
+// capture standard output
+                // will NOT be able to handle refreshing output such as TOP command
+                // executing top command will result in panic
+                var buff bytes.Buffer
+                session.Stdout = &buff
+                if err := session.Run(cmd); err != nil {
+                        panic(err.Error())
+                }
+                fmt.Println(buff.String())
