@@ -34,7 +34,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	defer close(m)
 
 	go func() {
-		deadline := time.Now().Add(30 * time.Second)
+		deadline := time.Now().Add(40 * time.Second)
 		for time.Now().Before(deadline) {
 			var msm f.Message
 			listener.SetReadBuffer(f.MaxBufferSize)
@@ -57,13 +57,22 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			}
 		}
 
-		// go func (chM chan f.Message, chan f.Message,)  {
-		// 	select{
-		// 	}
-		// }(chanMess)
-		// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-		// Falta recibir por UDP DIRECTAMENTE
-		// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	receiveChannel:
+		for {
+			select {
+			case msm, ok := <-chanMess:
+				if msm.GetFrom() != id {
+					msmMult, ok, _ = f.CheckMsm(msmMult, msm)
+					if !ok {
+						log.Println(" RECEIVE UNICAST-->: from ", msm.GetFrom(), " to ", msm.GetTo(), "  || OBJ: ", msm.GetTarg(),
+							"\n                                 Vector: ", msm.GetVector())
+						m <- msm
+					}
+				}
+			case <-time.After(time.Second * 40):
+				break receiveChannel
+			}
+		}
 
 	}()
 
@@ -81,7 +90,7 @@ readMessage:
 				// Aplico Delay
 				if messag.GetTarg() != id {
 					delay := messag.GetDelay()
-					log.Println("Delay: ", delay)
+					// log.Println("Delay: ", delay)
 					time.Sleep(delay)
 				}
 
@@ -97,12 +106,12 @@ readMessage:
 				}
 				arrayMsms = append(arrayMsms, messag)
 			}()
-		case <-time.After(15 * time.Second):
+		case <-time.After(25 * time.Second):
 			break readMessage
 		}
 	}
 
-	<-time.After(time.Second * 4)
+	<-time.After(time.Second * 7)
 
 	// Sort vector Array
 	sort.SliceStable(arrayMsms, func(i, j int) bool {

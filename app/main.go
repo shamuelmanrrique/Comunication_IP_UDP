@@ -124,7 +124,7 @@ func main() {
 
 		// Execution Modules
 	} else {
-		// <-time.After(time.Second * 5)
+		<-time.After(time.Second * 3)
 
 		// TCP
 		if flags.GetExec() == "tcp" {
@@ -189,10 +189,5 @@ func main() {
 		}
 	}
 
-	<-time.After(time.Second * 40)
-	// for i := 0; i < 20; i = i + 5 {
-	// 	time.Sleep(time.Second * 5)
-	// 	// log.Println("[MAIN] Fin contando...", i, "segundos...")
-	// }
-
+	<-time.After(time.Second * 60)
 }

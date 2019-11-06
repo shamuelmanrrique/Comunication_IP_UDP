@@ -20,7 +20,7 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	f.Error(err, "[ReceiveM] ListenUDP Error")
 	defer listener.Close()
 
-	timeoutDuration := 40 * time.Second
+	timeoutDuration := 50 * time.Second
 	listener.SetReadDeadline(time.Now().Add(timeoutDuration))
 
 	for {
