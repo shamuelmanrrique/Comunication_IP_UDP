@@ -1,8 +1,6 @@
 package functions
 
-import (
-	"fmt"
-)
+import "log"
 
 var BufferMsm = make(map[string]Message)
 
@@ -69,9 +67,8 @@ func (m *Marker) SetRecoder(b bool) {
 }
 
 func (m *Marker) PrintMarker(ip string) {
-	fmt.Println("################### SNAPSHOT", ip, "#####################")
-	fmt.Println("Init state:", m.GetHeader())
-	fmt.Println("Recording:", m.GetHeader())
-	fmt.Println("CheckPoints:", m.GetCheckPoints())
-	fmt.Println("#################################################################")
+	log.Println("################### SNAPSHOT", ip, "#####################")
+	log.Println("Init state:", m.GetHeader())
+	log.Println("Recording:", m.GetHeader())
+	log.Println("CheckPoints:", m.GetCheckPoints())
 }

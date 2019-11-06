@@ -46,7 +46,7 @@ func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan 
 				time.Sleep(delay)
 			}
 
-			fmt.Println("[SendGroup]: Imprimo value envio a ", v)
+			// fmt.Println("[SendGroup]: Imprimo value envio a ", v)
 			// f.BufferMsm[id+","+v] = *msm
 			go SendC(msm, v)
 			fmt.Println(msm)

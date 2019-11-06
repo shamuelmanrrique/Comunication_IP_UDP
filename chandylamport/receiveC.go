@@ -15,7 +15,7 @@ func ReceiveC(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f
 	var red net.Conn
 	var err error
 
-	log.Println("[Receive] POrt:  ", addr)
+	// log.Println("[Receive] POrt:  ", addr)
 	listener, err = net.Listen("tcp", addr)
 	f.Error(err, "Listen Error")
 	defer listener.Close()
@@ -30,17 +30,24 @@ func ReceiveC(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f
 		err = decoder.Decode(&pack)
 		f.Error(err, "Receive error  \n")
 
-		log.Println("[Receive] PACK", pack)
+		// log.Println("[Receive] PACK", pack)
 		switch packNew := pack.(type) {
 		case f.Message:
 			chanMes <- packNew
-			log.Println("[ReceiveM] ===> MESSAGE ", packNew, " DE ", packNew.GetFrom())
+			// log.Println("[ReceiveM] ===> MESSAGE ", packNew, " DE ", packNew.GetFrom())
+			log.Println(" RECEIVE -->: from ", packNew.GetFrom(), " to ", packNew.GetTo(), "  || OBJ: ", packNew.GetTarg(),
+				"\n                     Vector: ", packNew.GetVector())
 		case f.Marker:
 			chanMar <- packNew
-			log.Println("[ReceiveM] ----> Marker ", packNew, " DE ", packNew.GetCounter())
+			// log.Println("[ReceiveM] ----> Marker ", packNew, " DE ", packNew.GetCounter())
+			// log.Println(" RECEIVE -->: Init Marker:", packNew.Recoder, "  ||Counter:", packNew.GetCounter(),
+			// 	"\n                     Header: ", packNew.GetHeader(),
+			// 	"\n                     Channel: ", packNew.GetChannel())
+			log.Println(" RECEIVE -->: Init Marker:", packNew)
 		case string:
 			chanPoint <- packNew
-			log.Println("[ReceiveM] ----> checkpoint ", packNew )
+			// log.Println("[ReceiveM] ----> checkpoint ", packNew )
+			log.Println(" RECEIVE --> ACK from: ", packNew)
 
 		}
 

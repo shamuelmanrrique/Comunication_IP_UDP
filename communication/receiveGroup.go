@@ -50,18 +50,18 @@ func ReceiveGroup(connect *f.Conn) error {
 	}
 
 	<-time.After(time.Second * 6)
-	
+
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
-	
+
 	f.DistUnic("Output Message")
 	for _, m := range arrayMsms {
 		if m.GetTarg() != "" {
-			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg(), "|||| Vector", m.GetVector())
+			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg(), "|||| Vector:", m.GetVector())
 		} else {
-			log.Println("[Message] -->", m.GetFrom(), m.GetData(), "|||| Vector", m.GetVector())
+			log.Println("[Message] -->", m.GetData(), m.GetFrom(), "|||| Vector:", m.GetVector())
 		}
 	}
 
