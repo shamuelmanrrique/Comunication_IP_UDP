@@ -1,10 +1,18 @@
 package functions
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"strconv"
 )
+
+var RemoteIPs = []string{"155.210.154.199", "155.210.154.197", "155.210.154.196"}
+var RemoteFlags = []string{"-r=\"proof\" -t=\"155.210.154.197\" -d=\"5s\" -n=3 -m=true -p=\":1400\"", "-r=\"proof\" -n=3 -p=\":1400\"", "-r=\"proof\" -n=3 -p=\":1400\""}
+var LocalFlags = []string{"-r=\"local\" -t=\"127.0.1.1:5002\" -d=\"5s\" -n=3 -m=true -p=\":5001\"", "-r=\"local\" -n=3 -p=\":5002\"", "-r=\"local\" -n=3 -p=\":5003\""}
+var Command = make(map[string]string)
+
+// type  Command make(map[string]string)
 
 func IdProcess(n int, mode string) []string {
 	var id string
@@ -24,7 +32,7 @@ func IdProcess(n int, mode string) []string {
 
 	} else if mode == "proof" {
 		// Ip con las que voy hacer la prueba
-		ids = []string{"155.210.154.199", "155.210.154.197", "155.210.154.197"}
+		ids = RemoteIPs
 	}
 
 	return ids
@@ -40,4 +48,37 @@ func IpAddress() string {
 		}
 	}
 	return ip
+}
+
+func NewCommand(ips []string, name string) map[string]string {
+	if name == "proof" {
+		for i, ip := range ips {
+			Command[ip] = GetString(i, RemoteFlags)
+		}
+		fmt.Println("remote", Command)
+	} else if "local" == name {
+		for i, ip := range ips {
+			Command[ip] = GetString(i, LocalFlags)
+		}
+		fmt.Println("local", Command)
+	}
+
+	return Command
+}
+
+func GetString(n int, value []string) string {
+	for i, v := range value {
+		if i == n {
+			return v
+		}
+	}
+	return ""
+}
+
+func FlagsExec(p map[string]string, ip string) string {
+	if v, found := p[ip]; found {
+		return v
+	}
+
+	return ""
 }

@@ -20,6 +20,7 @@ type CoordinatesInt interface {
 	GetRun()
 	GetPort()
 	GetExec()
+	GetSshExc()
 }
 
 type Coordinates struct {
@@ -31,6 +32,7 @@ type Coordinates struct {
 	Port      string
 	Exec      string
 	Chandy    bool
+	SshExc    bool
 }
 
 func (i *Retardos) String() string {
@@ -73,6 +75,10 @@ func (c Coordinates) GetMaster() bool {
 }
 func (c Coordinates) GetChandy() bool {
 	return c.Chandy
+}
+
+func (c Coordinates) GetSshExc() bool {
+	return c.SshExc
 }
 func (c Coordinates) GetTimeDelay() Retardos {
 	return c.TimeDelay

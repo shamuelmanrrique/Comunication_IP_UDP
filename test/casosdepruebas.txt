@@ -47,6 +47,16 @@ go run main.go -r "local" -n 3 -p=":5001" -m=true
 go run main.go -r "local"  -n 3 -p=":5003"
 go run main.go -r "local" -n 3 -p=":5002"
 
+// ######################################################
+// ################### REMOTE	#####################
+// ######################################################
+{"155.210.154.199", "155.210.154.197", "155.210.154.196"}
+go run main.go -r "proof" -t "155.210.154.197" -d "5s" -n 3 -m=true -p=":1400"
+go run main.go -r "proof" -n 3 -p=":1400"
+go run main.go -r "proof" -n 3 -p=":1400"
+
 
 CASO 2
  go run mainMulticast.go -r "local" -t "127.0.1.1:5002" -d "3s" -n 3 -m=true -p=":5001"
+
+export PATH=$PATH:/usr/local/go/bin; export GOPATH=/home/a802400/go; export GOROOT=/usr/local/go;
