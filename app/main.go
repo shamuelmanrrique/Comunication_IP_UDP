@@ -150,7 +150,7 @@ func main() {
 
 			go u.ReceiveGroupM(chanMessage, chanAck, connect)
 			if flags.GetMaster() {
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 3)
 				go u.SendGroupM(chanAck, connect)
 			}
 		}
