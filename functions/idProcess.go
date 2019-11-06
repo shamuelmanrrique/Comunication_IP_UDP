@@ -1,7 +1,6 @@
 package functions
 
 import (
-	"fmt"
 	"net"
 	"os"
 	"strconv"
@@ -55,12 +54,10 @@ func NewCommand(ips []string, name string) map[string]string {
 		for i, ip := range ips {
 			Command[ip] = GetString(i, RemoteFlags)
 		}
-		fmt.Println("remote", Command)
 	} else if "local" == name {
 		for i, ip := range ips {
 			Command[ip] = GetString(i, LocalFlags)
 		}
-		fmt.Println("local", Command)
 	}
 
 	return Command

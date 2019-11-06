@@ -26,34 +26,18 @@ func ReceiveGroup(connect *f.Conn) error {
 	defer listener.Close()
 
 	for i := 0; i < n; i++ {
-		// log.Println("[RG] EL VALOR N:       ", n, " El valor de i :", i)
-		// i := 0
-		// for {
-		// log.Println("[RG] FOR RECEIVE GROUP:      ", i)
-
-		// log.Println("[RG] LLAMO A Receive")
 		go Receive(bufferMsm, listener, id)
 
-		// log.Println("[RG]________________________")
 		msm, ok := <-bufferMsm
-		// log.Println("[RG]+++++++++++++++++++++++++")
-
-		// log.Println("[RG] VALOR DE OK: ", ok)
 		if ok {
 			// RECIBO y sumo 1 al vector
 			vector.Tick(id)
-			// SEt la nueva actualizacion de recepcion
 			connect.SetClock(vector)
-			// Uno los relojes
 			vector.Merge(msm.GetVector())
-			// connect.GetVector().Merge(vector)
-			// Seteo nuevamente el reloj
 			connect.SetClock(vector)
 
-			// log.Println("[RG] IF RG >>>: ", id, " TO: ", msm.GetTo())
 			if id == msm.GetTarg() {
 				n = n - 1
-				log.Println("[RG] Soy el target llamo a SG ")
 				go SendGroup(connect)
 			}
 
@@ -61,10 +45,8 @@ func ReceiveGroup(connect *f.Conn) error {
 			arrayMsms = append(arrayMsms, msm)
 
 		} else {
-			log.Println("[RG] Estoy ELSE ")
 			break
 		}
-		// i = i + 1
 	}
 
 	// Ordeno el arreglo de msm
@@ -72,10 +54,14 @@ func ReceiveGroup(connect *f.Conn) error {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
 
-	// log.Println("|||||||||||||||||||||||||||||||||||||||||||")
 	<-time.After(time.Second * 6)
+	f.DistUnic("Output Message")
 	for _, m := range arrayMsms {
-		log.Println("[Message] --> To: ", m.GetTo(), " From: ", m.GetFrom(), " inf: ", m.GetData())
+		if m.GetTarg() != "" {
+			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg(), "|||| Vector", m.GetVector())
+		} else {
+			log.Println("[Message] -->", m.GetFrom(), m.GetData(), "|||| Vector", m.GetVector())
+		}
 	}
 
 	return err

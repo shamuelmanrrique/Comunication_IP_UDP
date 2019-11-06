@@ -7,7 +7,7 @@ import (
 	f "practice1/functions"
 )
 
-// Receive TODO ELIMINAR CALLER
+// Receive is a function that get message by TCP connection  
 func Receive(canal chan f.Message, liste net.Listener, caller string) error {
 	var msm f.Message
 	var red net.Conn

@@ -5,16 +5,15 @@ import (
 	"time"
 )
 
-// SendGroup dda
+// SendGroup function to send group message one to one using TCP
 func SendGroup(connect *f.Conn) error {
 	var err error
 	target := ""
 	delay, _ := time.ParseDuration("0s")
 	inf := "Me mataron"
 	id := connect.GetId()
-	// t := len(connect.GetKill())
 
-	// Actualizo el reloj
+	// Update Clock
 	vector := connect.GetVector()
 
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
@@ -25,15 +24,12 @@ func SendGroup(connect *f.Conn) error {
 		connect.SetDelay()
 	}
 
-	// Incremento el reloj
+	// Increase clock
 	vector.Tick(id)
 	connect.SetClock(vector)
-
-	// TODO CREATE SNAPSHOP RELOJ []VCLOCK
-	// Copio el vector
 	copyVector := vector.Copy()
 
-	// Envio el msm a todos
+	// Send message to everyone
 	for _, v := range connect.GetIds() {
 		if v != id {
 
@@ -46,15 +42,11 @@ func SendGroup(connect *f.Conn) error {
 			}
 
 			if v != target {
-				// Aplico delay y envio
-				// log.Println("[SG] Ejecutando delay de ", delay, "milisegundos")
+				// Get delay
 				time.Sleep(delay)
 			}
 
-			// log.Println("[SG] LLAMO A SEND", msm)
 			go Send(v, msm, id)
-			// log.Println("[SG] Envio MSM ", id, "+++++>>", v)
-
 		}
 	}
 

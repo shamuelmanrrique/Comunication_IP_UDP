@@ -1,7 +1,7 @@
 package functions
 
 import (
-	"fmt"
+	"log"
 	v "practice1/vclock"
 	"time"
 )
@@ -60,7 +60,15 @@ func (m *Message) GetDelay() time.Duration {
 }
 
 func DistMsm(s string) {
-	fmt.Printf("###################### MAIN  %s ########################### \n", s)
+	log.Printf("###################### MAIN  %s ########################### \n", s)
+}
+
+func DistWall() {
+	log.Println("############################################################################")
+}
+
+func DistUnic(s string) {
+	log.Printf("#########################  %s ################################# \n", s)
 }
 
 func (p *Pack) GetMes() Message {
