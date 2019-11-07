@@ -1,5 +1,0 @@
-{
-    "python.terminal.activateEnvironment": false,
-    "debug.node.autoAttach": "off",
-    "terminal.explorerKind": "external"
-}
