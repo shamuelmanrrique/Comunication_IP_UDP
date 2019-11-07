@@ -1,29 +1,46 @@
 package functions
 
+import (
+	"fmt"
+	v "practice1/vclock"
+)
+
+// MULTICAST CONN.STD TIEMPO PARA QUE SE MUERA EN CADA RECEPCION
+// setreaddeadtimeline
+
 type Msm interface {
 	GetTo() string
 	GetFrom() string
 	GetData() string
-	GetVector() []int
+	GetTarg() string
+	GetVector() v.VClock
 }
 
 type Message struct {
-	To, From, Data string
-	Vector         []int
+	To, From, Data, Targ string
+	Vector               v.VClock
 }
 
 func (m Message) GetTo() string {
-	return m.From
+	return m.To
 }
 
 func (m Message) GetFrom() string {
-	return m.To
+	return m.From
 }
 
 func (m Message) GetData() string {
 	return m.Data
 }
 
-func (m Message) GetVector() []int {
+func (m Message) GetTarg() string {
+	return m.Targ
+}
+
+func (m Message) GetVector() v.VClock {
 	return m.Vector
+}
+
+func DistMsm(s string) {
+	fmt.Printf("###################### MAIN  %s ########################### \n", s)
 }

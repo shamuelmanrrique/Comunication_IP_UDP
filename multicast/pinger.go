@@ -1,4 +1,4 @@
-package functions
+package multicast
 
 import (
 	"encoding/gob"
@@ -7,14 +7,11 @@ import (
 	"time"
 )
 
-func Send(connect Connection) error {
+func Sende(connect Connection) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
-	message :=4
-	// host := connect.GetHost()
-	// fmt.Println(" address value: %s", address)
-	// fmt.Println(host)
+
 	fmt.Println("Stay in send 1")
 	time.Sleep(2 * time.Second)
 	// connection, err = net.Dial("tcp", host)

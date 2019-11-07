@@ -1,4 +1,4 @@
-package functions
+package multicast
 
 import (
 	"encoding/gob"
@@ -6,27 +6,25 @@ import (
 	"net"
 )
 
-func Receive(connect Connection) error {
+func Listener(connect Connection) error {
 	var connection net.Conn
 	var err error
 	var decoder *gob.Decoder
 	var listener net.Listener
-	// port := ":" + connect.GetHost()
 
-	fmt.Println("Stay in receive 1")
-	listener, err = net.Listen("tcp", ":5008")
+	listener, err = net.ResolveUDPAddr("udp", ":5008")
 	Error(err, "Server listen error")
-	
+
 	connection, err = listener.Accept()
-	Error(err,"Server accept connection error")
+	Error(err, "Server accept connection error")
 
 	decoder = gob.NewDecoder(connection)
 	err = decoder.Decode(0)
 	connection.Close()
-	
 
 	fmt.Println("Estoy en receive")
 	connection.Close()
 	return err
 
 }
+
