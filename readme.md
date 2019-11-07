@@ -41,6 +41,21 @@ export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT
 /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="chandy"
 /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="chandy"
 
+<!-- por shel tcp -->
+/usr/local/go/bin/go run /home/a802400/go/src/practice1/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp" 
+/usr/local/go/bin/go run /home/a802400/go/src/practice1/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
+/usr/local/go/bin/go run /home/a802400/go/src/practice1/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
+
+
+
+
+
+
+
+
+
+
+
 
 
 "/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"" 
