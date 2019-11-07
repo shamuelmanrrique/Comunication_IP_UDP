@@ -1,19 +1,20 @@
-package communication
+package chandylamport
 
 import (
+	"fmt"
 	f "practice1/functions"
 	"time"
 )
 
-// SendGroup function to send group message one to one using TCP
-func SendGroup(connect *f.Conn) error {
+// SendGroup dda
+func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
 	target := ""
 	delay, _ := time.ParseDuration("0s")
 	inf := "am dead"
 	id := connect.GetId()
 
-	// Update Clock
+	// Actualizo el reloj
 	vector := connect.GetVector()
 
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
@@ -24,12 +25,12 @@ func SendGroup(connect *f.Conn) error {
 		connect.SetDelay()
 	}
 
-	// Increase clock
+	// Incremento el reloj
 	vector.Tick(id)
 	connect.SetClock(vector)
 	copyVector := vector.Copy()
 
-	// Send message to everyone
+	// Envio el msm a todos
 	for _, v := range connect.GetIds() {
 		if v != id {
 
@@ -42,11 +43,14 @@ func SendGroup(connect *f.Conn) error {
 			}
 
 			if v != target {
-				// Get delay
 				time.Sleep(delay)
 			}
 
-			go Send(v, msm, id)
+			// fmt.Println("[SendGroup]: Imprimo value envio a ", v)
+			// f.BufferMsm[id+","+v] = *msm
+			go SendC(msm, v)
+			fmt.Println(msm)
+
 		}
 	}
 

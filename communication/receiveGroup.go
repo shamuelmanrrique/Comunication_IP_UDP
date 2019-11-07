@@ -6,6 +6,7 @@ import (
 	f "practice1/functions"
 	v "practice1/vclock"
 	"sort"
+	"time"
 )
 
 // ReceiveGroup SLMA
@@ -24,45 +25,19 @@ func ReceiveGroup(connect *f.Conn) error {
 	f.Error(err, "Listen Error")
 	defer listener.Close()
 
-	// a := n - len(connect.GetKill())
-	// switch connect.GetPort() {
-	// case ":5001":
-	// 	n = 1
-	// case ":5002":
-	// 	n = 1
-	// case ":5003":
-	// 	n = 2
-	// }
-
 	for i := 0; i < n; i++ {
-		log.Println("[RG] EL VALOR N:       ", n, " El valor de i :", i)
-		// i := 0
-		// for {
-		log.Println("[RG] FOR RECEIVE GROUP:      ", i)
-
-		log.Println("[RG] LLAMO A Receive")
 		go Receive(bufferMsm, listener, id)
 
-		log.Println("[RG]________________________")
 		msm, ok := <-bufferMsm
-		log.Println("[RG]+++++++++++++++++++++++++")
-
-		log.Println("[RG] VALOR DE OK: ", ok)
 		if ok {
 			// RECIBO y sumo 1 al vector
 			vector.Tick(id)
-			// SEt la nueva actualizacion de recepcion
 			connect.SetClock(vector)
-			// Uno los relojes
 			vector.Merge(msm.GetVector())
-			// connect.GetVector().Merge(vector)
-			// Seteo nuevamente el reloj
 			connect.SetClock(vector)
 
-			log.Println("[RG] IF RG >>>: ", id, " TO: ", msm.GetTo())
 			if id == msm.GetTarg() {
 				n = n - 1
-				log.Println("[RG] Soy el target llamo a SG ")
 				go SendGroup(connect)
 			}
 
@@ -70,20 +45,26 @@ func ReceiveGroup(connect *f.Conn) error {
 			arrayMsms = append(arrayMsms, msm)
 
 		} else {
-			log.Println("[RG] Estoy ELSE ")
 			break
 		}
-		// i = i + 1
 	}
 
-	log.Println(" [RG] Estoy fuera del FOR ")
-	// // Ordeno el arreglo de msm
+	<-time.After(time.Second * 6)
+
+	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {
 		return arrayMsms[i].Vector.Compare(arrayMsms[j].Vector, v.Descendant)
 	})
 
-	// Meto el vector act
-	log.Println("|||||||||||||||-----------------------")
+	f.DistUnic("Output Message")
+	for _, m := range arrayMsms {
+		if m.GetTarg() != "" {
+			log.Println("[Message] -->", m.GetFrom(), m.GetData(), m.GetTarg(), "|||| Vector:", m.GetVector())
+		} else {
+			log.Println("[Message] -->", m.GetData(), m.GetFrom(), "|||| Vector:", m.GetVector())
+		}
+	}
+
 	return err
 
 }

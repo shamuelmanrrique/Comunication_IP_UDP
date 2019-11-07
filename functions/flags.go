@@ -14,10 +14,13 @@ type Targets []string
 type CoordinatesInt interface {
 	GetProcess()
 	GetMaster()
+	GetChandy()
 	GetTimeDelay()
 	GetTarget()
 	GetRun()
 	GetPort()
+	GetExec()
+	GetSshExc()
 }
 
 type Coordinates struct {
@@ -27,6 +30,9 @@ type Coordinates struct {
 	Target    Targets
 	Run       string
 	Port      string
+	Exec      string
+	Chandy    bool
+	SshExc    bool
 }
 
 func (i *Retardos) String() string {
@@ -67,6 +73,13 @@ func (c Coordinates) GetProcess() int {
 func (c Coordinates) GetMaster() bool {
 	return c.Master
 }
+func (c Coordinates) GetChandy() bool {
+	return c.Chandy
+}
+
+func (c Coordinates) GetSshExc() bool {
+	return c.SshExc
+}
 func (c Coordinates) GetTimeDelay() Retardos {
 	return c.TimeDelay
 }
@@ -78,4 +91,7 @@ func (c Coordinates) GetRun() string {
 }
 func (c Coordinates) GetPort() string {
 	return c.Port
+}
+func (c Coordinates) GetExec() string {
+	return c.Exec
 }

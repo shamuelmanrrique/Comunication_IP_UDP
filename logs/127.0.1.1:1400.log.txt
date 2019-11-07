@@ -1,0 +1,26 @@
+2019/11/06 01:49:09 commasnsaslks map[127.0.1.1:5001:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" 127.0.1.1:5002:-r="local" -n=3 -p=":5002" 127.0.1.1:5003:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:49:09 
+2019/11/06 01:49:10 ssh: session already started
+2019/11/06 01:51:11 commasnsaslks map[localhost:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:51:11 
+2019/11/06 01:51:42 commasnsaslks map[localhost:3:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" localhost:4:-r="local" -n=3 -p=":5002" localhost:5:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:51:42 
+2019/11/06 01:51:43 ssh: session already started
+2019/11/06 01:54:14 commasnsaslks map[localhost:3:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" localhost:4:-r="local" -n=3 -p=":5002" localhost:5:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:54:14 
+2019/11/06 01:54:14 ssh: session already started
+2019/11/06 01:56:11 commasnsaslks map[localhost:3:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" localhost:4:-r="local" -n=3 -p=":5002" localhost:5:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:56:11 
+2019/11/06 01:56:11 ssh: session already started
+2019/11/06 01:56:28 commasnsaslks map[127.0.1.1:5001:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" 127.0.1.1:5002:-r="local" -n=3 -p=":5002" 127.0.1.1:5003:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:56:28 
+2019/11/06 01:56:28 ssh: session already started
+2019/11/06 01:59:44 commasnsaslks map[127.0.1.1:5001:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" 127.0.1.1:5002:-r="local" -n=3 -p=":5002" 127.0.1.1:5003:-r="local" -n=3 -p=":5003"]
+2019/11/06 01:59:44 
+2019/11/06 01:59:44 Process exited with status 127
+2019/11/06 02:02:03 commasnsaslks map[127.0.1.1:5001:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" 127.0.1.1:5002:-r="local" -n=3 -p=":5002" 127.0.1.1:5003:-r="local" -n=3 -p=":5003"]
+2019/11/06 02:02:03 
+2019/11/06 02:02:03 Process exited with status 127
+2019/11/06 02:03:13 commasnsaslks map[127.0.1.1:5001:-r="local" -t="127.0.1.1:5002" -d="5s" -n=3 -m=true -p=":5001" 127.0.1.1:5002:-r="local" -n=3 -p=":5002" 127.0.1.1:5003:-r="local" -n=3 -p=":5003"]
+2019/11/06 02:03:13 
+2019/11/06 02:03:13 Process exited with status 127

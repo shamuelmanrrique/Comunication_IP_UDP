@@ -6,11 +6,16 @@ import (
 	"time"
 )
 
+const (
+	MulticastAddress = "229.0.40.000:9999"
+	MaxBufferSize    = 8192
+)
+
 type Connection interface {
 	GetId() string
 	GetIp() string
 	GetPort() string
-	GetKill() []string //puedo elminar
+	GetKill() []string
 	GetIds() []string
 	GetDelays() []time.Duration
 	GetDelay(n int) time.Duration
@@ -19,7 +24,6 @@ type Connection interface {
 	GetVector() v.VClock
 	GetListe() net.Listener
 	GetAccept() int
-	// SetKill(s []string) //puedo elminar
 }
 
 type Conn struct {
