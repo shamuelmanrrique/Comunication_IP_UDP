@@ -14,7 +14,6 @@ func SendC(pack interface{}, addr string) error {
 	var encoder *gob.Encoder
 
 	connection, err = net.Dial("tcp", addr)
-	// f.Error(err, "Send connection error \n")
 	defer connection.Close()
 
 	encoder = gob.NewEncoder(connection)

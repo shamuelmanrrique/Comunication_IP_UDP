@@ -8,11 +8,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-
 func InitSSH(user string, addr string, idRsa string) (ssh.Session, error) {
-
-	// If you have an encrypted private key, the crypto/x509 package
-	// can be used to decrypt it.
 	key, err := ioutil.ReadFile(idRsa)
 	var session *ssh.Session
 	if err != nil {

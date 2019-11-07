@@ -15,7 +15,7 @@ func ReceiveC(chanPoint chan<- string, chanMar chan<- f.Marker, chanMes chan<- f
 	var red net.Conn
 	var err error
 
-	// log.Println("[Receive] POrt:  ", addr)
+	log.Println("[Receive] POrt:  ", addr)
 	listener, err = net.Listen("tcp", addr)
 	f.Error(err, "Listen Error")
 	defer listener.Close()

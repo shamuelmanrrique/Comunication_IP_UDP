@@ -9,13 +9,13 @@ import (
 	"testing"
 )
 
-func TestTCP(t *testing.T) {
+func TestUDP(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"udp\"",
 	}
 
 	for i, k := range ips {
@@ -49,13 +49,13 @@ func TestTCP(t *testing.T) {
 	}
 }
 
-func TestTCP2(t *testing.T) {
+func TestUDP2(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"udp\"",
 	}
 
 	for i, k := range ips {

@@ -17,6 +17,7 @@ type CoordinatesInt interface {
 	GetChandy()
 	GetTimeDelay()
 	GetTarget()
+	GetIPsRem()
 	GetRun()
 	GetPort()
 	GetExec()
@@ -30,6 +31,7 @@ type Coordinates struct {
 	TimeDelay Retardos
 	Target    Targets
 	Run       string
+	IPsRem    string
 	IPuse     string
 	Port      string
 	Exec      string
@@ -87,6 +89,10 @@ func (c Coordinates) GetTimeDelay() Retardos {
 }
 func (c Coordinates) GetTarget() []string {
 	return c.Target
+}
+func (c Coordinates) GetIPsRem() []string {
+	aux := strings.Split(c.IPsRem, ",")
+	return aux
 }
 func (c Coordinates) GetRun() string {
 	return c.Run

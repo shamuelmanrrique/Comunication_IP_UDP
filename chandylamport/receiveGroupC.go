@@ -17,7 +17,7 @@ func ReceiveGroupC(chanPoint chan string, chanMessage chan f.Message, chanMarker
 	n := len(connect.GetIds())
 	vector := connect.GetVector()
 	id := connect.GetId()
-	go ReceiveC(chanPoint, chanMarker, chanMessage, connect.GetPort())
+	go ReceiveC(chanPoint, chanMarker, chanMessage, connect.GetId())
 
 receiveChannel:
 	for {

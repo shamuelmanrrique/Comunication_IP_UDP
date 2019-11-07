@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/gob"
 	"flag"
-	"io"
+	"fmt"
 	"log"
-	"os"
+	"strings"
 	"time"
 
 	l "practice1/chandylamport"
@@ -13,6 +14,8 @@ import (
 	f "practice1/functions"
 	u "practice1/multicast"
 	v "practice1/vclock"
+
+	"golang.org/x/crypto/ssh"
 )
 
 var flags f.Coordinates
@@ -40,29 +43,24 @@ func main() {
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
 	if val {
 		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
+		// os.Exit(1)
 	}
 
+	var err error
 	var ip = flags.GetIPuse()
 	port := flags.GetPort()
 	n := flags.GetProcess()
 
+	// var ids []string = f.IdProcess(n, flags.GetRun())
 	var ids []string = flags.GetIPsRem()
+	log.Println(ids)
+	var com = f.NewCommand(ids, flags.GetRun())
 
 	// // Inicializo todos el reloj del proceso
 	var vector = v.New()
 	for _, v := range ids {
 		vector[v] = 0
 	}
-
-	// Send logs to dile ip_log.txt
-	g := ip + port
-	file, err := os.OpenFile(g+".log.txt", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer file.Close()
-	log.SetOutput(file)
 
 	msmreceive := len(ids) - len(flags.GetTarget()) - 1
 
@@ -77,38 +75,45 @@ func main() {
 		Vector: vector,
 	}
 
+	log.Println("Connections :", connect)
 	// Ssh connection
 	if flags.GetSshExc() {
-
 		go func() {
-			// for _, k := range ids {
-			// s := strings.Split(k, ":")
-			// fmt.Println("values ipu", s)
-			// ipu, _ := s[0], s[1]
-			// fmt.Println("values ipu", ipu)
+			name := flags.GetRun()
+			for _, k := range ids {
+				var session ssh.Session
+				if name == "local" {
+					s := strings.Split(k, ":")
+					ipu, _ := s[0], s[1]
 
-			session, err := f.InitSSH("a802400", "155.210.154.207", "/home/shamuel/.ssh/id_rsa")
-			defer session.Close()
-			if err != nil {
-				log.Fatal(err.Error())
-			}
+					session, err = f.InitSSH("shamuel", ipu, "/home/shamuel/.ssh/id_rsa")
+					if err != nil {
+						log.Fatal(err.Error())
+					}
+					var b bytes.Buffer
+					session.Stdout = &b
 
-			sessionOut, err := session.StdoutPipe()
-			if err != nil {
-				panic(err)
-			}
+					// session.Run("bash; ls ; pwd")
+					fmt.Println("go run /home/shamuel/go/src/practice1/app/main.go", f.FlagsExec(com, k))
+					run := "go run /home/shamuel/go/src/practice1/app/main.go " + f.FlagsExec(com, k)
+					err = session.Run(run)
+					if err != nil {
+						log.Fatal(err.Error())
+					}
 
-			go io.Copy(os.Stdout, sessionOut)
-			sessionError, err := session.StderrPipe()
-			if err != nil {
-				panic(err)
-			}
+				} else if name == "proof" {
 
-			go io.Copy(os.Stderr, sessionError)
-			run := "/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\""
-			err = session.Run(run)
-			if err != nil {
-				panic(err)
+					session, _ = f.InitSSH("a802400", k, "/home/shamuel/.ssh/id_rsa")
+					// log.SetOutput(session.Output())
+					// log.SetOutput(os.Stderr)
+
+					var b bytes.Buffer
+					session.Stdout = &b
+
+					runCom := "/usr/local/go/bin/go run /home/a802400/go/practice1/app/main.go " + f.FlagsExec(com, k)
+					session.Run(runCom)
+					fmt.Println(runCom)
+				}
 			}
 		}()
 
@@ -179,5 +184,5 @@ func main() {
 		}
 	}
 
-	<-time.After(time.Second * 60)
+	<-time.After(time.Second * 40)
 }
