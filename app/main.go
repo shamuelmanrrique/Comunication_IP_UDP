@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/gob"
 	"flag"
-	"io"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -79,42 +79,10 @@ func main() {
 
 	// Ssh connection
 	if flags.GetSshExc() {
-
-		go func() {
-			// for _, k := range ids {
-			// s := strings.Split(k, ":")
-			// fmt.Println("values ipu", s)
-			// ipu, _ := s[0], s[1]
-			// fmt.Println("values ipu", ipu)
-
-			session, err := f.InitSSH("a802400", "155.210.154.207", "/home/shamuel/.ssh/id_rsa")
-			defer session.Close()
-			if err != nil {
-				log.Fatal(err.Error())
-			}
-
-			sessionOut, err := session.StdoutPipe()
-			if err != nil {
-				panic(err)
-			}
-
-			go io.Copy(os.Stdout, sessionOut)
-			sessionError, err := session.StderrPipe()
-			if err != nil {
-				panic(err)
-			}
-
-			go io.Copy(os.Stderr, sessionError)
-			run := "/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\""
-			err = session.Run(run)
-			if err != nil {
-				panic(err)
-			}
-		}()
-
+		fmt.Println("USAR TEST")
 		// Execution Modules
 	} else {
-		<-time.After(time.Second * 3)
+		<-time.After(time.Second * 5)
 
 		// TCP
 		if flags.GetExec() == "tcp" {

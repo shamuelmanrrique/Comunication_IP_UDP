@@ -1,7 +1,6 @@
 package chandylamport
 
 import (
-	"fmt"
 	f "practice1/functions"
 	"time"
 )
@@ -46,7 +45,6 @@ func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan 
 				time.Sleep(delay)
 			}
 
-			fmt.Println("mensaje ", msm, "ip", v)
 			go SendC(msm, v)
 
 		}

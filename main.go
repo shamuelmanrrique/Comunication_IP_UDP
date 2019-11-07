@@ -1,12 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"encoding/gob"
 	"flag"
 	"fmt"
-	"log"
-	"strings"
 	"time"
 
 	l "practice1/chandylamport"
@@ -14,8 +11,6 @@ import (
 	f "practice1/functions"
 	u "practice1/multicast"
 	v "practice1/vclock"
-
-	"golang.org/x/crypto/ssh"
 )
 
 var flags f.Coordinates
@@ -43,18 +38,13 @@ func main() {
 	var val bool = len(flags.TimeDelay) != len(flags.Target)
 	if val {
 		panic("El tamaño del arreglo Targets debe ser igual al de Delays")
-		// os.Exit(1)
 	}
 
-	var err error
 	var ip = flags.GetIPuse()
 	port := flags.GetPort()
 	n := flags.GetProcess()
 
-	// var ids []string = f.IdProcess(n, flags.GetRun())
 	var ids []string = flags.GetIPsRem()
-	log.Println(ids)
-	var com = f.NewCommand(ids, flags.GetRun())
 
 	// // Inicializo todos el reloj del proceso
 	var vector = v.New()
@@ -75,51 +65,12 @@ func main() {
 		Vector: vector,
 	}
 
-	log.Println("Connections :", connect)
 	// Ssh connection
 	if flags.GetSshExc() {
-		go func() {
-			name := flags.GetRun()
-			for _, k := range ids {
-				var session ssh.Session
-				if name == "local" {
-					s := strings.Split(k, ":")
-					ipu, _ := s[0], s[1]
-
-					session, err = f.InitSSH("shamuel", ipu, "/home/shamuel/.ssh/id_rsa")
-					if err != nil {
-						log.Fatal(err.Error())
-					}
-					var b bytes.Buffer
-					session.Stdout = &b
-
-					// session.Run("bash; ls ; pwd")
-					fmt.Println("go run /home/shamuel/go/src/practice1/app/main.go", f.FlagsExec(com, k))
-					run := "go run /home/shamuel/go/src/practice1/app/main.go " + f.FlagsExec(com, k)
-					err = session.Run(run)
-					if err != nil {
-						log.Fatal(err.Error())
-					}
-
-				} else if name == "proof" {
-
-					session, _ = f.InitSSH("a802400", k, "/home/shamuel/.ssh/id_rsa")
-					// log.SetOutput(session.Output())
-					// log.SetOutput(os.Stderr)
-
-					var b bytes.Buffer
-					session.Stdout = &b
-
-					runCom := "/usr/local/go/bin/go run /home/a802400/go/practice1/app/main.go " + f.FlagsExec(com, k)
-					session.Run(runCom)
-					fmt.Println(runCom)
-				}
-			}
-		}()
-
+		fmt.Println("USAR TEST")
 		// Execution Modules
 	} else {
-		<-time.After(time.Second * 3)
+		<-time.After(time.Second * 5)
 
 		// TCP
 		if flags.GetExec() == "tcp" {
@@ -184,5 +135,5 @@ func main() {
 		}
 	}
 
-	<-time.After(time.Second * 40)
+	<-time.After(time.Second * 60)
 }

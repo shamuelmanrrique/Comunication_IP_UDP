@@ -1,0 +1,88 @@
+
+// <!-- por shel tcp -->
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.207" -e="tcp"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -t "155.210.154.207:1400" -d "5s"  -m=true   -e="tcp"
+// <!-- por shel udp -->
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.207" -e="udp"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="udp"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -t "155.210.154.207:1400" -d "5s"  -m=true   -e="udp"
+
+// <!-- por shel chandy -->
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.207" -e="chandy"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="chandy"
+// /usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c="155.210.154.207:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -t "155.210.154.207:1400" -d "5s"  -m=true   -e="chandy"
+
+// 		ips := []string{"155.210.154.207:1400,155.210.154.208:1400,155.210.154.209:1400"}
+// 		for i, k := range ips {
+// 			go func(i int, k string) {
+
+// 				rsa := "/home/shamuel/.ssh/id_rsa"
+// 				valuesRun := []string{
+// 					"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.207:1400,155.210.154.208:1400,155.210.154.209:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.207\" -t \"155.210.154.208:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
+// 					"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.207:1400,155.210.154.208:1400,155.210.154.209:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"",
+// 					"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.207:1400,155.210.154.208:1400,155.210.154.209:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\"",
+// 				}
+// 				ip := strings.Split(k, ":")
+// 				u := ip[0]
+// 				fmt.Println(u)
+// 				session, err := f.InitSSH("a802400", ip[0], rsa)
+// 				defer session.Close()
+// 				if err != nil {
+// 					log.Fatal(err.Error())
+// 				}
+
+// 				sessionOut, err := session.StdoutPipe()
+// 				if err != nil {
+// 					panic(err)
+// 				}
+
+// 				go io.Copy(os.Stdout, sessionOut)
+// 				sessionError, err := session.StderrPipe()
+// 				if err != nil {
+// 					panic(err)
+// 				}
+
+// 				go io.Copy(os.Stderr, sessionError)
+// 				run := f.GetString(i, valuesRun)
+// 				err = session.Run(run)
+// 				go session.Run(run)
+// 				if err != nil {
+// 					panic(err)
+// 				}
+// 			}(i, k)
+// 		}
+
+//         for _, k := range ids {
+// 			go func() {
+
+// 				// s := strings.Split(k, ":")
+// 				// fmt.Println("values ipu", s)
+// 				// ipu, _ := s[0], s[1]
+// 				// fmt.Println("values ipu", ipu)
+
+// 				session, err := f.InitSSH("a802400", "155.210.154.207", "/home/shamuel/.ssh/id_rsa")
+// 				defer session.Close()
+// 				if err != nil {
+// 					log.Fatal(err.Error())
+// 				}
+
+// 				sessionOut, err := session.StdoutPipe()
+// 				if err != nil {
+// 					panic(err)
+// 				}
+
+// 				go io.Copy(os.Stdout, sessionOut)
+// 				sessionError, err := session.StderrPipe()
+// 				if err != nil {
+// 					panic(err)
+// 				}
+
+// 				go io.Copy(os.Stderr, sessionError)
+// 				run := "/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\""
+// 				err = session.Run(run)
+// 				if err != nil {
+// 					panic(err)
+// 				}
+// 			}()
+// 		}
