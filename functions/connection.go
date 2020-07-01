@@ -2,7 +2,7 @@ package functions
 
 import (
 	"net"
-	v "practice1/vclock"
+	v "sd_paxos/vclock"
 	"time"
 )
 

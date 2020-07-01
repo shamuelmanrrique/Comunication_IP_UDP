@@ -2,8 +2,8 @@ package chandylamport
 
 import (
 	"log"
-	f "practice1/functions"
-	v "practice1/vclock"
+	f "sd_paxos/functions"
+	v "sd_paxos/vclock"
 	"sort"
 	"time"
 )

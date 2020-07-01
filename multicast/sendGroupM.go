@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"log"
 	"net"
-	f "practice1/functions"
+	f "sd_paxos/functions"
 	"time"
 )
 

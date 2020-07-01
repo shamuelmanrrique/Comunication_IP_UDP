@@ -1,0 +1,14 @@
+{
+    "ssh": false,
+    "Machine_numer": 3,
+    "execution_mode": "tcp",
+    "machine1":{
+        "Port": ":5000",
+        "Ip": "127.0.1.1",
+        "Machines_id": "127.0.1.1:5001,127.0.1.1:5002,127.0.1.1:5003",
+        "Machines_delay": "0,1,0",
+        "machines_targets": "127.0.1.1:5002,127.0.1.1:5003",
+        "Role": "master"
+    }
+
+}
