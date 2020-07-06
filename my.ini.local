@@ -1,0 +1,10 @@
+app_mode = production
+
+[paths]
+data = 
+
+[server]
+protocol       = 
+http_port      = 9999
+enforce_domain = false
+

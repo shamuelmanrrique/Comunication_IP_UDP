@@ -1,14 +1,29 @@
 {
     "ssh": false,
-    "Machine_numer": 3,
-    "execution_mode": "tcp",
-    "machine1":{
-        "Port": ":5000",
-        "Ip": "127.0.1.1",
-        "Machines_id": "127.0.1.1:5001,127.0.1.1:5002,127.0.1.1:5003",
-        "Machines_delay": "0,1,0",
-        "machines_targets": "127.0.1.1:5002,127.0.1.1:5003",
-        "Role": "master"
-    }
+    "jobsNumer": 3,
+    "executionMode": "tcp",
+    "machinesID": "127.0.1.1:5001,127.0.1.1:5002,127.0.1.1:5003",
+    "machine": [
+    {
+        "port": ":5001",
+        "ip": "127.0.1.1",
+        "role": "slave",
+        "MachinesDelay": "5s",
+        "machines_targets": "127.0.1.1:5002"
+    },
+    {
+        "port": ":5002",
+        "ip": "127.0.1.1",
+        "role": "slave",
+        "MachinesDelay": "",
+        "machines_targets": ""
+    },
+    {
+        "port": ":5003",
+        "ip": "127.0.1.1",
+        "role": "master",
+        "MachinesDelay": "",
+        "machines_targets": ""
+    }]
 
 }
