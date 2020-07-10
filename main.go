@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	l "practice1/chandylamport"
-	c "practice1/communication"
-	f "practice1/functions"
-	u "practice1/multicast"
-	v "practice1/vclock"
+	l "sd_paxos/chandylamport"
+	c "sd_paxos/communication"
+	f "sd_paxos/functions"
+	u "sd_paxos/multicast"
+	v "sd_paxos/vclock"
 )
 
 var flags f.Coordinates

@@ -5,10 +5,10 @@ import (
 	"encoding/gob"
 	"log"
 	"net"
-	f "practice1/functions"
+	f "sd_paxos/functions"
 	"sort"
 
-	v "practice1/vclock"
+	v "sd_paxos/vclock"
 	"time"
 )
 

@@ -4,7 +4,7 @@ import (
 	"io"
 	"log"
 	"os"
-	f "practice1/functions"
+	f "sd_paxos/functions"
 	"strings"
 	"testing"
 )
@@ -13,9 +13,9 @@ func TestTCP(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\"",
 	}
 
 	for i, k := range ips {
@@ -53,9 +53,9 @@ func TestTCP2(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -e=\"tcp\"",
 	}
 
 	for i, k := range ips {
@@ -94,9 +94,9 @@ func TestUDP(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"udp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"udp\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"udp\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"udp\"",
 	}
 
 	for i, k := range ips {
@@ -134,9 +134,9 @@ func TestChandyLamport(t *testing.T) {
 	rsa := "/home/shamuel/.ssh/id_rsa"
 	ips := []string{"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"}
 	valuesRun := []string{
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"chandy\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"chandy\"",
-		"/usr/local/go/bin/go run /home/a802400/go/src/practice1/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"chandy\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"chandy\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"chandy\"",
+		"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"chandy\"",
 	}
 
 	for i, k := range ips {

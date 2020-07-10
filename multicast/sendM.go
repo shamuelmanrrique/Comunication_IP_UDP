@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"net"
-	f "practice1/functions"
+	f "sd_paxos/functions"
 )
 
 // SendM function
