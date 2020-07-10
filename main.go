@@ -1,66 +1,162 @@
 package main
 
 import (
+	"encoding/gob"
+	"flag"
 	"fmt"
-	"log"
 	"os"
+	"strings"
+	"time"
 
-	"github.com/tkanos/gonfig"
 	"gopkg.in/ini.v1"
+
+	l "sd_paxos/chandylamport"
+	c "sd_paxos/communication"
+	f "sd_paxos/functions"
+	u "sd_paxos/multicast"
+	v "sd_paxos/vclock"
 )
 
-// Coment
-type Machine struct {
-	port            string
-	ip              string
-	role            string
-	MachinesDelay   string
-	machinesTargets string
-}
+var flags f.Coordinates
 
-// Coment
-type Configuration struct {
-	ssh           bool
-	jobsNumer     int
-	executionMode string
-	machinesID    string
-	machine       []Machine
-	// machine2      Machine
-	// machine3      Machine
+func init() {
+	flag.StringVar(&flags.Machine, "n", "machine1", "Insert name like machine# (# is a number 1-3) ")
+	flag.StringVar(&flags.Mode, "m", "tcp", "Mode to execute [tcp, udp, chandy]")
 }
 
 func main() {
-	configuration := Configuration{}
-	err := gonfig.GetConf("./config/config_local.json", &configuration)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(configuration)
-
+	// Loading configuration file
 	cfg, err := ini.Load("./config/go.ini")
 	if err != nil {
 		fmt.Printf("Fail to read file: %v", err)
 		os.Exit(1)
 	}
 
-	// Classic read of values, default section can be represented as empty string
-	fmt.Println("App Mode:", cfg.Section("").Key("app_mode").String())
-	fmt.Println("Data Path:", cfg.Section("paths").Key("data").String())
+	// Declaring variables
+	var ssh bool
+	var jobs int
+	var ip string
+	var port string
+	var role string
+	var mode string
+	var delays []time.Duration
+	var targets []string
+	var environment string
+	var machineName string
+	var machinesID []string
 
-	// Let's do some candidate value limitation
-	fmt.Println("Server Protocol:",
-		cfg.Section("server").Key("protocol").In("http", []string{"http", "https"}))
-	// Value read that is not in candidates will be discarded and fall back to given default value
-	fmt.Println("Email Protocol:",
-		cfg.Section("server").Key("protocol").In("smtp", []string{"imap", "smtp"}))
+	// Parcing flags
+	flag.Parse()
+	gob.Register(f.Message{})
+	gob.Register(f.Marker{})
+	gob.Register(f.Ack{})
 
-	// Try out auto-type conversion
-	fmt.Printf("Port Number: (%[1]T) %[1]d\n", cfg.Section("server").Key("http_port").MustInt(9999))
-	fmt.Printf("Enforce Domain: (%[1]T) %[1]v\n", cfg.Section("server").Key("enforce_domain").MustBool(false))
+	environment = cfg.Section("general").Key("environment").String()
+	jobs, err = cfg.Section("general").Key("jobs").Int()
+	ssh, err = cfg.Section("general").Key("ssh").Bool()
+	machineName = flags.GetMachine()
+	mode = flags.GetMode()
 
-	// Now, make some changes and save it
-	cfg.Section("").Key("app_mode").SetValue("production")
-	cfg.SaveTo("my.ini.local")
+	ip = cfg.Section(environment + " " + machineName).Key("ip").String()
+	port = cfg.Section(environment + " " + machineName).Key("port").String()
+	role = cfg.Section(environment + " " + machineName).Key("role").String()
+	// delays = strings.Split(cfg.Section(environment+" "+machineName).Key("delays").String(), ",")
+	targets = strings.Split(cfg.Section(environment+" "+machineName).Key("targets").String(), ",")
+
+	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
+
+	for _, v := range strings.Split(cfg.Section(environment+" "+machineName).Key("delays").String(), ",") {
+		duration, _ := time.ParseDuration(v)
+		delays = append(delays, duration)
+	}
+
+	print(delays[0])
+
+	// Inicializo todos el reloj del proceso
+	var vector = v.New()
+	for _, v := range machinesID {
+		vector[v] = 0
+	}
+
+	println(ssh, jobs, mode, ip, port, role, delays[0], targets[0])
+
+	msmreceive := len(machinesID) - len(targets) - 1
+
+	connect := &f.Conn{
+		Id:     ip + port,
+		Ip:     ip,
+		Port:   port,
+		Ids:    machinesID,
+		Kill:   targets,
+		Delays: delays,
+		Accept: msmreceive,
+		Vector: vector,
+	}
+
+	<-time.After(time.Second * 5)
+
+	// TCP
+	if mode == "tcp" {
+		f.DistMsm("TCP " + ip + port)
+		go c.ReceiveGroup(connect)
+		if role == "master" {
+			time.Sleep(time.Second * 2)
+			go c.SendGroup(connect)
+		}
+
+	}
+
+	// UDP
+	if mode == "udp" {
+		f.DistMsm("UDP " + ip + port)
+
+		chanAck := make(chan f.Ack, len(connect.GetIds())-1)
+		defer close(chanAck)
+		chanMessage := make(chan f.Message, len(connect.GetIds()))
+		defer close(chanMessage)
+
+		go u.ReceiveM(chanAck, chanMessage, connect.GetPort())
+
+		go u.ReceiveGroupM(chanMessage, chanAck, connect)
+		if role == "master" {
+			time.Sleep(time.Second * 2)
+			go u.SendGroupM(chanAck, connect)
+		}
+	}
+
+	// ChandyLamport
+	if mode == "chandy" {
+		f.DistMsm("ChandyLamport " + ip + port)
+		chanMarker := make(chan f.Marker, jobs)
+		defer close(chanMarker)
+		chanMessage := make(chan f.Message, jobs)
+		defer close(chanMessage)
+		chanPoint := make(chan string, jobs)
+		defer close(chanPoint)
+
+		// var marker = &f.Marker{}
+		// ids = nil
+
+		go l.ReceiveGroupC(chanPoint, chanMessage, chanMarker, connect)
+		if role == "master" {
+			time.Sleep(time.Second * 2)
+			go l.SendGroupC(chanPoint, chanMessage, chanMarker, connect)
+		}
+
+		marker := f.Marker{
+			Counter: len(machinesID),
+			Recoder: false,
+		}
+
+		// Init Snapshot
+		if role == "master" {
+			time.Sleep(time.Second * 4)
+			cap := connect.GetEnv(0)
+			go l.SendC(marker, cap)
+		}
+
+	}
+
+	<-time.After(time.Second * 60)
 
 }
