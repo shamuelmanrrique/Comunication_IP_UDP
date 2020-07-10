@@ -39,8 +39,8 @@ func main() {
 	var port string
 	var role string
 	var mode string
-	var delays []time.Duration
-	var targets []string
+	var delays []time.Duration = make([]time.Duration, 0)
+	var targets []string = make([]string, 0)
 	var environment string
 	var machineName string
 	var machinesID []string
@@ -60,13 +60,20 @@ func main() {
 	ip = cfg.Section(environment + " " + machineName).Key("ip").String()
 	port = cfg.Section(environment + " " + machineName).Key("port").String()
 	role = cfg.Section(environment + " " + machineName).Key("role").String()
-	targets = strings.Split(cfg.Section(environment+" "+machineName).Key("targets").String(), ",")
+
+	target := cfg.Section(environment + " " + machineName).Key("targets").String()
+	if target != "" {
+		targets = strings.Split(target, ",")
+	}
 
 	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
 
-	for _, v := range strings.Split(cfg.Section(environment+" "+machineName).Key("delays").String(), ",") {
-		duration, _ := time.ParseDuration(v)
-		delays = append(delays, duration)
+	durat := cfg.Section(environment + " " + machineName).Key("delays").String()
+	if durat != "" {
+		for _, v := range strings.Split(durat, ",") {
+			duration, _ := time.ParseDuration(v)
+			delays = append(delays, duration)
+		}
 	}
 
 	// Inicializo todos el reloj del proceso
@@ -75,8 +82,9 @@ func main() {
 		vector[v] = 0
 	}
 
-	println(ssh, jobs, mode, ip, port, role, delays[0], targets[0], machinesID)
+	println(ssh, jobs, mode, ip, port, role, machinesID)
 
+	println(" ids len ", len(machinesID), " targets ", len(targets))
 	msmreceive := len(machinesID) - len(targets) - 1
 
 	connect := &f.Conn{
