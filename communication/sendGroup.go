@@ -33,6 +33,7 @@ func SendGroup(connect *f.Conn) error {
 	for _, v := range connect.GetIds() {
 		if v != id {
 
+			print(v)
 			msm := &f.Message{
 				To:     v,
 				From:   id,

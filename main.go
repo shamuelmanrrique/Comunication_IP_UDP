@@ -20,8 +20,8 @@ import (
 var flags f.Coordinates
 
 func init() {
-	flag.StringVar(&flags.Machine, "n", "machine1", "Insert name like machine# (# is a number 1-3) ")
-	flag.StringVar(&flags.Mode, "m", "tcp", "Mode to execute [tcp, udp, chandy]")
+	flag.StringVar(&flags.Machine, "m", "machine1", "Insert name like machine# (# is a number 1-3) ")
+	flag.StringVar(&flags.Mode, "e", "tcp", "Mode to execute [tcp, udp, chandy]")
 }
 
 func main() {
@@ -60,7 +60,6 @@ func main() {
 	ip = cfg.Section(environment + " " + machineName).Key("ip").String()
 	port = cfg.Section(environment + " " + machineName).Key("port").String()
 	role = cfg.Section(environment + " " + machineName).Key("role").String()
-	// delays = strings.Split(cfg.Section(environment+" "+machineName).Key("delays").String(), ",")
 	targets = strings.Split(cfg.Section(environment+" "+machineName).Key("targets").String(), ",")
 
 	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
@@ -70,15 +69,13 @@ func main() {
 		delays = append(delays, duration)
 	}
 
-	print(delays[0])
-
 	// Inicializo todos el reloj del proceso
 	var vector = v.New()
 	for _, v := range machinesID {
 		vector[v] = 0
 	}
 
-	println(ssh, jobs, mode, ip, port, role, delays[0], targets[0])
+	println(ssh, jobs, mode, ip, port, role, delays[0], targets[0], machinesID)
 
 	msmreceive := len(machinesID) - len(targets) - 1
 
@@ -133,9 +130,6 @@ func main() {
 		defer close(chanMessage)
 		chanPoint := make(chan string, jobs)
 		defer close(chanPoint)
-
-		// var marker = &f.Marker{}
-		// ids = nil
 
 		go l.ReceiveGroupC(chanPoint, chanMessage, chanMarker, connect)
 		if role == "master" {

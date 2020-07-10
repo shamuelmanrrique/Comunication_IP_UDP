@@ -49,7 +49,7 @@ func ReceiveGroup(connect *f.Conn) error {
 		}
 	}
 
-	<-time.After(time.Second * 15)
+	<-time.After(time.Second * 25)
 
 	// Ordeno el arreglo de msm
 	sort.SliceStable(arrayMsms, func(i, j int) bool {

@@ -13,6 +13,8 @@ func Send(ip string, msm f.Msm, caller string) error {
 	var err error
 	var encoder *gob.Encoder
 
+	println(ip)
+
 	connection, err = net.Dial("tcp", ip)
 	f.Error(err, "Send connection error \n")
 	defer connection.Close()
