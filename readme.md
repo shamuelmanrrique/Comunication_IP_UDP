@@ -5,6 +5,19 @@ go run main.go -m "machine1"  -e "tcp"
 go run main.go -m "machine2"  -e "tcp" 
 go run main.go -m "machine3"  -e "tcp" 
 
+
+go run main.go -m "machine3"  -e "tcp" 
+  167  go run main.go -m "machine3"  -e "udp" 
+  168  go run main.go -m "machine3"  -e "chandy" 
+
+  161  go run main.go -m "machine2"  -e "tcp" 
+  162  go run main.go -m "machine2"  -e "udp" 
+  163  go run main.go -m "machine2"  -e "chandy" 
+
+  go run main.go -m "machine1"  -e "tcp" 
+  163  go run main.go -m "machine1"  -e "udp" 
+  164  go run main.go -m "machine1"  -e "chandy"
+
 go run main.go -r "local" -n 3 -p=":5003" -i="127.0.1.1" -e="tcp" 
 go run main.go -r "local"  -n 3 -p=":5002" -i="127.0.1.1" -e="tcp"
 go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001" -i="127.0.1.1" -e="tcp"
