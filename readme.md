@@ -1,5 +1,5 @@
 
-cd /home/shamuel/go/src/sd_paxos/app
+cd /home/shamuel/go/sd_paxos/src/app
 
 go run main.go -m "machine1"  -e "tcp" 
 go run main.go -m "machine2"  -e "tcp" 
@@ -46,22 +46,22 @@ go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:140
 
 export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT=/usr/local/go;
 <!-- por shel tcp -->
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp" 
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp" 
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
 <!-- por shel udp -->
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="udp" 
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="udp"
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="udp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="udp" 
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="udp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="udp"
 <!-- por shel chandy -->
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="chandy" 
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="chandy"
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="chandy"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="chandy" 
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="chandy"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="chandy"
 
 <!-- por shel tcp -->
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp" 
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp" 
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
+/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
 
 
 
@@ -75,6 +75,6 @@ export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT
 
 
 
-"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"" 
-"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\""
-"/usr/local/go/bin/go run /home/a802400/go/src/sd_paxos/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\""
+"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\"" 
+"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\""
+"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\""
