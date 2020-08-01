@@ -36,25 +36,27 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	f.Error(err, "ReceiveGroupM error ListenPacket")
 	defer listener.Close()
 
-	// Creating message array to incoming message 
+	// Creating message array to incoming message
 	var msmMult []f.Message
 	// Creating channel message
 	m := make(chan f.Message)
 	defer close(m)
 
+	println("111111111111111111111111111111")
 	// Gorutine to receive UNICAST AND MULTICAST message
 	go func() {
 		// Defining timeout to wait MULTICAST menssage
 		deadline := time.Now().Add(40 * time.Second)
 
 		for time.Now().Before(deadline) {
+			println("22222222222222222")
 			var msm f.Message
-			// Set up to read message using buffer 
+			// Set up to read message using buffer
 			listener.SetReadBuffer(f.MaxBufferSize)
 			buffer := make([]byte, f.MaxBufferSize)
 			listener.ReadFromUDP(buffer)
 
-			// Reding from buffer and decoder message 
+			// Reding from buffer and decoder message
 			dataBuffer := bytes.NewBuffer(buffer)
 			decode = gob.NewDecoder(dataBuffer)
 			err = decode.Decode(&msm)
@@ -76,8 +78,9 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 		}
 
 	receiveChannel:
-		// Tag to stay waiting for UNICAST messages until all arrive 
+		// Tag to stay waiting for UNICAST messages until all arrive
 		for {
+			println("333333 receiveChannel")
 			select {
 			case msm, ok := <-chanMess:
 				if msm.GetFrom() != id {
@@ -98,28 +101,28 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 
 	}()
 
-
 readMessage:
 	// Tag to stay waiting for messages
 	for {
 		var messag f.Message
 		select {
 
-		// Getting incoming message from channel 
+		// Getting incoming message from channel
 		case messag, ok = <-m:
 			go func() {
+				println("Recibi un mmsmsmssms")
 				ackID := &f.Ack{
 					Origen: connect.GetId(),
 					Code:   connect.GetId() + "," + messag.GetFrom(),
 				}
 
-				// Appling manual delay to receive message 
+				// Appling manual delay to receive message
 				if messag.GetTarg() != id {
 					delay := messag.GetDelay()
 					time.Sleep(delay)
 				}
 
-				// Send ACK confirmation 
+				// Send ACK confirmation
 				SendM(ackID, messag.GetFrom())
 
 				// Updating vclock
@@ -128,7 +131,7 @@ readMessage:
 				vector.Merge(messag.GetVector())
 				connect.SetClock(vector)
 
-				// Checking if its the target 
+				// Checking if its the target
 				if messag.GetTarg() == id {
 					n--
 					// Sending multicast message
@@ -153,7 +156,7 @@ readMessage:
 	})
 
 	f.DistUnic("Output Message")
-	// Print message in order 
+	// Print message in order
 	for _, men := range arrayMsms {
 		if men.GetTarg() != "" {
 			log.Println("[Message] -->", men.GetFrom(), men.GetData(), men.GetTarg())

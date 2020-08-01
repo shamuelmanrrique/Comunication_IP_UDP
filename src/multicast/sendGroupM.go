@@ -31,6 +31,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	id := connect.GetId()
 	n := len(connect.GetIds()) - 1
 
+	println("SendGroupM ===========")
 	// Update vClock and make a copy to send that in message
 	vector := connect.GetVector()
 	vector.Tick(id)
@@ -88,6 +89,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 readAck:
 	// Tag to stay waiting for ACK messages until all arrive
 	for {
+		println("readAck ===========")
 		select {
 		case pack := <-chanAck:
 			// Adding ACK to ACK array
