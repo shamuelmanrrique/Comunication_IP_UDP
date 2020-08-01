@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -17,14 +18,33 @@ import (
 	v "sd_paxos/src/vclock"
 )
 
-var flags f.Coordinates
+// Declaring variables
+var ssh bool
+var jobs int
+var ip string
+var port string
+var role string
+var mode string
+var delays []time.Duration = make([]time.Duration, 0)
+var targets []string = make([]string, 0)
+var environment string
+var machineName string
+var machinesID []string
+var checklog bool
 
 func init() {
-	flag.StringVar(&flags.Machine, "m", "machine1", "Insert name like machine# (# is a number 1-3) ")
-	flag.StringVar(&flags.Mode, "e", "tcp", "Mode to execute [tcp, udp, chandy]")
+	flag.StringVar(&machineName, "m", "machine1", "Insert name like machine# (# is a number 1-3) ")
+	flag.StringVar(&mode, "e", "tcp", "Mode to execute [tcp, udp, chandy]")
+	flag.BoolVar(&checklog, "l", true, "Send output to file true otherwise false")
 }
 
 func main() {
+	// Parcing flags
+	flag.Parse()
+	gob.Register(f.Message{})
+	gob.Register(f.Marker{})
+	gob.Register(f.Ack{})
+
 	// Loading configuration file
 	cfg, err := ini.Load("./config/go.ini")
 	if err != nil {
@@ -32,41 +52,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Declaring variables
-	var ssh bool
-	var jobs int
-	var ip string
-	var port string
-	var role string
-	var mode string
-	var delays []time.Duration = make([]time.Duration, 0)
-	var targets []string = make([]string, 0)
-	var environment string
-	var machineName string
-	var machinesID []string
-
-	// Parcing flags
-	flag.Parse()
-	gob.Register(f.Message{})
-	gob.Register(f.Marker{})
-	gob.Register(f.Ack{})
-
-	environment = cfg.Section("general").Key("environment").String()
+	// Getting configuration values from .ini
 	jobs, err = cfg.Section("general").Key("jobs").Int()
 	ssh, err = cfg.Section("general").Key("ssh").Bool()
-	machineName = flags.GetMachine()
-	mode = flags.GetMode()
-
-	ip = cfg.Section(environment + " " + machineName).Key("ip").String()
+	environment = cfg.Section("general").Key("environment").String()
+	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
 	port = cfg.Section(environment + " " + machineName).Key("port").String()
 	role = cfg.Section(environment + " " + machineName).Key("role").String()
+	ip = cfg.Section(environment + " " + machineName).Key("ip").String()
 
 	target := cfg.Section(environment + " " + machineName).Key("targets").String()
 	if target != "" {
 		targets = strings.Split(target, ",")
 	}
-
-	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
 
 	durat := cfg.Section(environment + " " + machineName).Key("delays").String()
 	if durat != "" {
@@ -76,17 +74,28 @@ func main() {
 		}
 	}
 
-	// Inicializo todos el reloj del proceso
+	// Writting output in log if checklog is true
+	if checklog {
+		file, err := os.OpenFile("logs/["+ip+port+"]-"+machineName+".log",
+			os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer file.Close()
+		log.SetOutput(file)
+	}
+
+	// Calculating how many message machine will receive
+	msmreceive := len(machinesID) - len(targets) - 1
+
+	// Init every machine clock
 	var vector = v.New()
 	for _, v := range machinesID {
 		vector[v] = 0
 	}
 
-	println(ssh, jobs, mode, ip, port, role, machinesID)
-
-	// Calculating how many message it will receive
-	msmreceive := len(machinesID) - len(targets) - 1
-
+	// Declaring connection variable
 	connect := &f.Conn{
 		Id:     ip + port,
 		Ip:     ip,
