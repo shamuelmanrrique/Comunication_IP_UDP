@@ -79,6 +79,7 @@ func (p *Pack) GetConfACK() Ack {
 	return p.ConfACK
 }
 
+// CheckMsm function to add only new message in array
 func CheckMsm(msms []Message, m Message) ([]Message, bool, Message) {
 	for _, a := range msms {
 		if m.GetFrom() == a.GetFrom() && m.GetVector().Compare(a.GetVector(), v.Equal) {

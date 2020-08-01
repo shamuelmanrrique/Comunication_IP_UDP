@@ -25,7 +25,7 @@ func Send(ip string, msm f.Msm, caller string) error {
 	f.Error(err, "Send connection error \n")
 	defer connection.Close()
 
-	// Encoder message and send that
+	// Encoder and send message
 	encoder = gob.NewEncoder(connection)
 	err = encoder.Encode(msm)
 

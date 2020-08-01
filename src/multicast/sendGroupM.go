@@ -9,7 +9,14 @@ import (
 	"time"
 )
 
-// SendGroupM send message to ip multicast and wait ack
+/*
+-----------------------------------------------------------------
+METODO: SendGroup
+RECIBE: channel "f.Ack", pointer to connection "f.Conn"
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: It's a function TO send message to ip multicast and wait ack
+-----------------------------------------------------------------
+*/
 func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	var red *net.UDPAddr
 	var connection *net.UDPConn
@@ -24,7 +31,7 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	id := connect.GetId()
 	n := len(connect.GetIds()) - 1
 
-	// Update vClock and make a copy
+	// Update vClock and make a copy to send that in message
 	vector := connect.GetVector()
 	vector.Tick(id)
 	connect.SetClock(vector)
@@ -52,45 +59,59 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 		}
 	}
 
-	// Creating red connection
+	// Creating red connection to MulticastAddress
 	red, err = net.ResolveUDPAddr("udp", f.MulticastAddress)
 	f.Error(err, "SendGroupM error ResolveUDPAddr connection \n")
 
+	// Making dial connection to ip address
 	connection, err = net.DialUDP("udp", nil, red)
 	f.Error(err, "SendGroupM error DialUDP connection \n")
 	defer connection.Close()
 
+	// Send message to MulticastAddress
 	go func() {
+		// Send the same message three times
 		for i := 0; i < 3; i++ {
 			encoder = gob.NewEncoder(&buffer)
 			err = encoder.Encode(&msm)
 			f.Error(err, "SendGroupM encoder error \n")
 			_, err = connection.Write(buffer.Bytes())
+			// Sleep between every delivery
 			time.Sleep(200 * time.Millisecond)
 		}
 	}()
 
+	// Delete it IP from ids to doesn't wait for its ack
 	ackWait := f.Remove(ids, id)
 	aux := true
+
 readAck:
+	// Tag to stay waiting for ACK messages until all arrive
 	for {
 		select {
 		case pack := <-chanAck:
+			// Adding ACK to ACK array
 			if id != pack.GetOrigen() {
 				bufferAck, ok = f.AddAcks(bufferAck, pack)
 			}
+			// If already have all ack messsage break loop
 			if len(bufferAck) == n {
 				break readAck
 			}
+
+		// After timeout break loop
 		case <-time.After(4 * time.Second):
 			break readAck
 		}
 	}
 
+	// Checking if it has all the ack messages
 	ackWait, ok = f.CheckAcks(ackWait, bufferAck)
+	// If lost at least one ack then send direct message to addres
 	if !ok && aux {
 		go func() {
 			for i := 0; i < 3; i++ {
+				// Send the same message three times
 				for _, v := range ackWait {
 					go SendM(msm, v)
 				}
@@ -100,12 +121,14 @@ readAck:
 
 		if aux {
 			aux = false
+			// Goto receive missing ACK
 			goto readAck
 		}
 	}
 
+	// Communication error at least one messsage whithout confirmation
 	if !ok {
-		log.Println("[SendGroupM] Communication error messsage whitout confirmation program finished ")
+		log.Println("[SendGroupM] Communication error messsage whithout confirmation program finished ")
 		return err
 	}
 

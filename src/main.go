@@ -33,6 +33,7 @@ var machinesID []string
 var checklog bool
 
 func init() {
+	// Reading flags from terminal
 	flag.StringVar(&machineName, "name", "machine1", "Insert name like machine# (# is a number 1-3) ")
 	flag.StringVar(&mode, "mode", "tcp", "Mode to execute [tcp, udp, chandy]")
 	flag.BoolVar(&checklog, "log", false, "Send output to file true otherwise false")
@@ -41,6 +42,7 @@ func init() {
 func main() {
 	// Parcing flags
 	flag.Parse()
+	// Register all interface to use
 	gob.Register(f.Message{})
 	gob.Register(f.Marker{})
 	gob.Register(f.Ack{})
@@ -76,7 +78,7 @@ func main() {
 
 	// Writting output in log if checklog is true
 	if checklog {
-		file, err := os.OpenFile("logs/["+ip+port+"]-"+machineName+".log",
+		file, err := os.OpenFile("logs/["+mode+"-"+ip+port+"]-"+machineName+".log",
 			os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 		if err != nil {
 			log.Fatal(err)
@@ -109,10 +111,14 @@ func main() {
 
 	<-time.After(time.Second * 5)
 
-	// TCP
+	// Executing in TCP  mode
 	if mode == "tcp" {
 		f.DistMsm("TCP " + ip + port)
+
+		// Calling gorutine to receive direct message
 		go c.ReceiveGroup(connect)
+
+		// Master Node send first message
 		if role == "master" {
 			time.Sleep(time.Second * 2)
 			go c.SendGroup(connect)
@@ -120,25 +126,32 @@ func main() {
 
 	}
 
-	// UDP
+	// Executing in  UDP mode
 	if mode == "udp" {
 		f.DistMsm("UDP " + ip + port)
 
+		// Creating channel to ACK
 		chanAck := make(chan f.Ack, len(connect.GetIds())-1)
 		defer close(chanAck)
+
+		// Creating channel to ACK
 		chanMessage := make(chan f.Message, len(connect.GetIds()))
 		defer close(chanMessage)
 
+		// Calling gorutine to receive direct message
 		go u.ReceiveM(chanAck, chanMessage, connect.GetPort())
 
+		// Calling gorutine to receive broadcast message
 		go u.ReceiveGroupM(chanMessage, chanAck, connect)
+
+		// Master Node send first message
 		if role == "master" {
 			time.Sleep(time.Second * 2)
 			go u.SendGroupM(chanAck, connect)
 		}
 	}
 
-	// ChandyLamport
+	// Executin in ChandyLamport mode
 	if mode == "chandy" {
 		f.DistMsm("ChandyLamport " + ip + port)
 		chanMarker := make(chan f.Marker, jobs)
