@@ -5,7 +5,7 @@ The finality of this project is to achieve the objectives of practice number one
 ## The project structure is:
 
 ```
-  reports     -->   This folder contains project specification and requirements.
+reports     -->   This folder contains project specification and requirements.
   src         -->   This folder contains all code about the project.
         chandylamport       -->   
         communication       -->   
@@ -87,33 +87,36 @@ You need to open one terminal by every machine and execute go script in this ord
 
 > go run main.go -name "machine1" -mode "udp" -log true
 
-## TCP Communication
+## Chandy Lamport Snapshot
 
 You need to open one terminal by every machine and execute go script in this order.
 
 ### machina3
 
-> go run main.go -name "machine3" -mode "tcp" -log true
+> go run main.go -name "machine3" -mode "chandy" -log true
 
 ### machina2
 
-> go run main.go -name "machine2"  -mode "tcp" -log true
+> go run main.go -name "machine2"  -mode "chandy" -log true
 
 ### machina1
 
-> go run main.go -name "machine1" -mode "tcp" -log true
+> go run main.go -name "machine1" -mode "chandy" -log true
 
 
 
 
 
 
-
-cd /home/shamuel/go/sd_paxos/src/app
 
 go run main.go -m "machine1"  -e "tcp"
 go run main.go -m "machine2"  -e "tcp"
 go run main.go -m "machine3"  -e "tcp"
+
+
+cd /home/shamuel/go/sd_paxos/src/app
+
+cd /home/shamuel/go/sd_paxos/src/app
 
 go run main.go -m "machine3"  -e "tcp"
 167  go run main.go -m "machine3"  -e "udp"

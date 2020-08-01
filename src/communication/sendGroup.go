@@ -23,7 +23,7 @@ func SendGroup(connect *f.Conn) error {
 	// Update Clock
 	vector := connect.GetVector()
 
-	// Getting target and delaies
+	// Getting target and delay
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
 		target = connect.GetTarget(0)
 		delay = connect.GetDelay(0)
