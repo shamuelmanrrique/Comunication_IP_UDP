@@ -33,9 +33,9 @@ var machinesID []string
 var checklog bool
 
 func init() {
-	flag.StringVar(&machineName, "m", "machine1", "Insert name like machine# (# is a number 1-3) ")
-	flag.StringVar(&mode, "e", "tcp", "Mode to execute [tcp, udp, chandy]")
-	flag.BoolVar(&checklog, "l", true, "Send output to file true otherwise false")
+	flag.StringVar(&machineName, "name", "machine1", "Insert name like machine# (# is a number 1-3) ")
+	flag.StringVar(&mode, "mode", "tcp", "Mode to execute [tcp, udp, chandy]")
+	flag.BoolVar(&checklog, "log", false, "Send output to file true otherwise false")
 }
 
 func main() {

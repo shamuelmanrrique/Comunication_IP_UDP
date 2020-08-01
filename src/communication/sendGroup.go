@@ -5,7 +5,14 @@ import (
 	"time"
 )
 
-// SendGroup function to send group message one to one using TCP
+/*
+-----------------------------------------------------------------
+METODO: SendGroup
+RECIBE: ip address "ip",message "f.Msm", sender "caller"
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: It's a function to send group message one to one using TCP 
+-----------------------------------------------------------------
+*/
 func SendGroup(connect *f.Conn) error {
 	var err error
 	target := ""
@@ -16,6 +23,7 @@ func SendGroup(connect *f.Conn) error {
 	// Update Clock
 	vector := connect.GetVector()
 
+	// Getting target and delaies
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
 		target = connect.GetTarget(0)
 		delay = connect.GetDelay(0)
@@ -33,7 +41,6 @@ func SendGroup(connect *f.Conn) error {
 	for _, v := range connect.GetIds() {
 		if v != id {
 
-			print(v)
 			msm := &f.Message{
 				To:     v,
 				From:   id,
@@ -42,8 +49,8 @@ func SendGroup(connect *f.Conn) error {
 				Vector: copyVector,
 			}
 
+			// Set delay if it isn't target
 			if v != target {
-				// Get delay
 				time.Sleep(delay)
 			}
 

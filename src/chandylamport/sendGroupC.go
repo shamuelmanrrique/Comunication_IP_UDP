@@ -5,8 +5,16 @@ import (
 	"time"
 )
 
-// SendGroup dda
+/*
+-----------------------------------------------------------------
+METODO: SendGroupC
+RECIBE: Evento a a�adir
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: A�ade a la lista de eventos
+-----------------------------------------------------------------
+*/
 func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
+
 	var err error
 	target := ""
 	delay, _ := time.ParseDuration("0s")

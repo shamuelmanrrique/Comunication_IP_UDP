@@ -7,18 +7,25 @@ import (
 	f "sd_paxos/src/functions"
 )
 
-// Send function
+/*
+-----------------------------------------------------------------
+METODO: Send
+RECIBE: ip address "ip",message "f.Msm", sender "caller"
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: It's a function that send message using TCP connection  
+-----------------------------------------------------------------
+*/
 func Send(ip string, msm f.Msm, caller string) error {
 	var connection net.Conn
 	var err error
 	var encoder *gob.Encoder
 
-	println(ip)
-
+	// Making dial connection to ip address
 	connection, err = net.Dial("tcp", ip)
 	f.Error(err, "Send connection error \n")
 	defer connection.Close()
 
+	// Encoder message and send that
 	encoder = gob.NewEncoder(connection)
 	err = encoder.Encode(msm)
 
