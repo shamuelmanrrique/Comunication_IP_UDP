@@ -14,17 +14,19 @@ import (
 METODO: ReceiveM
 RECIBE: canal de tipo f.Ack, canal de tipo f.Message, un listener net.Listener
 DEVUELVE: OK si todo va bien o ERROR en caso contrario
-PROPOSITO: It's a function that receive message using UDP connection  
+PROPOSITO: It's a function that receive message using UDP connection
 -----------------------------------------------------------------
 */
 func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) error {
 	var pack interface{}
 	var err error
 
-	// Creting upd connection 
+	print("--------------------> ReceiveM", caller)
+
+	// Creting upd connection
 	red, _ := net.ResolveUDPAddr("udp", caller)
 
-	// Set address to listener message 
+	// Set address to listener message
 	listener, err := net.ListenUDP("udp", red)
 	f.Error(err, "[ReceiveM] ListenUDP Error")
 	defer listener.Close()
@@ -33,8 +35,8 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	timeoutDuration := 50 * time.Second
 	listener.SetReadDeadline(time.Now().Add(timeoutDuration))
 
-	// Infinite loop to receive message, 
-	// finished when timeout duration is off  
+	// Infinite loop to receive message,
+	// finished when timeout duration is off
 	for {
 		buffer := make([]byte, f.MaxBufferSize)
 		nRead, _, err := listener.ReadFrom(buffer)

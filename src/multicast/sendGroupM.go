@@ -92,6 +92,7 @@ readAck:
 		println("readAck ===========")
 		select {
 		case pack := <-chanAck:
+			println("readAck -------------", pack.GetOrigen)
 			// Adding ACK to ACK array
 			if id != pack.GetOrigen() {
 				bufferAck, ok = f.AddAcks(bufferAck, pack)

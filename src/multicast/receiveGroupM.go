@@ -30,6 +30,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	vector := connect.GetVector()
 	id := connect.GetId()
 
+	print("--------------------> ReceiveGroupM", f.MulticastAddress)
 	// Set up and address to receive message
 	addr, _ := net.ResolveUDPAddr("udp", f.MulticastAddress)
 	listener, err = net.ListenMulticastUDP("udp", nil, addr)

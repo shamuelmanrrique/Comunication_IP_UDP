@@ -146,7 +146,7 @@ func main() {
 
 		// Master Node send first message
 		if role == "master" {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 5)
 			go u.SendGroupM(chanAck, connect)
 		}
 	}
