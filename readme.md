@@ -47,6 +47,10 @@ You can check the latest sources with the command:
 
 **It's very important set correct path to run project or clone repository in folder "/home/userName/go/src/"**
 
+# Copiar ssh a remote
+
+> ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
+
 # Examples executing main:
 
 For execute main go program yo must use follow flag:
@@ -103,16 +107,15 @@ You need to open one terminal by every machine and execute go script in this ord
 
 > go run main.go -name "machine1" -mode "chandy" -log true
 
+# Execute Test
 
+> go test -v -run TestSSH
 
-
-
-
+ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
 
 go run main.go -m "machine1"  -e "tcp"
 go run main.go -m "machine2"  -e "tcp"
 go run main.go -m "machine3"  -e "tcp"
-
 
 cd /home/shamuel/go/sd_paxos/src/app
 
@@ -181,3 +184,4 @@ export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT
 "/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\""
 "/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\""
 "/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\""
+

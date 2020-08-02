@@ -109,7 +109,7 @@ func main() {
 		Vector: vector,
 	}
 
-	<-time.After(time.Second * 5)
+	<-time.After(time.Second * 2)
 
 	// Executing in TCP  mode
 	if mode == "tcp" {
@@ -120,7 +120,7 @@ func main() {
 
 		// Master Node send first message
 		if role == "master" {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 5)
 			go c.SendGroup(connect)
 		}
 

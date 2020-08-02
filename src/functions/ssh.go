@@ -11,12 +11,16 @@ import (
 )
 
 func InitSSH(addr string) *ssh.Client {
+	// IDRsa := "/home/smmanrrique/.ssh/id_rsa"
 	IDRsa := "/home/smmanrrique/.ssh/id_rsa"
-	var user = "a802400"
-	// var user = "shamuel"
+	// var user = "a802400"
+	var user = "smmanrrique"
+
+	println("aqui en ssh", addr)
 
 	key, err := ioutil.ReadFile(IDRsa)
 	if err != nil {
+		println("ERRRRRRRROR en ssh", addr)
 		panic(err)
 	}
 
@@ -64,4 +68,32 @@ func ExcecuteSSH(cmd string, conn *ssh.Client) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func ConnectViaSsh(user, host string, password string) *ssh.Client {
+	// func connectViaSsh(user, host string, password string) (*ssh.Client, *ssh.Session) {
+	config := &ssh.ClientConfig{
+		User: user,
+		Auth: []ssh.AuthMethod{
+			ssh.KeyboardInteractive(SshInteractive),
+		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+	}
+	client, err := ssh.Dial("tcp", host, config)
+	println(err)
+	// session, err := client.NewSession()
+	// fmt.Println(err)
+
+	// return client, session
+	return client
+}
+
+func SshInteractive(user, instruction string, questions []string, echos []bool) (answers []string, err error) {
+	answers = make([]string, len(questions))
+	// The second parameter is unused
+	for n, _ := range questions {
+		answers[n] = "Hiberus7923"
+	}
+
+	return answers, nil
 }
