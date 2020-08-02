@@ -51,7 +51,7 @@ You can check the latest sources with the command:
 
 > ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
 
-# Examples executing main:
+# Execute main using one o this mode [TCP,UDP, CHANDY]
 
 For execute main go program yo must use follow flag:
 
@@ -59,129 +59,22 @@ For execute main go program yo must use follow flag:
 * mode  --> Mode to execute [tcp, udp, chandy] | default tcp
 * log   --> With true Send output to log file otherwise print on terminal | default false
 
-## TCP Communication
-
 You need to open one terminal by every machine and execute go script in this order.
 
-### machina3
+## machina3
 
 > go run main.go -name "machine3" -mode "tcp" -log true
 
-### machina2
+## machina2
 
 > go run main.go -name "machine2"  -mode "tcp" -log true
 
-### machina1
+## machina1
 
 > go run main.go -name "machine1" -mode "tcp" -log true
 
-## UDP Communication
-
-You need to open one terminal by every machine and execute go script in this order.
-
-### machina3
-
-> go run main.go -name "machine3" -mode "udp" -log true
-
-### machina2
-
-> go run main.go -name "machine2"  -mode "udp" -log true
-
-### machina1
-
-> go run main.go -name "machine1" -mode "udp" -log true
-
-## Chandy Lamport Snapshot
-
-You need to open one terminal by every machine and execute go script in this order.
-
-### machina3
-
-> go run main.go -name "machine3" -mode "chandy" -log true
-
-### machina2
-
-> go run main.go -name "machine2"  -mode "chandy" -log true
-
-### machina1
-
-> go run main.go -name "machine1" -mode "chandy" -log true
 
 # Execute Test
 
-> go test -v -run TestSSH
-
-ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
-
-go run main.go -m "machine1"  -e "tcp"
-go run main.go -m "machine2"  -e "tcp"
-go run main.go -m "machine3"  -e "tcp"
-
-cd /home/shamuel/go/sd_paxos/src/app
-
-cd /home/shamuel/go/sd_paxos/src/app
-
-go run main.go -m "machine3"  -e "tcp"
-167  go run main.go -m "machine3"  -e "udp"
-168  go run main.go -m "machine3"  -e "chandy"
-
-161  go run main.go -m "machine2"  -e "tcp"
-162  go run main.go -m "machine2"  -e "udp"
-163  go run main.go -m "machine2"  -e "chandy"
-
-go run main.go -m "machine1"  -e "tcp"
-163  go run main.go -m "machine1"  -e "udp"
-164  go run main.go -m "machine1"  -e "chandy"
-
-go run main.go -r "local" -n 3 -p=":5003" -i="127.0.1.1" -e="tcp"
-go run main.go -r "local"  -n 3 -p=":5002" -i="127.0.1.1" -e="tcp"
-go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001" -i="127.0.1.1" -e="tcp"
-
-go run main.go -r "local" -n 3 -p=":5003" -i="127.0.1.1" -e="udp"
-go run main.go -r "local"  -n 3 -p=":5002" -i="127.0.1.1" -e="udp"
-go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001" -i="127.0.1.1" -e="udp"
-
-go run main.go -r "local" -n 3 -p=":5003" -i="127.0.1.1" -e="chandy"
-go run main.go -r "local"  -n 3 -p=":5002" -i="127.0.1.1" -e="chandy"
-go run main.go -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001" -i="127.0.1.1" -e="chandy"
-
-c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400"
-go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -r "local" -n 3 -p=":5003" -i="127.0.1.1" -e="tcp"
-go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -r "local"  -n 3 -p=":5002" -i="127.0.1.1" -e="tcp"
-go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -r "local" -t "127.0.1.1:5002" -d "5s" -n 3 -m=true -p=":5001" -i="127.0.1.1" -e="tcp"
-
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp"
-/usr/local/go/bin/go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp"
-/usr/local/go/bin/go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
-/usr/local/go/bin/go run main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
-
-export PATH=$PATH:/usr/local/go/bin;export GOPATH=/home/a802400/go;export GOROOT=/usr/local/go;
-
-<!-- por shel tcp -->
-
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
-
-<!-- por shel udp -->
-
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="udp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="udp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="udp"
-
-<!-- por shel chandy -->
-
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="chandy"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="chandy"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="chandy"
-
-<!-- por shel tcp -->
-
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.208" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.209" -e="tcp"
-/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/main.go -c="155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400" -n=3 -p=":1400" -i="155.210.154.199" -t "155.210.154.209:1400" -d "5s"  -m=true   -e="tcp"
-
-"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.208\" -e=\"tcp\""
-"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.209\" -e=\"tcp\""
-"/usr/local/go/bin/go run /home/a802400/go/sd_paxos/src/app/main.go -c=\"155.210.154.199:1400,155.210.154.209:1400,155.210.154.208:1400\" -n=3 -p=\":1400\" -i=\"155.210.154.199\" -t \"155.210.154.209:1400\" -d \"5s\"  -m=true   -e=\"tcp\""
+> ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
 
