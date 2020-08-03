@@ -21,7 +21,7 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	var pack interface{}
 	var err error
 
-	print("--------------------> ReceiveM", caller)
+	println("--------------------> ReceiveM puerto ", caller)
 
 	// Creting upd connection
 	red, _ := net.ResolveUDPAddr("udp", caller)
@@ -54,11 +54,11 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 		switch packNew := pack.(type) {
 		case f.Message:
 			chanMes <- packNew
-			log.Println(" RECEIVE -->: from ", packNew.GetFrom(), " to ", packNew.GetTo(), "  || OBJ: ", packNew.GetTarg(),
+			log.Println(" RECEIVE MESSAGE --> from ", packNew.GetFrom(), " to ", packNew.GetTo(), "  || OBJ: ", packNew.GetTarg(),
 				"\n                     Vector: ", packNew.GetVector())
 		case f.Ack:
 			chanAc <- packNew
-			log.Println(" RECEIVE --> ACK from: ", packNew.GetOrigen(), "code:", packNew)
+			log.Println(" RECEIVE ACK --> from: ", packNew.GetOrigen(), "code:", packNew)
 		}
 	}
 

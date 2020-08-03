@@ -30,7 +30,6 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	vector := connect.GetVector()
 	id := connect.GetId()
 
-	print("--------------------> ReceiveGroupM", f.MulticastAddress)
 	// Set up and address to receive message
 	addr, _ := net.ResolveUDPAddr("udp", f.MulticastAddress)
 	listener, err = net.ListenMulticastUDP("udp", nil, addr)
@@ -43,30 +42,36 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	m := make(chan f.Message)
 	defer close(m)
 
-	println("111111111111111111111111111111")
+	println("++++++++++++++++++> ReceiveGroupM DIRECCION", f.MulticastAddress)
+
 	// Gorutine to receive UNICAST AND MULTICAST message
 	go func() {
 		// Defining timeout to wait MULTICAST menssage
 		deadline := time.Now().Add(40 * time.Second)
 
 		for time.Now().Before(deadline) {
-			println("22222222222222222")
+			println("++++++++++++++++++> ReceiveGroupM for por por 40s")
 			var msm f.Message
 			// Set up to read message using buffer
-			listener.SetReadBuffer(f.MaxBufferSize)
-			buffer := make([]byte, f.MaxBufferSize)
+			listener.SetReadBuffer(12000)
+			buffer := make([]byte, 12000)
 			listener.ReadFromUDP(buffer)
 
 			// Reding from buffer and decoder message
 			dataBuffer := bytes.NewBuffer(buffer)
 			decode = gob.NewDecoder(dataBuffer)
 			err = decode.Decode(&msm)
+			println("|||||||||||||||||||||||||||", &msm)
 			if err != nil {
+				f.Error(err, "Receive error  \n")
 				break
 			}
 
+			println("++++++> ReceiveGroupM llego sms de ", id, msm.GetFrom())
+
 			// Checking message from other IP
 			if msm.GetFrom() != id {
+				println("NO SOY YO EL ORIGEN ", msm.GetFrom())
 				// Validate message to doesn't add duplicates
 				msmMult, ok, _ = f.CheckMsm(msmMult, msm)
 				if !ok {
@@ -78,10 +83,10 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			}
 		}
 
+		println("++++++> receiveChannel ")
 	receiveChannel:
 		// Tag to stay waiting for UNICAST messages until all arrive
 		for {
-			println("333333 receiveChannel")
 			select {
 			case msm, ok := <-chanMess:
 				if msm.GetFrom() != id {
@@ -144,7 +149,7 @@ readMessage:
 			}()
 
 		// After timeout break loop
-		case <-time.After(25 * time.Second):
+		case <-time.After(40 * time.Second):
 			break readMessage
 		}
 	}

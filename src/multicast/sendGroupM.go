@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	f "sd_paxos/src/functions"
+	"strings"
 	"time"
 )
 
@@ -78,18 +79,20 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 			f.Error(err, "SendGroupM encoder error \n")
 			_, err = connection.Write(buffer.Bytes())
 			// Sleep between every delivery
+			println("SendGroupM =======message", i, msm.GetTo())
 			time.Sleep(200 * time.Millisecond)
 		}
 	}()
 
+	println(strings.Join(ids[:], "\n\n"))
 	// Delete it IP from ids to doesn't wait for its ack
 	ackWait := f.Remove(ids, id)
+	println(strings.Join(ackWait[:], "\n\n"))
 	aux := true
 
 readAck:
 	// Tag to stay waiting for ACK messages until all arrive
 	for {
-		println("readAck ===========")
 		select {
 		case pack := <-chanAck:
 			println("readAck -------------", pack.GetOrigen)
@@ -103,19 +106,23 @@ readAck:
 			}
 
 		// After timeout break loop
-		case <-time.After(4 * time.Second):
+		case <-time.After(10 * time.Second):
+			println("case <-time.After(10 * time.Second)")
 			break readAck
 		}
 	}
 
 	// Checking if it has all the ack messages
 	ackWait, ok = f.CheckAcks(ackWait, bufferAck)
+	println(ackWait, ok)
+
 	// If lost at least one ack then send direct message to addres
 	if !ok && aux {
 		go func() {
 			for i := 0; i < 3; i++ {
 				// Send the same message three times
 				for _, v := range ackWait {
+					println("SEND MESSAGE 1/1")
 					go SendM(msm, v)
 				}
 				time.Sleep(200 * time.Millisecond)
