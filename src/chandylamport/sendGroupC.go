@@ -1,11 +1,18 @@
 package chandylamport
 
 import (
-	f "sd_paxos/functions"
+	f "sd_paxos/src/functions"
 	"time"
 )
 
-// SendGroup dda
+/*
+-----------------------------------------------------------------
+METODO: SendGroupC
+RECIBE:  canal de tipo string, canal de tipo f.Message, canal de tipo f.Marker, connection connect
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: It's a function to send group message one to one using TCP 
+-----------------------------------------------------------------
+*/
 func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan f.Marker, connect *f.Conn) error {
 	var err error
 	target := ""
@@ -13,9 +20,10 @@ func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan 
 	inf := "am dead"
 	id := connect.GetId()
 
-	// Actualizo el reloj
+	// Update Clock
 	vector := connect.GetVector()
 
+	// Getting target and delay
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
 		target = connect.GetTarget(0)
 		delay = connect.GetDelay(0)
@@ -24,15 +32,15 @@ func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan 
 		connect.SetDelay()
 	}
 
-	// Incremento el reloj
+	// Increase clock
 	vector.Tick(id)
 	connect.SetClock(vector)
 	copyVector := vector.Copy()
 
-	// Envio el msm a todos
+	// Send message to everyone
 	for _, v := range connect.GetIds() {
 		if v != id {
-
+			// Building message
 			msm := &f.Message{
 				To:     v,
 				From:   id,
@@ -41,10 +49,12 @@ func SendGroupC(chanPoint chan string, chanMess chan f.Message, chanMarker chan 
 				Vector: copyVector,
 			}
 
+			// Set delay if it isn't target
 			if v != target {
 				time.Sleep(delay)
 			}
 
+			// Sending message
 			go SendC(msm, v)
 
 		}

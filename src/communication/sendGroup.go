@@ -1,11 +1,22 @@
 package communication
 
 import (
+<<<<<<< HEAD:communication/sendGroup.go
 	f "sd_paxos/functions"
+=======
+	f "sd_paxos/src/functions"
+>>>>>>> dev:src/communication/sendGroup.go
 	"time"
 )
 
-// SendGroup function to send group message one to one using TCP
+/*
+-----------------------------------------------------------------
+METODO: SendGroup
+RECIBE: ip address "ip",message "f.Msm", sender "caller"
+DEVUELVE: OK si todo va bien o ERROR en caso contrario
+PROPOSITO: It's a function to send group message one to one using TCP 
+-----------------------------------------------------------------
+*/
 func SendGroup(connect *f.Conn) error {
 	var err error
 	target := ""
@@ -16,6 +27,7 @@ func SendGroup(connect *f.Conn) error {
 	// Update Clock
 	vector := connect.GetVector()
 
+	// Getting target and delay
 	if len(connect.GetKill()) > 0 && len(connect.GetDelays()) > 0 {
 		target = connect.GetTarget(0)
 		delay = connect.GetDelay(0)
@@ -41,8 +53,8 @@ func SendGroup(connect *f.Conn) error {
 				Vector: copyVector,
 			}
 
+			// Set delay if it isn't target
 			if v != target {
-				// Get delay
 				time.Sleep(delay)
 			}
 

@@ -76,7 +76,7 @@ func (vc VClock) LastUpdate() (last uint64) {
 }
 
 //Merge takes the max of all clock values in other and updates the
-//values of the callee
+//values of the calle
 func (vc VClock) Merge(other VClock) {
 	for id := range other {
 		if vc[id] < other[id] {
