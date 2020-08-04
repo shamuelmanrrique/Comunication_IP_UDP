@@ -76,5 +76,7 @@ You need to open one terminal by every machine and execute go script in this ord
 
 # Execute Test
 
-> ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
+> go test -v -run TestCommunication  
+
+ ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
 

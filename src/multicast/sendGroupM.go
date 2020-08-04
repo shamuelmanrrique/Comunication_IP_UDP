@@ -31,7 +31,6 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 	id := connect.GetId()
 	n := len(connect.GetIds()) - 1
 
-	//println\(("SendGroupM ===========")
 	// Update vClock and make a copy to send that in message
 	vector := connect.GetVector()
 	vector.Tick(id)
@@ -83,10 +82,8 @@ func SendGroupM(chanAck chan f.Ack, connect *f.Conn) error {
 		}
 	}()
 
-	//println\((strings.Join(ids[:], "\n\n"))
 	// Delete it IP from ids to doesn't wait for its ack
 	ackWait := f.Remove(ids, id)
-	//println\((strings.Join(ackWait[:], "\n\n"))
 	aux := true
 
 readAck:
@@ -94,7 +91,6 @@ readAck:
 	for {
 		select {
 		case pack := <-chanAck:
-			//println\(("readAck -------------", pack.GetOrigen)
 			// Adding ACK to ACK array
 			if id != pack.GetOrigen() {
 				bufferAck, ok = f.AddAcks(bufferAck, pack)
@@ -106,14 +102,12 @@ readAck:
 
 		// After timeout break loop
 		case <-time.After(10 * time.Second):
-			//println\(("case <-time.After(10 * time.Second)")
 			break readAck
 		}
 	}
 
 	// Checking if it has all the ack messages
 	ackWait, ok = f.CheckAcks(ackWait, bufferAck)
-	//println\((ackWait, ok)
 
 	// If lost at least one ack then send direct message to addres
 	if !ok && aux {
@@ -121,7 +115,6 @@ readAck:
 			for i := 0; i < 3; i++ {
 				// Send the same message three times
 				for _, v := range ackWait {
-					//println\(("SEND MESSAGE 1/1")
 					go SendM(msm, v)
 				}
 				time.Sleep(200 * time.Millisecond)

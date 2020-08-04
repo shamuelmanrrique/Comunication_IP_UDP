@@ -36,7 +36,7 @@ func init() {
 	// Reading flags from terminal
 	flag.StringVar(&machineName, "name", "machine1", "Insert name like machine# (# is a number 1-3) ")
 	flag.StringVar(&mode, "mode", "tcp", "Mode to execute [tcp, udp, chandy]")
-	flag.BoolVar(&checklog, "log", false, "Send output to file true otherwise false")
+	flag.BoolVar(&checklog, "log", true, "Send output to file true otherwise false")
 }
 
 func main() {

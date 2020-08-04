@@ -40,12 +40,15 @@ func TestCommunication(t *testing.T) {
 	machinesID = strings.Split(cfg.Section(environment).Key("machinesID").String(), ",")
 	machinesName = strings.Split(cfg.Section(environment).Key("machinesName").String(), ",")
 
+	println(logMode, mode, "----------------", path)
+
 	for i, ip := range machinesID {
 		addr := strings.Split(ip, ":")
 		connection := f.InitSSH(addr[0])
 		println(path+" -name="+machinesName[i]+" -mode="+mode+" -log="+logMode, ip)
 
-		go f.ExcecuteSSH("cd ~/go/src/sd_paxos/src ; go run main.go -name="+machinesName[i]+" -mode=tcp -log=true", connection)
+		// go f.ExcecuteSSH("cd ~/go/src/sd_paxos/src ; go run main.go -name="+machinesName[i]+" -mode=tcp -log=true", connection)
+		go f.ExcecuteSSH("cd ~/go/src/sd_paxos/src ; go run main.go -name="+machinesName[i]+" -mode="+mode+" -log="+logMode, connection)
 	}
 
 	time.Sleep(50 * time.Second)

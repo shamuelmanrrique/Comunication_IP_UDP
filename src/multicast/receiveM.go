@@ -21,8 +21,6 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	var pack interface{}
 	var err error
 
-        //println\(("--------------------> ReceiveM puerto ", caller)
-
 	// Creting upd connection
 	red, _ := net.ResolveUDPAddr("udp", caller)
 
@@ -32,7 +30,7 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	defer listener.Close()
 
 	// Defining time to receive menssage
-	timeoutDuration := 50 * time.Second
+	timeoutDuration := 38 * time.Second
 	listener.SetReadDeadline(time.Now().Add(timeoutDuration))
 
 	// Infinite loop to receive message,
