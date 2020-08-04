@@ -21,7 +21,7 @@ func ReceiveM(chanAc chan<- f.Ack, chanMes chan<- f.Message, caller string) erro
 	var pack interface{}
 	var err error
 
-	println("--------------------> ReceiveM puerto ", caller)
+        //println\(("--------------------> ReceiveM puerto ", caller)
 
 	// Creting upd connection
 	red, _ := net.ResolveUDPAddr("udp", caller)

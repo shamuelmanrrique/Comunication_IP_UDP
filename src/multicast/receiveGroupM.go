@@ -42,7 +42,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 	m := make(chan f.Message)
 	defer close(m)
 
-	println("++++++++++++++++++> ReceiveGroupM DIRECCION", f.MulticastAddress)
+        //println\(("++++++++++++++++++> ReceiveGroupM DIRECCION", f.MulticastAddress)
 
 	// Gorutine to receive UNICAST AND MULTICAST message
 	go func() {
@@ -50,7 +50,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 		deadline := time.Now().Add(40 * time.Second)
 
 		for time.Now().Before(deadline) {
-			println("++++++++++++++++++> ReceiveGroupM for por por 40s")
+		        //println\(("++++++++++++++++++> ReceiveGroupM for por por 40s")
 			var msm f.Message
 			// Set up to read message using buffer
 			listener.SetReadBuffer(12000)
@@ -61,17 +61,17 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			dataBuffer := bytes.NewBuffer(buffer)
 			decode = gob.NewDecoder(dataBuffer)
 			err = decode.Decode(&msm)
-			println("|||||||||||||||||||||||||||", &msm)
+		        //println\(("|||||||||||||||||||||||||||", &msm)
 			if err != nil {
 				f.Error(err, "Receive error  \n")
 				break
 			}
 
-			println("++++++> ReceiveGroupM llego sms de ", id, msm.GetFrom())
+		        //println\(("++++++> ReceiveGroupM llego sms de ", id, msm.GetFrom())
 
 			// Checking message from other IP
 			if msm.GetFrom() != id {
-				println("NO SOY YO EL ORIGEN ", msm.GetFrom())
+			        //println\(("NO SOY YO EL ORIGEN ", msm.GetFrom())
 				// Validate message to doesn't add duplicates
 				msmMult, ok, _ = f.CheckMsm(msmMult, msm)
 				if !ok {
@@ -83,7 +83,7 @@ func ReceiveGroupM(chanMess chan f.Message, chanAck chan f.Ack, connect *f.Conn)
 			}
 		}
 
-		println("++++++> receiveChannel ")
+	        //println\(("++++++> receiveChannel ")
 	receiveChannel:
 		// Tag to stay waiting for UNICAST messages until all arrive
 		for {
@@ -116,7 +116,7 @@ readMessage:
 		// Getting incoming message from channel
 		case messag, ok = <-m:
 			go func() {
-				println("Recibi un mmsmsmssms")
+			        //println\(("Recibi un mmsmsmssms")
 				ackID := &f.Ack{
 					Origen: connect.GetId(),
 					Code:   connect.GetId() + "," + messag.GetFrom(),

@@ -140,17 +140,17 @@ func main() {
 		defer close(chanMessage)
 
 		// Calling gorutine to receive direct message
-		// go u.ReceiveM(chanAck, chanMessage, connect.GetPort())
+		go u.ReceiveM(chanAck, chanMessage, connect.GetPort())
 
 		// Calling gorutine to receive broadcast message
-		// go u.ReceiveGroupM(chanMessage, chanAck, connect)
-		go u.ReceiveGroupMr()
+		go u.ReceiveGroupM(chanMessage, chanAck, connect)
+		// go u.ReceiveGroupMr()
 
 		// Master Node send first message
 		if role == "master" {
 			time.Sleep(time.Second * 2)
-			// go u.SendGroupM(chanAck, connect)
-			go u.Send()
+			go u.SendGroupM(chanAck, connect)
+			// go u.Send()
 		}
 	}
 
