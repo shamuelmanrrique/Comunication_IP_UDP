@@ -75,8 +75,13 @@ You need to open one terminal by every machine and execute go script in this ord
 
 
 # Execute Test
+For execute test you need to write right values in follow variables in config/go.ini:
 
+```
+  environment = development | production
+  log = false | true
+  mode = udp | tcp | chandy
+```
 > go test -v -run TestCommunication  
 
- ssh-copy-id -i ~/.ssh/id_rsa smmanrrique@localhost
 
