@@ -13,8 +13,8 @@ import (
 func InitSSH(addr string) *ssh.Client {
 	// IDRsa := "/home/smmanrrique/.ssh/id_rsa"
 	IDRsa := "/home/smmanrrique/.ssh/id_rsa"
-	// var user = "a802400"
-	var user = "smmanrrique"
+	var user = "a802400"
+	// var user = "smmanrrique"
 
 	println("aqui en ssh", addr)
 

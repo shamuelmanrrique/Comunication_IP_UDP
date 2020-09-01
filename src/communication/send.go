@@ -4,11 +4,7 @@ import (
 	"encoding/gob"
 	"log"
 	"net"
-<<<<<<< HEAD:communication/send.go
-	f "sd_paxos/functions"
-=======
 	f "sd_paxos/src/functions"
->>>>>>> dev:src/communication/send.go
 )
 
 /*
@@ -16,7 +12,7 @@ import (
 METODO: Send
 RECIBE: ip address "ip",message "f.Msm", sender "caller"
 DEVUELVE: OK si todo va bien o ERROR en caso contrario
-PROPOSITO: It's a function that send message using TCP connection  
+PROPOSITO: It's a function that send message using TCP connection
 -----------------------------------------------------------------
 */
 func Send(ip string, msm f.Msm, caller string) error {

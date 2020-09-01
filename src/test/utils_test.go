@@ -18,7 +18,7 @@ func init() {
 
 func TestSimpleSSH(t *testing.T) {
 
-	connection := f.InitSSH("127.0.0.1")
+	connection := f.InitSSH("155.210.154.200")
 	println(connection, "localhost", "ip")
 	go f.ExcecuteSSH("ls", connection)
 	time.Sleep(5 * time.Second)
@@ -57,9 +57,9 @@ func TestSSH(t *testing.T) {
 	for i, ip := range machinesID {
 		addr := strings.Split(ip, ":")
 		connection := f.InitSSH(addr[0])
-		println(path+" -name="+machinesName[i]+" -mode="+mode+" -log="+logMode, ip)
+		println(path+machinesName[i]+" -mode="+mode+" -log="+logMode, ip)
 
-		go f.ExcecuteSSH("cd ~/go/src/sd_paxos/src ; go run main.go -name="+machinesName[i]+" -mode="+mode+" -log="+logMode, connection)
+		go f.ExcecuteSSH(path+machinesName[i]+" -mode="+mode+" -log="+logMode, connection)
 	}
 
 	time.Sleep(50 * time.Second)

@@ -1,11 +1,7 @@
 package communication
 
 import (
-<<<<<<< HEAD:communication/sendGroup.go
-	f "sd_paxos/functions"
-=======
 	f "sd_paxos/src/functions"
->>>>>>> dev:src/communication/sendGroup.go
 	"time"
 )
 
@@ -14,7 +10,7 @@ import (
 METODO: SendGroup
 RECIBE: ip address "ip",message "f.Msm", sender "caller"
 DEVUELVE: OK si todo va bien o ERROR en caso contrario
-PROPOSITO: It's a function to send group message one to one using TCP 
+PROPOSITO: It's a function to send group message one to one using TCP
 -----------------------------------------------------------------
 */
 func SendGroup(connect *f.Conn) error {

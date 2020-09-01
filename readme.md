@@ -63,15 +63,15 @@ You need to open one terminal by every machine and execute go script in this ord
 
 ## machina3
 
-> go run main.go -name "machine3" -mode "tcp" -log true
+>go run main.go -name "machine3" -mode "tcp" -log true
 
 ## machina2
 
-> go run main.go -name "machine2"  -mode "tcp" -log true
+>go run main.go -name "machine2"  -mode "tcp" -log true
 
 ## machina1
 
-> go run main.go -name "machine1" -mode "tcp" -log true
+>go run main.go -name "machine1" -mode "tcp" -log true
 
 
 # Execute Test
@@ -82,6 +82,6 @@ For execute test you need to write right values in follow variables in config/go
   log = false | true
   mode = udp | tcp | chandy
 ```
-> go test -v -run TestCommunication  
+>cd sd_paxos/src/test && go test -v -run TestCommunication  
 
 

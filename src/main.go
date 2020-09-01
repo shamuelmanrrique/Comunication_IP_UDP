@@ -33,6 +33,12 @@ var machinesID []string
 var checklog bool
 
 func init() {
+	// Register all interface to use
+	gob.Register(f.Message{})
+	gob.Register(f.Pack{})
+	gob.Register(f.Marker{})
+	gob.Register(f.Ack{})
+	
 	// Reading flags from terminal
 	flag.StringVar(&machineName, "name", "machine1", "Insert name like machine# (# is a number 1-3) ")
 	flag.StringVar(&mode, "mode", "tcp", "Mode to execute [tcp, udp, chandy]")
@@ -42,11 +48,6 @@ func init() {
 func main() {
 	// Parcing flags
 	flag.Parse()
-	// Register all interface to use
-	gob.Register(f.Message{})
-	gob.Register(f.Pack{})
-	gob.Register(f.Marker{})
-	gob.Register(f.Ack{})
 
 	// Loading configuration file
 	cfg, err := ini.Load("./config/go.ini")
