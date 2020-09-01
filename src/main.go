@@ -38,11 +38,11 @@ func init() {
 	gob.Register(f.Pack{})
 	gob.Register(f.Marker{})
 	gob.Register(f.Ack{})
-	
+
 	// Reading flags from terminal
 	flag.StringVar(&machineName, "name", "machine1", "Insert name like machine# (# is a number 1-3) ")
 	flag.StringVar(&mode, "mode", "tcp", "Mode to execute [tcp, udp, chandy]")
-	flag.BoolVar(&checklog, "log", true, "Send output to file true otherwise false")
+	flag.BoolVar(&checklog, "log", false, "Send output to file true otherwise false")
 }
 
 func main() {
@@ -122,7 +122,7 @@ func main() {
 
 		// Master Node send first message
 		if role == "master" {
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 10)
 			go c.SendGroup(connect)
 		}
 
@@ -149,7 +149,7 @@ func main() {
 
 		// Master Node send first message
 		if role == "master" {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 10)
 			go u.SendGroupM(chanAck, connect)
 			// go u.Send()
 		}
@@ -167,7 +167,7 @@ func main() {
 
 		go l.ReceiveGroupC(chanPoint, chanMessage, chanMarker, connect)
 		if role == "master" {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 10)
 			go l.SendGroupC(chanPoint, chanMessage, chanMarker, connect)
 		}
 
@@ -178,7 +178,7 @@ func main() {
 
 		// Init Snapshot
 		if role == "master" {
-			time.Sleep(time.Second * 4)
+			time.Sleep(time.Second * 2)
 			cap := connect.GetEnv(0)
 			go l.SendC(marker, cap)
 		}

@@ -63,15 +63,15 @@ You need to open one terminal by every machine and execute go script in this ord
 
 ## machina3
 
->go run main.go -name "machine3" -mode "tcp" -log true
+>go run main.go -name "machine3" -mode "chandy" -log true
 
 ## machina2
 
->go run main.go -name "machine2"  -mode "tcp" -log true
+>go run main.go -name "machine2"  -mode "chandy" -log true
 
 ## machina1
 
->go run main.go -name "machine1" -mode "tcp" -log true
+>go run main.go -name "machine1" -mode "chandy" -log true
 
 
 # Execute Test
