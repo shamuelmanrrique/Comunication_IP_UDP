@@ -178,7 +178,7 @@ func main() {
 
 		// Init Snapshot
 		if role == "master" {
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 4)
 			cap := connect.GetEnv(0)
 			go l.SendC(marker, cap)
 		}

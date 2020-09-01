@@ -1,6 +1,7 @@
 package functions
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -8,19 +9,30 @@ import (
 	"os"
 
 	"golang.org/x/crypto/ssh"
+	"gopkg.in/ini.v1"
 )
 
 func InitSSH(addr string) *ssh.Client {
-	// IDRsa := "/home/smmanrrique/.ssh/id_rsa"
-	IDRsa := "/home/smmanrrique/.ssh/id_rsa"
-	// var user = "a802400"
-	var user = "smmanrrique"
+	var environment string
+	var IDRsa string
+	var user string
 
-	println("aqui en ssh", addr)
+	// Loading configuration file
+	cfg, err := ini.Load("../config/go.ini")
+	if err != nil {
+		fmt.Printf("Fail to read file: %v", err)
+		os.Exit(1)
+	}
+
+	// Getting configuration values from .ini
+	environment = cfg.Section("general").Key("environment").String()
+	IDRsa = cfg.Section("general").Key("IDRsa").String()
+	user = cfg.Section(environment).Key("user").String()
+
+	println(environment, IDRsa, user)
 
 	key, err := ioutil.ReadFile(IDRsa)
 	if err != nil {
-		println("ERRRRRRRROR en ssh", addr)
 		panic(err)
 	}
 
@@ -68,32 +80,4 @@ func ExcecuteSSH(cmd string, conn *ssh.Client) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func ConnectViaSsh(user, host string, password string) *ssh.Client {
-	// func connectViaSsh(user, host string, password string) (*ssh.Client, *ssh.Session) {
-	config := &ssh.ClientConfig{
-		User: user,
-		Auth: []ssh.AuthMethod{
-			ssh.KeyboardInteractive(SshInteractive),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	}
-	client, err := ssh.Dial("tcp", host, config)
-	println(err)
-	// session, err := client.NewSession()
-	// fmt.Println(err)
-
-	// return client, session
-	return client
-}
-
-func SshInteractive(user, instruction string, questions []string, echos []bool) (answers []string, err error) {
-	answers = make([]string, len(questions))
-	// The second parameter is unused
-	for n, _ := range questions {
-		answers[n] = "Hiberus7923"
-	}
-
-	return answers, nil
 }
