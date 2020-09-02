@@ -167,7 +167,7 @@ func main() {
 
 		go l.ReceiveGroupC(chanPoint, chanMessage, chanMarker, connect)
 		if role == "master" {
-			time.Sleep(time.Second * 10)
+			time.Sleep(time.Second * 8)
 			go l.SendGroupC(chanPoint, chanMessage, chanMarker, connect)
 		}
 
@@ -178,7 +178,7 @@ func main() {
 
 		// Init Snapshot
 		if role == "master" {
-			time.Sleep(time.Second * 4)
+			time.Sleep(time.Second * 10)
 			cap := connect.GetEnv(0)
 			go l.SendC(marker, cap)
 		}
